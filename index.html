@@ -14,9 +14,9 @@
 :root{--void:#05060f;--panel:#0c1128;--line:#1e2757;--aura:#5b7cff;--glow:#dfeaff;--gold:#f5c451;--txt:#e6ecff;--mut:#8b97c7;--bad:#ff5d73}
 *{box-sizing:border-box}
 body{margin:0;font:500 17px/1.35 'Rajdhani',system-ui,sans-serif;background:var(--void);color:var(--txt);padding-bottom:env(safe-area-inset-bottom)}
-main{max-width:820px;margin:0 auto;padding:0 12px 24px}
+main{max-width:980px;margin:0 auto;padding:0 12px 24px}
 .hero{--px:0;--py:0;position:relative;height:340px;overflow:hidden;margin:0 -12px 14px;background:radial-gradient(ellipse at 50% 75%,#1b2468 0,#080c24 55%,#03040b 100%);padding-top:env(safe-area-inset-top)}
-@media(min-width:840px){.hero{margin:0 0 14px;border-radius:0 0 18px 18px}}
+@media(min-width:1000px){.hero{margin:0 0 14px;border-radius:0 0 18px 18px}}
 #fx{position:absolute;inset:0;width:100%;height:100%;display:block}
 .fig{position:absolute;bottom:0;left:50%;height:94%;transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px));transition:transform .15s ease-out;filter:drop-shadow(0 0 18px #3a55ff88)}
 .eyes{filter:drop-shadow(0 0 5px #9bbcff) drop-shadow(0 0 12px #5b7cff);animation:ignite 1.6s .4s both}
@@ -42,13 +42,28 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .s-scheduled{background:#6b5a12}.s-published{background:#14633a}.s-completed{background:#1e4f9a}.s-prepared{background:#7a3d12}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:#080c1f;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;color:var(--mut)}.stats b{font-size:26px;display:block;color:var(--txt)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:6px 12px;border-radius:8px;border:1px solid var(--line);color:var(--mut);opacity:.55}.chip.on{opacity:1;color:var(--gold);border-color:var(--gold);box-shadow:0 0 10px #f5c45133}
-#banner{position:sticky;top:0;z-index:9}.alert{background:#6b5a12;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+#banner{margin-top:8px}.alert{background:#6b5a12;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--gold);color:#201600;font-weight:700;padding:10px 18px;border-radius:99px;z-index:20;animation:pop 2.4s forwards}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,12px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
-.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}.drop img{max-height:130px;max-width:100%;border-radius:8px;margin-top:8px}
+.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}.drop img{max-height:70px;max-width:100%;border-radius:8px;margin-top:8px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}.top .row{flex:none}.top button{margin:0}
+.tabs{display:flex;gap:6px;position:sticky;top:0;z-index:8;background:var(--void);padding:8px 0;margin-bottom:10px;overflow-x:auto}
+.tab{flex:1;min-width:92px;background:#121a40;color:var(--mut);margin:0}.tab.on{background:var(--aura);color:#fff;box-shadow:0 0 14px #5b7cff66}
+.view{display:none}.view.on{display:block}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}@media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tile{background:#080c1f;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14px;color:var(--mut)}.tile b{display:block;font-size:34px;line-height:1.1;color:var(--txt)}
+.two,.addgrid{display:grid;gap:12px}@media(min-width:820px){.two,.addgrid{grid-template-columns:1fr 1fr}}
+.week{display:flex;gap:6px}.day{flex:1;text-align:center;font-size:13px;color:var(--mut)}.day i{display:block;height:36px;border-radius:6px;background:#080c1f;border:1px solid var(--line);margin-bottom:4px}.day.on i{background:linear-gradient(#5b7cff,#2a3aa8);box-shadow:0 0 10px #5b7cff77}
+.pvq{border:1px solid var(--line);border-left:4px solid var(--aura);border-radius:10px;padding:12px;background:#080c1f}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:8px;margin-top:8px}
+.pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
+.welcome{position:fixed;inset:0;z-index:30;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 45%,#2a3aa8cc,#03040bf5 70%);animation:wel 2.1s forwards;pointer-events:none}
+.welcome b{display:block;font-size:30px;margin-top:16px;text-shadow:0 0 16px var(--aura)}.welcome span{color:var(--mut)}
+.slits{display:flex;gap:46px;justify-content:center}.slits i{display:block;width:56px;height:7px;background:#eef4ff;border-radius:4px;box-shadow:0 0 14px #9bbcff,0 0 34px #5b7cff;animation:slit 1.2s .15s both}
+@keyframes slit{0%{transform:scaleX(0);opacity:0}30%,100%{transform:scaleX(1);opacity:1}}
+@keyframes wel{0%{opacity:0}14%,72%{opacity:1}100%{opacity:0}}
 .hide{display:none}.err{color:var(--bad);font-size:14px}
 #auth{margin-top:14px}
-@media(prefers-reduced-motion:reduce){.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
+@media(prefers-reduced-motion:reduce){.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
 </style>
 </head>
 <body>
@@ -81,48 +96,62 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </div>
 
 <div id="app" class="hide">
-  <div class="card">
-    <div class="row"><input id="day" type="date" onchange="load()"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></div>
-    <div id="progress" class="meta" style="margin-top:8px"></div>
-  </div>
+  <div class="top"><span class="meta" id="who"></span><span class="row"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></span></div>
+  <nav class="tabs" id="tabs"><button class="tab on" data-v="overview">Overview</button><button class="tab" data-v="quests">Quests</button><button class="tab" data-v="add">Add quest</button><button class="tab" data-v="reports">Reports</button></nav>
 
-  <div class="card"><h2>Today's quests</h2><div id="list"></div></div>
-
-  <div class="card">
-    <h2>Quick add from a screenshot</h2>
-    <div class="drop" id="drop">
-      <div>Paste an image (Ctrl+V), drop it here, or attach one.</div>
-      <div class="row" style="margin-top:8px;justify-content:center"><button class="sec" onclick="document.getElementById('shotFile').click()">Attach image</button></div>
-      <input id="shotFile" type="file" accept="image/*" class="hide" onchange="readShot(this.files[0]); this.value=''">
-      <img id="shotImg" class="hide" alt="Screenshot preview">
-      <p id="shotMsg" class="meta"></p>
+  <section class="view on" id="v-overview">
+    <div class="card"><h2>Today</h2><div class="tiles" id="tiles"></div></div>
+    <div class="two">
+      <div class="card"><h2>Next up</h2><div id="next"></div></div>
+      <div class="card"><h2>Last 7 days</h2><div class="week" id="week"></div><p class="meta">Lit days have at least one Published or Completed quest.</p></div>
     </div>
-  </div>
+    <div class="card"><h2>Achievements</h2><div class="chips" id="badges"></div>
+      <p class="meta">XP: Prepared 5, Scheduled 10, Completed 20, Published (confirmed) 30, +25 for a day with 3+ quests all cleared.</p></div>
+  </section>
 
-  <div class="card">
-    <h2 id="formTitle">New quest</h2>
-    <input type="hidden" id="tid">
-    <input id="title" placeholder="Quest title">
-    <div class="row">
-      <select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select>
-      <select id="status"></select>
+  <section class="view" id="v-quests">
+    <div class="card"><div class="row"><input id="day" type="date" onchange="load()"><button class="sec" onclick="showView('add')">New quest</button></div>
+      <div id="progress" class="meta" style="margin-top:8px"></div></div>
+    <div class="card"><h2>Quests</h2><div id="list"></div></div>
+  </section>
+
+  <section class="view" id="v-add">
+    <div class="addgrid">
+      <div>
+        <div class="card">
+          <h2>Quick add from a screenshot</h2>
+          <div class="drop" id="drop">
+            <div>Paste an image (Ctrl+V), drop it here, or attach one.</div>
+            <div class="row" style="margin-top:8px;justify-content:center"><button class="sec" onclick="document.getElementById('shotFile').click()">Attach image</button></div>
+            <input id="shotFile" type="file" accept="image/*" class="hide" onchange="readShot(this.files[0]); this.value=''">
+            <img id="shotImg" class="hide" alt="Screenshot thumbnail">
+            <p id="shotMsg" class="meta"></p>
+          </div>
+        </div>
+        <div class="card">
+          <h2 id="formTitle">New quest</h2>
+          <input type="hidden" id="tid">
+          <input id="title" placeholder="Quest title">
+          <div class="row"><select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select><select id="status"></select></div>
+          <div class="row"><input id="tdate" type="date"><input id="ttime" type="time"></div>
+          <input id="url" type="url" placeholder="Facebook post URL (optional)">
+          <textarea id="notes" rows="2" placeholder="Notes"></textarea>
+          <div class="row"><button onclick="saveTask()">Save quest</button><button class="sec" onclick="resetForm()">Clear</button></div>
+          <p id="formMsg" class="err"></p>
+        </div>
+      </div>
+      <div class="card" style="align-self:start"><h2>Preview</h2><div id="pv"></div></div>
     </div>
-    <div class="row"><input id="tdate" type="date"><input id="ttime" type="time"></div>
-    <input id="url" type="url" placeholder="Facebook post URL (optional)">
-    <textarea id="notes" rows="2" placeholder="Notes"></textarea>
-    <div class="row"><button onclick="saveTask()">Save quest</button><button class="sec" onclick="resetForm()">Clear</button></div>
-    <p id="formMsg" class="err"></p>
-  </div>
+  </section>
 
-  <div class="card"><h2>Achievements</h2><div class="chips" id="badges"></div>
-    <p class="meta">XP: Prepared 5, Scheduled 10, Completed 20, Published (confirmed) 30, +25 for a day with 3+ quests all cleared. Streak counts days with at least one Published or Completed quest.</p></div>
-
-  <div class="card">
-    <h2>Reports</h2>
-    <div class="row"><button class="sec" onclick="report('day')">Daily</button><button class="sec" onclick="report('week')">Weekly (Mon–Sun)</button><button onclick="exportCsv()">Export CSV</button></div>
-    <div id="rep" style="margin-top:10px"></div>
-    <p class="meta">Reports summarize what you recorded here. They are not verified against Facebook.</p>
-  </div>
+  <section class="view" id="v-reports">
+    <div class="card">
+      <h2>Reports</h2>
+      <div class="row"><button class="sec" onclick="report('day')">Daily</button><button class="sec" onclick="report('week')">Weekly (Mon–Sun)</button><button onclick="exportCsv()">Export CSV</button></div>
+      <div id="rep" style="margin-top:10px"></div>
+      <p class="meta">Reports use the date chosen in the Quests tab. They summarize what you recorded here and are not verified against Facebook.</p>
+    </div>
+  </section>
 </div>
 </main>
 
@@ -144,17 +173,31 @@ const today = () => new Date().toLocaleDateString('en-CA', {timeZone: TZ});
 const nowHM = () => new Date().toLocaleTimeString('en-GB', {timeZone: TZ, hour12: false}).slice(0,5);
 const mins = t => { const [h,m] = t.split(':'); return +h*60 + +m; };
 const addDays = (s,n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0,10); };
-let tasks = [], reg = null, lastXp = null, lastLv = null;
+let tasks = [], reg = null, lastXp = null, lastLv = null, fxBoost = 0, justLoggedIn = false;
 
 $('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
 
-async function signUp(){ const {error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); $('authMsg').textContent = error ? error.message : 'Account created. Check your email if confirmation is required, then sign in.'; }
-async function signIn(){ const {error} = await sb.auth.signInWithPassword({email:$('email').value, password:$('pass').value}); $('authMsg').textContent = error ? error.message : ''; }
+async function signUp(){ justLoggedIn = true; const {data, error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); if (error || !data.session) justLoggedIn = false; $('authMsg').textContent = error ? error.message : (data.session ? '' : 'Account created. Check your email if confirmation is required, then sign in.'); }
+async function signIn(){ justLoggedIn = true; const {error} = await sb.auth.signInWithPassword({email:$('email').value, password:$('pass').value}); if (error) justLoggedIn = false; $('authMsg').textContent = error ? error.message : ''; }
 async function signOut(){ await sb.auth.signOut(); }
 sb.auth.onAuthStateChange((_e, session) => {
   $('auth').classList.toggle('hide', !!session); $('app').classList.toggle('hide', !session);
-  if (session) { if (!$('day').value) { $('day').value = today(); $('tdate').value = today(); } load(); }
+  if (session) {
+    $('who').textContent = session.user.email || '';
+    if (!$('day').value) { $('day').value = today(); $('tdate').value = today(); }
+    load(); updatePreview();
+    if (justLoggedIn) { justLoggedIn = false; welcome(); }
+  }
 });
+function showView(v){ document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === 'v-' + v)); document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.v === v)); scrollTo({top:0, behavior:'smooth'}); }
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.v)));
+function welcome(){
+  const el = document.createElement('div'); el.className = 'welcome';
+  el.innerHTML = '<div><div class="slits"><i></i><i></i></div><b>Welcome back, Hunter</b><span>Quest log opened</span></div>'; document.body.appendChild(el);
+  fxBoost = 1; const e = document.querySelector('.eyes'); if (e) { e.style.animation = 'none'; void e.getBoundingClientRect(); e.style.animation = ''; }
+  setTimeout(() => el.remove(), 2200);
+}
+function countUp(el, to){ const from = parseInt(el.textContent) || 0; if (from === to) { el.textContent = to; return; } const t0 = performance.now(); (function step(t){ const k = Math.min((t - t0) / 700, 1); el.textContent = Math.round(from + (to - from) * k); if (k < 1) requestAnimationFrame(step); })(t0); }
 
 async function load(){
   const d = $('day').value;
@@ -186,15 +229,15 @@ async function saveTask(){
   const id = $('tid').value;
   const {error} = id ? await sb.from('tasks').update(row).eq('id', id) : await sb.from('tasks').insert(row);
   $('formMsg').textContent = error ? error.message : ''; if (error) return;
-  resetForm(); $('day').value = row.task_date; load();
+  resetForm(); $('day').value = row.task_date; load(); showView('quests'); toast('Quest saved');
 }
 function editTask(id){
   const t = tasks.find(x => x.id === id); if (!t) return;
   $('tid').value = t.id; $('title').value = t.title; $('cat').value = t.category; $('status').value = t.status;
   $('tdate').value = t.task_date; $('ttime').value = t.scheduled_time ? t.scheduled_time.slice(0,5) : '';
-  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit quest'; $('formTitle').scrollIntoView({behavior:'smooth'});
+  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit quest'; showView('add'); updatePreview();
 }
-function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='New quest'; }
+function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='New quest'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; updatePreview(); }
 async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
 async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
 
@@ -202,7 +245,7 @@ async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('
 const rankOf = l => l >= 18 ? 'S' : l >= 12 ? 'A' : l >= 8 ? 'B' : l >= 5 ? 'C' : l >= 3 ? 'D' : 'E';
 function toast(msg){ const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 2500); }
 async function loadStats(){
-  const {data} = await sb.from('tasks').select('task_date,status').gte('task_date', addDays(today(), -150)).limit(5000);
+  const {data} = await sb.from('tasks').select('id,title,task_date,status,scheduled_time,category').gte('task_date', addDays(today(), -150)).limit(5000);
   const rows = data || []; let xp = 0, pub = 0, perfect = 0; const done = {}, tot = {};
   rows.forEach(t => { xp += XP[t.status] || 0; tot[t.task_date] = (tot[t.task_date] || 0) + 1; if (DONE.includes(t.status)) done[t.task_date] = (done[t.task_date] || 0) + 1; if (t.status === 'published') pub++; });
   Object.keys(tot).forEach(d => { if (tot[d] >= 3 && done[d] === tot[d]) { perfect++; xp += 25; } });
@@ -214,9 +257,15 @@ async function loadStats(){
   $('rank').textContent = rankOf(lv); $('lv').textContent = 'Level ' + lv;
   $('xpbar').style.width = Math.round((xp - base) / (next - base) * 100) + '%';
   $('xptxt').textContent = `${xp} XP · ${next - xp} to level ${lv + 1}`;
-  $('streak').textContent = streak; $('best').textContent = 'Best ' + best;
+  countUp($('streak'), streak); $('best').textContent = 'Best ' + best;
   const B = [[pub > 0, 'First confirmed post'], [best >= 3, '3-day streak'], [best >= 7, '7-day streak'], [perfect > 0, 'Perfect day'], [lv >= 5, 'Rank C reached']];
   $('badges').innerHTML = B.map(([on, n]) => `<span class="chip ${on ? 'on' : ''}">${n}</span>`).join('');
+  const tdy = rows.filter(t => t.task_date === today()), cleared = tdy.filter(t => DONE.includes(t.status)).length;
+  $('tiles').innerHTML = [[tdy.length, 'Quests today'], [cleared, 'Cleared'], [tdy.filter(t => t.status === 'scheduled').length, 'Scheduled, not yet confirmed'], [tdy.length - cleared, 'Still open']].map(([n, l]) => `<div class="tile"><b>${n}</b>${l}</div>`).join('');
+  const nowM = mins(nowHM()), openQ = tdy.filter(t => !DONE.includes(t.status)).sort((a, b) => (a.scheduled_time || '99:99').localeCompare(b.scheduled_time || '99:99'));
+  const nq = openQ.find(t => t.scheduled_time && mins(t.scheduled_time.slice(0, 5)) >= nowM) || openQ[0];
+  $('next').innerHTML = nq ? `<div class="t">${esc(nq.title)}</div><div class="meta"><span class="badge s-${nq.status}">${STATUS[nq.status]}</span> ${esc(CAT[nq.category])}${nq.scheduled_time ? ' · ' + nq.scheduled_time.slice(0, 5) : ''}</div>` : '<p class="meta">Nothing open. Add a quest to keep your streak going.</p>';
+  $('week').innerHTML = [6,5,4,3,2,1,0].map(i => { const dd = addDays(today(), -i); return `<div class="day ${done[dd] ? 'on' : ''}"><i></i>${new Date(dd + 'T00:00:00Z').toLocaleDateString('en-US', {weekday:'short', timeZone:'UTC'})}</div>`; }).join('');
   if (lastXp !== null && xp > lastXp) toast(lv > lastLv ? `Level up! You are now level ${lv}` : `+${xp - lastXp} XP`);
   lastXp = xp; lastLv = lv;
 }
@@ -282,6 +331,16 @@ async function checkReminders(){
 }
 setInterval(checkReminders, 60000); setTimeout(checkReminders, 4000);
 
+/* Live preview of the quest being drafted (screenshot thumbnail is for checking only; it is not saved). */
+function updatePreview(){
+  const t = $('title').value.trim(), d = $('tdate').value, tm = $('ttime').value, u = $('url').value.trim(), n = $('notes').value.trim(), st = $('status').value, c = $('cat').value, im = $('shotImg');
+  const shot = !im.classList.contains('hide') && im.src ? `<img src="${esc(im.src)}" alt="Screenshot">` : '';
+  if (!t && !u && !n && !shot) { $('pv').innerHTML = '<p class="meta">Your quest preview appears here as you type or add a screenshot.</p>'; return; }
+  const miss = [!t && 'a title', !d && 'a date'].filter(Boolean);
+  $('pv').innerHTML = `<div class="pvtag">Preview. Not saved yet.</div><div class="pvq c-${c}"><div class="t">${esc(t || 'Untitled quest')}</div><div class="meta"><span class="badge s-${st}">${STATUS[st]}</span> ${esc(CAT[c])}</div><div class="meta">${esc(d || 'No date')}${tm ? ' · ' + esc(tm) : ''}</div>${u ? `<div class="meta">${esc(u)}</div>` : ''}${n ? `<div class="meta">${esc(n)}</div>` : ''}${st === 'scheduled' ? '<div class="meta">Scheduled does not count as published until you confirm it.</div>' : ''}${shot}</div>${miss.length ? `<p class="err">Add ${miss.join(' and ')} before saving.</p>` : ''}`;
+}
+['title','cat','status','tdate','ttime','url','notes'].forEach(id => { $(id).addEventListener('input', updatePreview); $(id).addEventListener('change', updatePreview); });
+
 /* Screenshot quick-add: reads text in the browser (OCR), then fills the form as a draft. Nothing is uploaded. */
 const MON = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
 function ymd(y, mo, d){ y = +y || +today().slice(0,4); mo = +mo; d = +d; if (mo < 1 || mo > 12 || d < 1 || d > 31) return null; return `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
@@ -315,11 +374,11 @@ function applyShot(text){
   $('cat').value = p.cat; $('status').value = p.status; $('tid').value = '';
   $('formTitle').textContent = 'New quest (draft from screenshot)';
   $('shotMsg').textContent = got.length ? `Filled: ${got.join(', ')}. Check everything, fix mistakes, then click Save quest.` : 'Could not find a title, date or time in this image. Try a sharper, zoomed-in screenshot.';
-  $('formTitle').scrollIntoView({behavior:'smooth'});
+  updatePreview(); $('formTitle').scrollIntoView({behavior:'smooth'});
 }
 async function readShot(file){
   if (!file || !file.type.startsWith('image/')) return;
-  const st = $('shotMsg'), im = $('shotImg'); im.src = URL.createObjectURL(file); im.classList.remove('hide');
+  const st = $('shotMsg'), im = $('shotImg'); im.src = URL.createObjectURL(file); im.classList.remove('hide'); updatePreview();
   if (!window.Tesseract) { st.textContent = 'The text reader did not load. Check your connection and reload the page.'; return; }
   st.textContent = 'Loading text reader (first time takes longer)…';
   try {
@@ -350,8 +409,8 @@ function initFx(){
   size(); addEventListener('resize', size);
   let mx = 0, my = 0;
   hero.addEventListener('pointermove', e => { const b = hero.getBoundingClientRect(); mx = (e.clientX - b.left) / b.width - .5; my = (e.clientY - b.top) / b.height - .5; hero.style.setProperty('--px', mx); hero.style.setProperty('--py', my); });
-  const frame = () => {
-    seed.forEach((s, i) => { s.a += s.w; s.y += s.v; if (s.y > 8) s.y = -8; const r = s.r * (.6 + .4 * (1 - Math.abs(s.y) / 9)); pos[i*3] = Math.cos(s.a) * r; pos[i*3+1] = s.y; pos[i*3+2] = Math.sin(s.a) * r * .6; });
+  const frame = () => { fxBoost *= .965;
+    seed.forEach((s, i) => { s.a += s.w; s.y += s.v * (1 + fxBoost * 8); if (s.y > 8) s.y = -8; const r = s.r * (.6 + .4 * (1 - Math.abs(s.y) / 9)); pos[i*3] = Math.cos(s.a) * r; pos[i*3+1] = s.y; pos[i*3+2] = Math.sin(s.a) * r * .6; });
     g.attributes.position.needsUpdate = true;
     P.rotation.y += (mx * .6 - P.rotation.y) * .05; P.rotation.x += (my * .3 - P.rotation.x) * .05;
     R.render(S, C);
