@@ -168,9 +168,20 @@ function notify(title, body){
   const el = document.createElement('div'); el.className = 'alert'; el.innerHTML = `<span><b>${esc(title)}</b><br>${esc(body)}</span><button class="sec" onclick="this.parentNode.remove()">OK</button>`; $('banner').appendChild(el);
   if ('Notification' in window && Notification.permission === 'granted') { try { reg ? reg.showNotification(title, {body}) : new Notification(title, {body}); } catch(e){} }
 }
+const VAPID_PUBLIC = 'BF1HlPNY5qRJ_69fOsUztAPr6yMPLwGyLEHwGc-PC2RuaEOq9ceVc4-DE6Xhx3UkR7jRs01rCDAcAVNMZQRuOXI';
+function b64ToU8(s){ const p = '='.repeat((4 - s.length % 4) % 4); const b = atob((s + p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
 async function enableNotif(){
-  if (!('Notification' in window)) { alert('Notifications are not available here. On iPhone, add the app to the Home Screen first.'); return; }
-  const p = await Notification.requestPermission(); alert('Notification permission: ' + p);
+  if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) { alert('Push is not available here. On iPhone, add the app to the Home Screen first, then open it from there.'); return; }
+  const p = await Notification.requestPermission();
+  if (p !== 'granted') { alert('Notification permission: ' + p); return; }
+  try {
+    const r = await navigator.serviceWorker.ready;
+    let s = await r.pushManager.getSubscription();
+    if (!s) s = await r.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64ToU8(VAPID_PUBLIC)});
+    const j = s.toJSON();
+    const {error} = await sb.from('push_subscriptions').upsert({endpoint:j.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth}, {onConflict:'endpoint'});
+    alert(error ? 'Save failed: ' + error.message : 'Alerts enabled on this device.');
+  } catch (e) { alert('Could not enable push: ' + e.message); }
 }
 async function checkReminders(){
   const {data:{session}} = await sb.auth.getSession(); if (!session) return;
