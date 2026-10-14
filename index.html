@@ -45,6 +45,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 #banner{position:sticky;top:0;z-index:9}.alert{background:#6b5a12;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--gold);color:#201600;font-weight:700;padding:10px 18px;border-radius:99px;z-index:20;animation:pop 2.4s forwards}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,12px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}.drop img{max-height:130px;max-width:100%;border-radius:8px;margin-top:8px}
 .hide{display:none}.err{color:var(--bad);font-size:14px}
 #auth{margin-top:14px}
 @media(prefers-reduced-motion:reduce){.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
@@ -88,6 +89,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   <div class="card"><h2>Today's quests</h2><div id="list"></div></div>
 
   <div class="card">
+    <h2>Quick add from a screenshot</h2>
+    <div class="drop" id="drop">
+      <div>Paste an image (Ctrl+V), drop it here, or attach one.</div>
+      <div class="row" style="margin-top:8px;justify-content:center"><button class="sec" onclick="document.getElementById('shotFile').click()">Attach image</button></div>
+      <input id="shotFile" type="file" accept="image/*" class="hide" onchange="readShot(this.files[0]); this.value=''">
+      <img id="shotImg" class="hide" alt="Screenshot preview">
+      <p id="shotMsg" class="meta"></p>
+    </div>
+  </div>
+
+  <div class="card">
     <h2 id="formTitle">New quest</h2>
     <input type="hidden" id="tid">
     <input id="title" placeholder="Quest title">
@@ -115,6 +127,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://nkkdxjzndlbkccmwzqum.supabase.co';
@@ -268,6 +281,60 @@ async function checkReminders(){
   if (now >= 1050 && open && !fired('eod')) notify('End-of-day review', `${open} quest(s) still unfinished today.`);
 }
 setInterval(checkReminders, 60000); setTimeout(checkReminders, 4000);
+
+/* Screenshot quick-add: reads text in the browser (OCR), then fills the form as a draft. Nothing is uploaded. */
+const MON = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+function ymd(y, mo, d){ y = +y || +today().slice(0,4); mo = +mo; d = +d; if (mo < 1 || mo > 12 || d < 1 || d > 31) return null; return `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function parseShot(text){
+  const out = {}, t = text.replace(/\r/g, ''); let m;
+  if ((m = t.match(/https?:\/\/(?:www\.|m\.)?(?:facebook\.com|fb\.watch|fb\.com)\/[^\s)]+/i))) out.url = m[0];
+  if ((m = t.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]\b/))) { let h = +m[1]; const pm = /p/i.test(m[3]); if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; if (h < 24) out.time = String(h).padStart(2,'0') + ':' + m[2]; }
+  else if ((m = t.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/))) out.time = m[1].padStart(2,'0') + ':' + m[2];
+  const mons = 'Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec';
+  if ((m = t.match(/\b(20\d{2})-(\d{2})-(\d{2})\b/))) out.date = ymd(m[1], m[2], m[3]);
+  else if ((m = t.match(new RegExp('\\b(' + mons + ')[a-z]*\\.?\\s+(\\d{1,2})(?!\\d)(?:st|nd|rd|th)?(?:,?\\s*(20\\d{2}))?', 'i')))) out.date = ymd(m[3], MON[m[1].toLowerCase()], m[2]);
+  else if ((m = t.match(new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(' + mons + ')[a-z]*\\.?(?:,?\\s*(20\\d{2}))?', 'i')))) out.date = ymd(m[3], MON[m[2].toLowerCase()], m[1]);
+  else if ((m = t.match(/\b(\d{1,2})\/(\d{1,2})\/(20\d{2})\b/))) out.date = +m[1] > 12 ? ymd(m[3], m[2], m[1]) : ymd(m[3], m[1], m[2]);
+  const lines = t.split('\n').map(l => l.trim()).filter(l => l.length >= 6 && !/^https?:/i.test(l) && !/^[\d\s:\/.,APMapm-]+$/.test(l));
+  const UI = /^(scheduled|published|draft|posted|edit|delete|boost post|boost|insights|share|like|comment)$/i;
+  const good = lines.filter(l => !UI.test(l) && l.split(/\s+/).length >= 2);
+  const pick = good[0] || lines.find(l => !UI.test(l));
+  if (pick) out.title = pick.slice(0, 90);
+  if (lines.length) out.notes = ('From screenshot: ' + lines.slice(0, 6).join(' ')).slice(0, 400);
+  out.cat = /trivia/i.test(t) ? 'trivia' : /barangay|saturation|coverage|on-?site/i.test(t) ? 'barangay' : 'posting';
+  out.status = /\bscheduled\b/i.test(t) ? 'scheduled' : 'pending'; // never auto-set to Published or Completed
+  return out;
+}
+function applyShot(text){
+  const p = parseShot(text), got = [];
+  if (p.title) { $('title').value = p.title; got.push('title'); }
+  if (p.date) { $('tdate').value = p.date; got.push('date'); }
+  if (p.time) { $('ttime').value = p.time; got.push('time'); }
+  if (p.url) { $('url').value = p.url; got.push('Facebook link'); }
+  if (p.notes) $('notes').value = p.notes;
+  $('cat').value = p.cat; $('status').value = p.status; $('tid').value = '';
+  $('formTitle').textContent = 'New quest (draft from screenshot)';
+  $('shotMsg').textContent = got.length ? `Filled: ${got.join(', ')}. Check everything, fix mistakes, then click Save quest.` : 'Could not find a title, date or time in this image. Try a sharper, zoomed-in screenshot.';
+  $('formTitle').scrollIntoView({behavior:'smooth'});
+}
+async function readShot(file){
+  if (!file || !file.type.startsWith('image/')) return;
+  const st = $('shotMsg'), im = $('shotImg'); im.src = URL.createObjectURL(file); im.classList.remove('hide');
+  if (!window.Tesseract) { st.textContent = 'The text reader did not load. Check your connection and reload the page.'; return; }
+  st.textContent = 'Loading text reader (first time takes longer)…';
+  try {
+    const r = await Tesseract.recognize(file, 'eng', {logger: m => { if (m.status === 'recognizing text') st.textContent = 'Reading image… ' + Math.round(m.progress * 100) + '%'; }});
+    applyShot(r.data.text || '');
+  } catch (e) { st.textContent = 'Could not read this image: ' + e.message; }
+}
+document.addEventListener('paste', e => {
+  const it = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image/')); const f = it && it.getAsFile();
+  if (f && !$('app').classList.contains('hide')) { e.preventDefault(); readShot(f); }
+});
+const dz = $('drop');
+['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('on'); }));
+['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('on'); }));
+dz.addEventListener('drop', e => readShot(e.dataTransfer.files[0]));
 
 /* 3D hero: rising shadow-particle vortex that follows your pointer. */
 function initFx(){
