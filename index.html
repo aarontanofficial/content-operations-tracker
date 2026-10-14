@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Content Tracker</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f172a">
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.4 -apple-system,system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{max-width:760px;margin:0 auto;padding:12px}
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
+h1{font-size:20px;margin:6px 0 12px}h2{font-size:16px;margin:0 0 8px}
+input,select,textarea,button{font:inherit;padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%;margin:3px 0;background:#fff}
+button{background:#0f172a;color:#fff;border:0;cursor:pointer;width:auto;padding:10px 14px}button.sec{background:#e2e8f0;color:#0f172a}button.del{background:#dc2626}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+.task{border-top:1px solid #e2e8f0;padding:10px 0}.t{font-weight:600}.meta{font-size:13px;color:#475569}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:#e2e8f0}
+.s-scheduled{background:#fef08a}.s-published{background:#bbf7d0}.s-completed{background:#bfdbfe}.s-prepared{background:#fed7aa}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:#f1f5f9;border-radius:8px;padding:8px}.stats b{font-size:22px;display:block}
+#banner{position:sticky;top:0;z-index:9}.alert{background:#fde68a;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.hide{display:none}.err{color:#dc2626;font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<h1>Content Operations Tracker</h1>
+<div id="banner"></div>
+
+<div id="auth" class="card hide">
+  <h2>Sign in</h2>
+  <input id="email" type="email" placeholder="Email" autocomplete="email">
+  <input id="pass" type="password" placeholder="Password (min 6 chars)" autocomplete="current-password">
+  <div class="row"><button onclick="signIn()">Sign in</button><button class="sec" onclick="signUp()">Sign up</button></div>
+  <p id="authMsg" class="err"></p>
+</div>
+
+<div id="app" class="hide">
+  <div class="card">
+    <div class="row"><input id="day" type="date" onchange="load()"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></div>
+    <div id="progress" class="meta" style="margin-top:8px"></div>
+  </div>
+
+  <div class="card">
+    <h2 id="formTitle">Add task</h2>
+    <input type="hidden" id="tid">
+    <input id="title" placeholder="Task title">
+    <div class="row">
+      <select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select>
+      <select id="status"></select>
+    </div>
+    <div class="row"><input id="tdate" type="date"><input id="ttime" type="time"></div>
+    <input id="url" type="url" placeholder="Facebook post URL (optional)">
+    <textarea id="notes" rows="2" placeholder="Notes"></textarea>
+    <div class="row"><button onclick="saveTask()">Save task</button><button class="sec" onclick="resetForm()">Clear</button></div>
+    <p id="formMsg" class="err"></p>
+  </div>
+
+  <div class="card"><h2>Tasks for this day</h2><div id="list"></div></div>
+
+  <div class="card">
+    <h2>Reports</h2>
+    <div class="row"><button class="sec" onclick="report('day')">Daily</button><button class="sec" onclick="report('week')">Weekly (Mon–Sun)</button><button onclick="exportCsv()">Export CSV</button></div>
+    <div id="rep" style="margin-top:10px"></div>
+    <p class="meta">Reports summarize what you recorded here. They are not verified against Facebook.</p>
+  </div>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_PUBLISHABLE_KEY';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const TZ = 'Asia/Manila';
+const STATUS = {pending:'Pending',prepared:'Prepared',scheduled:'Scheduled',published:'Published — confirmed',completed:'Completed'};
+const CAT = {posting:'Facebook Content Posting',trivia:'SKY Internet Trivia',barangay:'Barangay Saturation Event'};
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = () => new Date().toLocaleDateString('en-CA', {timeZone: TZ});
+const nowHM = () => new Date().toLocaleTimeString('en-GB', {timeZone: TZ, hour12: false}).slice(0,5);
+const mins = t => { const [h,m] = t.split(':'); return +h*60 + +m; };
+let tasks = [], reg = null;
+
+$('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
+
+async function signUp(){ const {error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); $('authMsg').textContent = error ? error.message : 'Account created. Check your email if confirmation is required, then sign in.'; }
+async function signIn(){ const {error} = await sb.auth.signInWithPassword({email:$('email').value, password:$('pass').value}); $('authMsg').textContent = error ? error.message : ''; }
+async function signOut(){ await sb.auth.signOut(); }
+sb.auth.onAuthStateChange((_e, session) => {
+  $('auth').classList.toggle('hide', !!session); $('app').classList.toggle('hide', !session);
+  if (session) { if (!$('day').value) { $('day').value = today(); $('tdate').value = today(); } load(); }
+});
+
+async function load(){
+  const d = $('day').value;
+  const {data, error} = await sb.from('tasks').select('*').eq('task_date', d).order('scheduled_time', {nullsFirst:false});
+  if (error) { $('list').innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
+  tasks = data; render();
+}
+function render(){
+  const done = tasks.filter(t => ['published','completed'].includes(t.status)).length;
+  $('progress').textContent = `${done} of ${tasks.length} done (published-confirmed or completed)`;
+  $('list').innerHTML = tasks.length ? tasks.map(t => `
+    <div class="task">
+      <div class="t">${esc(t.title)}</div>
+      <div class="meta"><span class="badge s-${t.status}">${STATUS[t.status]}</span> ${esc(CAT[t.category])}${t.scheduled_time ? ' · ' + t.scheduled_time.slice(0,5) : ''}</div>
+      ${t.fb_url ? `<div class="meta"><a href="${esc(t.fb_url)}" target="_blank" rel="noopener">Facebook link</a></div>` : ''}
+      ${t.notes ? `<div class="meta">${esc(t.notes)}</div>` : ''}
+      <div class="row" style="margin-top:6px">
+        <select onchange="setStatus('${t.id}',this.value)">${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${k===t.status?'selected':''}>${v}</option>`).join('')}</select>
+        <button class="sec" onclick="editTask('${t.id}')">Edit</button>
+        ${['published','completed'].includes(t.status) ? `<button class="sec" onclick="setStatus('${t.id}','pending')">Reopen</button>` : ''}
+        <button class="del" onclick="delTask('${t.id}')">Delete</button>
+      </div>
+    </div>`).join('') : '<p class="meta">No tasks for this day.</p>';
+}
+async function saveTask(){
+  const row = {title:$('title').value.trim(), category:$('cat').value, status:$('status').value, task_date:$('tdate').value,
+    scheduled_time:$('ttime').value || null, fb_url:$('url').value.trim() || null, notes:$('notes').value.trim() || null, updated_at:new Date().toISOString()};
+  if (!row.title || !row.task_date) { $('formMsg').textContent = 'Title and date are required.'; return; }
+  const id = $('tid').value;
+  const {error} = id ? await sb.from('tasks').update(row).eq('id', id) : await sb.from('tasks').insert(row);
+  $('formMsg').textContent = error ? error.message : ''; if (error) return;
+  resetForm(); $('day').value = row.task_date; load();
+}
+function editTask(id){
+  const t = tasks.find(x => x.id === id); if (!t) return;
+  $('tid').value = t.id; $('title').value = t.title; $('cat').value = t.category; $('status').value = t.status;
+  $('tdate').value = t.task_date; $('ttime').value = t.scheduled_time ? t.scheduled_time.slice(0,5) : '';
+  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit task'; scrollTo(0,0);
+}
+function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='Add task'; }
+async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
+async function delTask(id){ if (confirm('Delete this task?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
+
+function range(kind){
+  const d = new Date($('day').value + 'T00:00:00Z');
+  if (kind === 'day') return [$('day').value, $('day').value];
+  const dow = (d.getUTCDay() + 6) % 7; const a = new Date(d); a.setUTCDate(d.getUTCDate() - dow); const b = new Date(a); b.setUTCDate(a.getUTCDate() + 6);
+  return [a.toISOString().slice(0,10), b.toISOString().slice(0,10)];
+}
+async function fetchRange(kind){
+  const [a,b] = range(kind);
+  const {data, error} = await sb.from('tasks').select('*').gte('task_date', a).lte('task_date', b).order('task_date').order('scheduled_time', {nullsFirst:false});
+  return {a, b, data: data || [], error};
+}
+async function report(kind){
+  const {a, b, data, error} = await fetchRange(kind);
+  if (error) { $('rep').innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
+  const c = s => data.filter(t => t.status === s).length;
+  const box = (n, l) => `<div><b>${n}</b>${l}</div>`;
+  $('rep').innerHTML = `<div class="meta">${a === b ? a : a + ' to ' + b}</div><div class="stats">${box(data.length,'Total')}${box(c('prepared'),'Prepared')}${box(c('scheduled'),'Scheduled (not yet confirmed)')}${box(c('published'),'Published — confirmed')}${box(c('completed'),'Completed')}${box(c('pending'),'Pending')}</div>`;
+}
+async function exportCsv(){
+  const kind = confirm('OK = weekly (Mon–Sun), Cancel = daily') ? 'week' : 'day';
+  const {a, b, data} = await fetchRange(kind);
+  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const csv = ['Date,Time,Category,Title,Status,Facebook URL,Notes', ...data.map(t => [t.task_date, t.scheduled_time?.slice(0,5), CAT[t.category], t.title, STATUS[t.status], t.fb_url, t.notes].map(q).join(','))].join('\n');
+  const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); l.download = `tasks_${a}_${b}.csv`; l.click();
+}
+
+/* Reminders: work only while the app is open. Background push comes in a later step. */
+function fired(k){ const key = 'fired_' + today(); const s = JSON.parse(localStorage.getItem(key) || '[]'); if (s.includes(k)) return true; s.push(k); localStorage.setItem(key, JSON.stringify(s)); return false; }
+function notify(title, body){
+  const el = document.createElement('div'); el.className = 'alert'; el.innerHTML = `<span><b>${esc(title)}</b><br>${esc(body)}</span><button class="sec" onclick="this.parentNode.remove()">OK</button>`; $('banner').appendChild(el);
+  if ('Notification' in window && Notification.permission === 'granted') { try { reg ? reg.showNotification(title, {body}) : new Notification(title, {body}); } catch(e){} }
+}
+async function enableNotif(){
+  if (!('Notification' in window)) { alert('Notifications are not available here. On iPhone, add the app to the Home Screen first.'); return; }
+  const p = await Notification.requestPermission(); alert('Notification permission: ' + p);
+}
+async function checkReminders(){
+  const {data:{session}} = await sb.auth.getSession(); if (!session) return;
+  const {data} = await sb.from('tasks').select('*').eq('task_date', today()); const t = data || []; const now = mins(nowHM());
+  if (now >= 480 && !fired('morning')) notify('Morning planning', `${t.length} task(s) today. Plan your posts.`);
+  t.filter(x => x.scheduled_time && ['pending','prepared','scheduled'].includes(x.status)).forEach(x => {
+    const m = mins(x.scheduled_time.slice(0,5));
+    if (now >= m - 30 && now < m && !fired('pre_' + x.id)) notify('Coming up', `${x.title} at ${x.scheduled_time.slice(0,5)}`);
+  });
+  t.filter(x => x.status === 'scheduled' && x.scheduled_time && now >= mins(x.scheduled_time.slice(0,5)) + 15).forEach(x => {
+    if (!fired('verify_' + x.id)) notify('Verify publication', `Check in Business Suite whether "${x.title}" was actually published, then mark it Published — confirmed.`);
+  });
+  const open = t.filter(x => !['published','completed'].includes(x.status)).length;
+  if (now >= 1050 && open && !fired('eod')) notify('End-of-day review', `${open} task(s) still unfinished today.`);
+}
+setInterval(checkReminders, 60000); setTimeout(checkReminders, 4000);
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(r => reg = r).catch(() => {});
+</script>
+</body>
+</html>
