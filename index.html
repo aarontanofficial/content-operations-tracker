@@ -7,26 +7,68 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#05060f">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}body{margin:0;font:16px/1.4 -apple-system,system-ui,sans-serif;background:#f1f5f9;color:#0f172a;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-main{max-width:760px;margin:0 auto;padding:12px}
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 3px #0002}
-h1{font-size:20px;margin:6px 0 12px}h2{font-size:16px;margin:0 0 8px}
-input,select,textarea,button{font:inherit;padding:10px;border:1px solid #cbd5e1;border-radius:8px;width:100%;margin:3px 0;background:#fff}
-button{background:#0f172a;color:#fff;border:0;cursor:pointer;width:auto;padding:10px 14px}button.sec{background:#e2e8f0;color:#0f172a}button.del{background:#dc2626}
+:root{--void:#05060f;--panel:#0c1128;--line:#1e2757;--aura:#5b7cff;--glow:#dfeaff;--gold:#f5c451;--txt:#e6ecff;--mut:#8b97c7;--bad:#ff5d73}
+*{box-sizing:border-box}
+body{margin:0;font:500 17px/1.35 'Rajdhani',system-ui,sans-serif;background:var(--void);color:var(--txt);padding-bottom:env(safe-area-inset-bottom)}
+main{max-width:820px;margin:0 auto;padding:0 12px 24px}
+.hero{--px:0;--py:0;position:relative;height:340px;overflow:hidden;margin:0 -12px 14px;background:radial-gradient(ellipse at 50% 75%,#1b2468 0,#080c24 55%,#03040b 100%);padding-top:env(safe-area-inset-top)}
+@media(min-width:840px){.hero{margin:0 0 14px;border-radius:0 0 18px 18px}}
+#fx{position:absolute;inset:0;width:100%;height:100%;display:block}
+.fig{position:absolute;bottom:0;left:50%;height:94%;transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px));transition:transform .15s ease-out;filter:drop-shadow(0 0 18px #3a55ff88)}
+.eyes{filter:drop-shadow(0 0 5px #9bbcff) drop-shadow(0 0 12px #5b7cff);animation:ignite 1.6s .4s both}
+@keyframes ignite{0%{opacity:0}40%{opacity:.15}55%{opacity:.9}100%{opacity:1}}
+.hud{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;gap:12px;padding:40px 14px 12px;background:linear-gradient(transparent,#03040bee)}
+.rank{width:58px;height:58px;display:grid;place-items:center;border:2px solid var(--gold);color:var(--gold);font-size:34px;font-weight:700;border-radius:10px;box-shadow:0 0 16px #f5c45155;flex:none}
+.lvbox{flex:1;min-width:0}.lv{font-size:22px;font-weight:700}
+.bar{height:10px;background:#141a3a;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aura),#b7c8ff);transition:width .8s}
+.xpt{font-size:14px;color:var(--mut)}
+.streak{text-align:right;flex:none}.streak b{font-size:40px;line-height:1;color:var(--glow);text-shadow:0 0 14px var(--aura)}.streak span{display:block;font-size:14px;color:var(--mut)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+h2{font-size:19px;margin:0 0 8px}
+input,select,textarea,button{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;width:100%;margin:3px 0;background:#080c1f;color:var(--txt)}
+input[type=date],input[type=time]{color-scheme:dark}
+button{background:var(--aura);color:#fff;border:0;cursor:pointer;width:auto;padding:10px 16px;font-weight:700}
+button.sec{background:#1a2250;color:var(--txt)}button.del{background:#8f2438}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
-.task{border-top:1px solid #e2e8f0;padding:10px 0}.t{font-weight:600}.meta{font-size:13px;color:#475569}
-.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:#e2e8f0}
-.s-scheduled{background:#fef08a}.s-published{background:#bbf7d0}.s-completed{background:#bfdbfe}.s-prepared{background:#fed7aa}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:#f1f5f9;border-radius:8px;padding:8px}.stats b{font-size:22px;display:block}
-#banner{position:sticky;top:0;z-index:9}.alert{background:#fde68a;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
-.hide{display:none}.err{color:#dc2626;font-size:14px}
+.task{border-top:1px solid var(--line);padding:10px 0}.task.done .t{color:var(--mut);text-decoration:line-through}
+.t{font-weight:700;font-size:18px}.meta{font-size:14px;color:var(--mut)}.meta a{color:#9bbcff}
+.badge{display:inline-block;font-size:13px;padding:1px 9px;border-radius:99px;background:#1a2250;color:var(--txt)}
+.s-scheduled{background:#6b5a12}.s-published{background:#14633a}.s-completed{background:#1e4f9a}.s-prepared{background:#7a3d12}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:#080c1f;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;color:var(--mut)}.stats b{font-size:26px;display:block;color:var(--txt)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:6px 12px;border-radius:8px;border:1px solid var(--line);color:var(--mut);opacity:.55}.chip.on{opacity:1;color:var(--gold);border-color:var(--gold);box-shadow:0 0 10px #f5c45133}
+#banner{position:sticky;top:0;z-index:9}.alert{background:#6b5a12;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--gold);color:#201600;font-weight:700;padding:10px 18px;border-radius:99px;z-index:20;animation:pop 2.4s forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,12px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.hide{display:none}.err{color:var(--bad);font-size:14px}
+#auth{margin-top:14px}
+@media(prefers-reduced-motion:reduce){.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
 </style>
 </head>
 <body>
 <main>
-<h1>Content Operations Tracker</h1>
+<header class="hero" id="hero">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <svg class="fig" viewBox="0 0 400 420" aria-hidden="true">
+    <path d="M10 420C24 330 110 300 158 286h84c48 14 134 44 148 134Z" fill="#04060f" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/>
+    <rect x="176" y="236" width="48" height="62" fill="#050813"/>
+    <ellipse cx="200" cy="190" rx="62" ry="76" fill="#0a0e22" stroke="#5b7cff" stroke-opacity=".55" stroke-width="2"/>
+    <path d="M130 172C122 96 168 70 202 72c38-2 78 26 68 100-12-30-28-46-70-48-40 2-56 18-70 48Z" fill="#03040b" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/>
+    <path d="M150 140l26 50 8-58ZM224 132l8 56 26-46Z" fill="#03040b"/>
+    <path d="M178 232c14 8 30 8 44 0" stroke="#1a2250" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <g class="eyes" fill="#eef4ff"><path d="M162 186l30 6-2 7-30-5Z"/><path d="M238 186l-30 6 2 7 30-5Z"/></g>
+  </svg>
+  <div class="hud">
+    <div class="rank" id="rank" title="Hunter rank">E</div>
+    <div class="lvbox"><div class="lv" id="lv">Level 1</div><div class="bar"><i id="xpbar"></i></div><div class="xpt" id="xptxt">0 XP</div></div>
+    <div class="streak"><b id="streak">0</b><span>day streak</span><span id="best">Best 0</span></div>
+  </div>
+</header>
 <div id="banner"></div>
 
 <div id="auth" class="card hide">
@@ -43,10 +85,12 @@ button{background:#0f172a;color:#fff;border:0;cursor:pointer;width:auto;padding:
     <div id="progress" class="meta" style="margin-top:8px"></div>
   </div>
 
+  <div class="card"><h2>Today's quests</h2><div id="list"></div></div>
+
   <div class="card">
-    <h2 id="formTitle">Add task</h2>
+    <h2 id="formTitle">New quest</h2>
     <input type="hidden" id="tid">
-    <input id="title" placeholder="Task title">
+    <input id="title" placeholder="Quest title">
     <div class="row">
       <select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select>
       <select id="status"></select>
@@ -54,11 +98,12 @@ button{background:#0f172a;color:#fff;border:0;cursor:pointer;width:auto;padding:
     <div class="row"><input id="tdate" type="date"><input id="ttime" type="time"></div>
     <input id="url" type="url" placeholder="Facebook post URL (optional)">
     <textarea id="notes" rows="2" placeholder="Notes"></textarea>
-    <div class="row"><button onclick="saveTask()">Save task</button><button class="sec" onclick="resetForm()">Clear</button></div>
+    <div class="row"><button onclick="saveTask()">Save quest</button><button class="sec" onclick="resetForm()">Clear</button></div>
     <p id="formMsg" class="err"></p>
   </div>
 
-  <div class="card"><h2>Tasks for this day</h2><div id="list"></div></div>
+  <div class="card"><h2>Achievements</h2><div class="chips" id="badges"></div>
+    <p class="meta">XP: Prepared 5, Scheduled 10, Completed 20, Published (confirmed) 30, +25 for a day with 3+ quests all cleared. Streak counts days with at least one Published or Completed quest.</p></div>
 
   <div class="card">
     <h2>Reports</h2>
@@ -69,20 +114,24 @@ button{background:#0f172a;color:#fff;border:0;cursor:pointer;width:auto;padding:
 </div>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://nkkdxjzndlbkccmwzqum.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_mOHBVa0Jq2YnzEW5-mlxGQ_6O0fEb2R';
+const VAPID_PUBLIC = 'BF1HlPNY5qRJ_69fOsUztAPr6yMPLwGyLEHwGc-PC2RuaEOq9ceVc4-DE6Xhx3UkR7jRs01rCDAcAVNMZQRuOXI';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const TZ = 'Asia/Manila';
 const STATUS = {pending:'Pending',prepared:'Prepared',scheduled:'Scheduled',published:'Published — confirmed',completed:'Completed'};
 const CAT = {posting:'Facebook Content Posting',trivia:'SKY Internet Trivia',barangay:'Barangay Saturation Event'};
+const XP = {prepared:5, scheduled:10, completed:20, published:30}, DONE = ['published','completed'];
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today = () => new Date().toLocaleDateString('en-CA', {timeZone: TZ});
 const nowHM = () => new Date().toLocaleTimeString('en-GB', {timeZone: TZ, hour12: false}).slice(0,5);
 const mins = t => { const [h,m] = t.split(':'); return +h*60 + +m; };
-let tasks = [], reg = null;
+const addDays = (s,n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0,10); };
+let tasks = [], reg = null, lastXp = null, lastLv = null;
 
 $('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
 
@@ -98,13 +147,13 @@ async function load(){
   const d = $('day').value;
   const {data, error} = await sb.from('tasks').select('*').eq('task_date', d).order('scheduled_time', {nullsFirst:false});
   if (error) { $('list').innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
-  tasks = data; render();
+  tasks = data; render(); loadStats();
 }
 function render(){
-  const done = tasks.filter(t => ['published','completed'].includes(t.status)).length;
-  $('progress').textContent = `${done} of ${tasks.length} done (published-confirmed or completed)`;
+  const done = tasks.filter(t => DONE.includes(t.status)).length;
+  $('progress').textContent = `${done} of ${tasks.length} quests cleared (published-confirmed or completed)`;
   $('list').innerHTML = tasks.length ? tasks.map(t => `
-    <div class="task">
+    <div class="task ${DONE.includes(t.status) ? 'done' : ''}">
       <div class="t">${esc(t.title)}</div>
       <div class="meta"><span class="badge s-${t.status}">${STATUS[t.status]}</span> ${esc(CAT[t.category])}${t.scheduled_time ? ' · ' + t.scheduled_time.slice(0,5) : ''}</div>
       ${t.fb_url ? `<div class="meta"><a href="${esc(t.fb_url)}" target="_blank" rel="noopener">Facebook link</a></div>` : ''}
@@ -112,10 +161,10 @@ function render(){
       <div class="row" style="margin-top:6px">
         <select onchange="setStatus('${t.id}',this.value)">${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${k===t.status?'selected':''}>${v}</option>`).join('')}</select>
         <button class="sec" onclick="editTask('${t.id}')">Edit</button>
-        ${['published','completed'].includes(t.status) ? `<button class="sec" onclick="setStatus('${t.id}','pending')">Reopen</button>` : ''}
+        ${DONE.includes(t.status) ? `<button class="sec" onclick="setStatus('${t.id}','pending')">Reopen</button>` : ''}
         <button class="del" onclick="delTask('${t.id}')">Delete</button>
       </div>
-    </div>`).join('') : '<p class="meta">No tasks for this day.</p>';
+    </div>`).join('') : '<p class="meta">No quests for this day. Add one below.</p>';
 }
 async function saveTask(){
   const row = {title:$('title').value.trim(), category:$('cat').value, status:$('status').value, task_date:$('tdate').value,
@@ -130,11 +179,34 @@ function editTask(id){
   const t = tasks.find(x => x.id === id); if (!t) return;
   $('tid').value = t.id; $('title').value = t.title; $('cat').value = t.category; $('status').value = t.status;
   $('tdate').value = t.task_date; $('ttime').value = t.scheduled_time ? t.scheduled_time.slice(0,5) : '';
-  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit task'; scrollTo(0,0);
+  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit quest'; $('formTitle').scrollIntoView({behavior:'smooth'});
 }
-function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='Add task'; }
+function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='New quest'; }
 async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
-async function delTask(id){ if (confirm('Delete this task?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
+async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
+
+/* Game layer: everything is computed from your recorded tasks (last 150 days). */
+const rankOf = l => l >= 18 ? 'S' : l >= 12 ? 'A' : l >= 8 ? 'B' : l >= 5 ? 'C' : l >= 3 ? 'D' : 'E';
+function toast(msg){ const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 2500); }
+async function loadStats(){
+  const {data} = await sb.from('tasks').select('task_date,status').gte('task_date', addDays(today(), -150)).limit(5000);
+  const rows = data || []; let xp = 0, pub = 0, perfect = 0; const done = {}, tot = {};
+  rows.forEach(t => { xp += XP[t.status] || 0; tot[t.task_date] = (tot[t.task_date] || 0) + 1; if (DONE.includes(t.status)) done[t.task_date] = (done[t.task_date] || 0) + 1; if (t.status === 'published') pub++; });
+  Object.keys(tot).forEach(d => { if (tot[d] >= 3 && done[d] === tot[d]) { perfect++; xp += 25; } });
+  let streak = 0, d = done[today()] ? today() : addDays(today(), -1);
+  while (done[d]) { streak++; d = addDays(d, -1); }
+  let best = 0, run = 0, prev = null;
+  Object.keys(done).sort().forEach(x => { run = prev && addDays(prev, 1) === x ? run + 1 : 1; best = Math.max(best, run); prev = x; });
+  const lv = Math.floor(Math.sqrt(xp / 40)) + 1, base = 40 * (lv - 1) ** 2, next = 40 * lv ** 2;
+  $('rank').textContent = rankOf(lv); $('lv').textContent = 'Level ' + lv;
+  $('xpbar').style.width = Math.round((xp - base) / (next - base) * 100) + '%';
+  $('xptxt').textContent = `${xp} XP · ${next - xp} to level ${lv + 1}`;
+  $('streak').textContent = streak; $('best').textContent = 'Best ' + best;
+  const B = [[pub > 0, 'First confirmed post'], [best >= 3, '3-day streak'], [best >= 7, '7-day streak'], [perfect > 0, 'Perfect day'], [lv >= 5, 'Rank C reached']];
+  $('badges').innerHTML = B.map(([on, n]) => `<span class="chip ${on ? 'on' : ''}">${n}</span>`).join('');
+  if (lastXp !== null && xp > lastXp) toast(lv > lastLv ? `Level up! You are now level ${lv}` : `+${xp - lastXp} XP`);
+  lastXp = xp; lastLv = lv;
+}
 
 function range(kind){
   const d = new Date($('day').value + 'T00:00:00Z');
@@ -162,13 +234,11 @@ async function exportCsv(){
   const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); l.download = `tasks_${a}_${b}.csv`; l.click();
 }
 
-/* Reminders: work only while the app is open. Background push comes in a later step. */
+/* Reminders: in-app banners while open; system notifications come from Web Push. */
 function fired(k){ const key = 'fired_' + today(); const s = JSON.parse(localStorage.getItem(key) || '[]'); if (s.includes(k)) return true; s.push(k); localStorage.setItem(key, JSON.stringify(s)); return false; }
 function notify(title, body){
   const el = document.createElement('div'); el.className = 'alert'; el.innerHTML = `<span><b>${esc(title)}</b><br>${esc(body)}</span><button class="sec" onclick="this.parentNode.remove()">OK</button>`; $('banner').appendChild(el);
-  if ('Notification' in window && Notification.permission === 'granted') { try { reg ? reg.showNotification(title, {body}) : new Notification(title, {body}); } catch(e){} }
 }
-const VAPID_PUBLIC = 'BF1HlPNY5qRJ_69fOsUztAPr6yMPLwGyLEHwGc-PC2RuaEOq9ceVc4-DE6Xhx3UkR7jRs01rCDAcAVNMZQRuOXI';
 function b64ToU8(s){ const p = '='.repeat((4 - s.length % 4) % 4); const b = atob((s + p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
 async function enableNotif(){
   if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) { alert('Push is not available here. On iPhone, add the app to the Home Screen first, then open it from there.'); return; }
@@ -186,7 +256,7 @@ async function enableNotif(){
 async function checkReminders(){
   const {data:{session}} = await sb.auth.getSession(); if (!session) return;
   const {data} = await sb.from('tasks').select('*').eq('task_date', today()); const t = data || []; const now = mins(nowHM());
-  if (now >= 480 && !fired('morning')) notify('Morning planning', `${t.length} task(s) today. Plan your posts.`);
+  if (now >= 480 && !fired('morning')) notify('Morning planning', `${t.length} quest(s) today. Plan your posts.`);
   t.filter(x => x.scheduled_time && ['pending','prepared','scheduled'].includes(x.status)).forEach(x => {
     const m = mins(x.scheduled_time.slice(0,5));
     if (now >= m - 30 && now < m && !fired('pre_' + x.id)) notify('Coming up', `${x.title} at ${x.scheduled_time.slice(0,5)}`);
@@ -194,10 +264,35 @@ async function checkReminders(){
   t.filter(x => x.status === 'scheduled' && x.scheduled_time && now >= mins(x.scheduled_time.slice(0,5)) + 15).forEach(x => {
     if (!fired('verify_' + x.id)) notify('Verify publication', `Check in Business Suite whether "${x.title}" was actually published, then mark it Published — confirmed.`);
   });
-  const open = t.filter(x => !['published','completed'].includes(x.status)).length;
-  if (now >= 1050 && open && !fired('eod')) notify('End-of-day review', `${open} task(s) still unfinished today.`);
+  const open = t.filter(x => !DONE.includes(x.status)).length;
+  if (now >= 1050 && open && !fired('eod')) notify('End-of-day review', `${open} quest(s) still unfinished today.`);
 }
 setInterval(checkReminders, 60000); setTimeout(checkReminders, 4000);
+
+/* 3D hero: rising shadow-particle vortex that follows your pointer. */
+function initFx(){
+  if (!window.THREE) return;
+  const c = $('fx'), hero = $('hero');
+  const R = new THREE.WebGLRenderer({canvas:c, alpha:true, antialias:true}); R.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const S = new THREE.Scene(), C = new THREE.PerspectiveCamera(55, 1, .1, 100); C.position.z = 14;
+  const N = 1600, pos = new Float32Array(N * 3), seed = [];
+  for (let i = 0; i < N; i++) seed.push({a:Math.random()*6.283, r:2.5+Math.random()*5.5, y:Math.random()*16-8, v:.012+Math.random()*.035, w:(Math.random()-.5)*.01+.006});
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const P = new THREE.Points(g, new THREE.PointsMaterial({color:0x7f9bff, size:.09, transparent:true, opacity:.85, blending:THREE.AdditiveBlending, depthWrite:false})); S.add(P);
+  const size = () => { const w = hero.clientWidth, h = hero.clientHeight; R.setSize(w, h, false); C.aspect = w / h; C.updateProjectionMatrix(); };
+  size(); addEventListener('resize', size);
+  let mx = 0, my = 0;
+  hero.addEventListener('pointermove', e => { const b = hero.getBoundingClientRect(); mx = (e.clientX - b.left) / b.width - .5; my = (e.clientY - b.top) / b.height - .5; hero.style.setProperty('--px', mx); hero.style.setProperty('--py', my); });
+  const frame = () => {
+    seed.forEach((s, i) => { s.a += s.w; s.y += s.v; if (s.y > 8) s.y = -8; const r = s.r * (.6 + .4 * (1 - Math.abs(s.y) / 9)); pos[i*3] = Math.cos(s.a) * r; pos[i*3+1] = s.y; pos[i*3+2] = Math.sin(s.a) * r * .6; });
+    g.attributes.position.needsUpdate = true;
+    P.rotation.y += (mx * .6 - P.rotation.y) * .05; P.rotation.x += (my * .3 - P.rotation.x) * .05;
+    R.render(S, C);
+  };
+  frame(); if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  (function loop(){ if (!document.hidden) frame(); requestAnimationFrame(loop); })();
+}
+try { initFx(); } catch (e) { console.warn('3D hero unavailable', e); }
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(r => reg = r).catch(() => {});
 </script>
