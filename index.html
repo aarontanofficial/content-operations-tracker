@@ -55,18 +55,43 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .two,.addgrid{display:grid;gap:12px}@media(min-width:820px){.two,.addgrid{grid-template-columns:1fr 1fr}}
 .week{display:flex;gap:6px}.day{flex:1;text-align:center;font-size:13px;color:var(--mut)}.day i{display:block;height:36px;border-radius:6px;background:#080c1f;border:1px solid var(--line);margin-bottom:4px}.day.on i{background:linear-gradient(#5b7cff,#2a3aa8);box-shadow:0 0 10px #5b7cff77}
 .pvq{border:1px solid var(--line);border-left:4px solid var(--aura);border-radius:10px;padding:12px;background:#080c1f}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:8px;margin-top:8px}
+.qimg{display:block;max-width:100%;max-height:200px;border-radius:8px;margin-top:6px;cursor:zoom-in}
 .pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
 .welcome{position:fixed;inset:0;z-index:30;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 45%,#2a3aa8cc,#03040bf5 70%);animation:wel 2.1s forwards;pointer-events:none}
 .welcome b{display:block;font-size:30px;margin-top:16px;text-shadow:0 0 16px var(--aura)}.welcome span{color:var(--mut)}
 .slits{display:flex;gap:46px;justify-content:center}.slits i{display:block;width:56px;height:7px;background:#eef4ff;border-radius:4px;box-shadow:0 0 14px #9bbcff,0 0 34px #5b7cff;animation:slit 1.2s .15s both}
 @keyframes slit{0%{transform:scaleX(0);opacity:0}30%,100%{transform:scaleX(1);opacity:1}}
 @keyframes wel{0%{opacity:0}14%,72%{opacity:1}100%{opacity:0}}
+.draft{display:flex;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;background:#080c1f}.draft>img{width:92px;max-height:130px;object-fit:cover;border-radius:8px;flex:none;align-self:flex-start;cursor:zoom-in}
+.draft .f{flex:1;min-width:0}.draft input,.draft select{padding:7px;margin:2px 0;font-size:15px}.draft .row>*{min-width:90px}.draft label{flex:none}.draft input[type=checkbox]{width:20px;height:20px;margin:6px 0 0}
+.pid{font-size:13px;color:var(--gold)}
+.lnkrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:14px}.lnkrow a{color:#9bbcff}.lnkrow button{padding:5px 10px;margin:0}.fbf{display:block;width:100%;height:520px;border:0;border-radius:8px;margin-top:8px;background:#fff}
+.hn{font-size:13px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase}
+.avatar{display:none;position:absolute;bottom:0;left:50%;height:94%;aspect-ratio:3/4;transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px));transition:transform .15s ease-out}
+.hero.hasav .fig{display:none}.hero.hasav .avatar{display:block}
+.avatar::before{content:"";position:absolute;inset:6% 4%;border-radius:50%;background:radial-gradient(circle,var(--rc,#5b7cff) 0,transparent 66%);opacity:var(--ra,.15);filter:blur(24px);animation:pulse 3s ease-in-out infinite}
+.ph{position:relative;overflow:hidden}.avatar .ph{position:absolute;inset:0;-webkit-mask-image:radial-gradient(ellipse 64% 60% at 50% 46%,#000 52%,transparent 100%);mask-image:radial-gradient(ellipse 64% 60% at 50% 46%,#000 52%,transparent 100%);animation:breathe 4.5s ease-in-out infinite}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@keyframes pulse{0%,100%{opacity:var(--ra,.15)}50%{opacity:calc(var(--ra,.15)*1.9)}}
+.rk-E{--rc:#7b8499;--ra:.08}.rk-E img{filter:grayscale(.95) brightness(.5) contrast(.9) blur(.6px)}
+.rk-D{--rc:#4b8bff;--ra:.15}.rk-D img{filter:grayscale(.65) brightness(.62) contrast(.95)}
+.rk-C{--rc:#3fd18a;--ra:.22}.rk-C img{filter:grayscale(.35) brightness(.75)}
+.rk-B{--rc:#a06bff;--ra:.3}.rk-B img{filter:grayscale(.15) brightness(.88) contrast(1.05)}
+.rk-A{--rc:#ff9f43;--ra:.42}.rk-A img{filter:saturate(1.15) contrast(1.1)}
+.rk-S{--rc:#f5c451;--ra:.6}.rk-S img{filter:saturate(1.25) contrast(1.15) brightness(1.08) drop-shadow(0 0 6px #f5c45199)}
+.toon .ph{filter:url(#toon)}
+.evo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(min-width:700px){.evo{grid-template-columns:repeat(6,1fr)}}
+.ev{text-align:center;font-size:13px;color:var(--mut)}.ev .ph{aspect-ratio:3/4;border-radius:10px;border:1px solid var(--line);background:#080c1f;margin-bottom:4px}.ev.cur{color:var(--gold)}.ev.cur .ph{border-color:var(--gold);box-shadow:0 0 12px #f5c45144}
+.hero.levelup{animation:flash 1.4s}.hero.levelup::after{content:"";position:absolute;left:50%;top:55%;width:40px;height:40px;border-radius:50%;border:3px solid var(--gold);transform:translate(-50%,-50%);animation:shock 1.4s ease-out forwards;pointer-events:none}
+@keyframes flash{0%{filter:brightness(2.2)}100%{filter:none}}@keyframes shock{to{width:900px;height:900px;opacity:0}}
 .hide{display:none}.err{color:var(--bad);font-size:14px}
 #auth{margin-top:14px}
-@media(prefers-reduced-motion:reduce){.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
+@media(prefers-reduced-motion:reduce){.avatar .ph,.avatar::before,.hero.levelup,.hero.levelup::after{animation:none}.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="toon"><feColorMatrix type="saturate" values="1.4"/><feComponentTransfer><feFuncR type="discrete" tableValues="0 .2 .4 .6 .8 1"/><feFuncG type="discrete" tableValues="0 .2 .4 .6 .8 1"/><feFuncB type="discrete" tableValues="0 .2 .4 .6 .8 1"/></feComponentTransfer></filter></svg>
 <main>
 <header class="hero" id="hero">
   <canvas id="fx" aria-hidden="true"></canvas>
@@ -79,9 +104,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     <path d="M178 232c14 8 30 8 44 0" stroke="#1a2250" stroke-width="3" fill="none" stroke-linecap="round"/>
     <g class="eyes" fill="#eef4ff"><path d="M162 186l30 6-2 7-30-5Z"/><path d="M238 186l-30 6 2 7 30-5Z"/></g>
   </svg>
+  <div class="avatar rk-E" id="avatar"><div class="ph"><img id="avImg" alt="Your avatar"></div></div>
   <div class="hud">
     <div class="rank" id="rank" title="Hunter rank">E</div>
-    <div class="lvbox"><div class="lv" id="lv">Level 1</div><div class="bar"><i id="xpbar"></i></div><div class="xpt" id="xptxt">0 XP</div></div>
+    <div class="lvbox"><div class="hn" id="hname">Hunter</div><div class="lv" id="lv">Level 1</div><div class="bar"><i id="xpbar"></i></div><div class="xpt" id="xptxt">0 XP</div></div>
     <div class="streak"><b id="streak">0</b><span>day streak</span><span id="best">Best 0</span></div>
   </div>
 </header>
@@ -97,7 +123,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <div id="app" class="hide">
   <div class="top"><span class="meta" id="who"></span><span class="row"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></span></div>
-  <nav class="tabs" id="tabs"><button class="tab on" data-v="overview">Overview</button><button class="tab" data-v="quests">Quests</button><button class="tab" data-v="add">Add quest</button><button class="tab" data-v="reports">Reports</button></nav>
+  <nav class="tabs" id="tabs"><button class="tab on" data-v="overview">Overview</button><button class="tab" data-v="quests">Quests</button><button class="tab" data-v="add">Add quest</button><button class="tab" data-v="reports">Reports</button><button class="tab" data-v="profile">Profile</button></nav>
 
   <section class="view on" id="v-overview">
     <div class="card"><h2>Today</h2><div class="tiles" id="tiles"></div></div>
@@ -119,15 +145,17 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
     <div class="addgrid">
       <div>
         <div class="card">
-          <h2>Quick add from a screenshot</h2>
+          <h2>Quick add from screenshots</h2>
           <div class="drop" id="drop">
-            <div>Paste an image (Ctrl+V), drop it here, or attach one.</div>
-            <div class="row" style="margin-top:8px;justify-content:center"><button class="sec" onclick="document.getElementById('shotFile').click()">Attach image</button></div>
-            <input id="shotFile" type="file" accept="image/*" class="hide" onchange="readShot(this.files[0]); this.value=''">
-            <img id="shotImg" class="hide" alt="Screenshot thumbnail">
+            <div>Paste, drop or attach one or more screenshots. A Business Suite calendar column with several times becomes several quests.</div>
+            <div class="row" style="margin-top:8px;justify-content:center"><button class="sec" onclick="document.getElementById('shotFile').click()">Attach images</button></div>
+            <input id="shotFile" type="file" accept="image/*" multiple class="hide" onchange="readShots(this.files); this.value=''">
+            <img id="shotImg" class="hide" alt="">
             <p id="shotMsg" class="meta"></p>
           </div>
         </div>
+        <div class="card hide" id="draftCard"><h2>Detected quests</h2><div id="drafts"></div>
+          <div class="row" style="margin-top:10px"><button onclick="saveDrafts()">Save selected</button><button class="sec" onclick="clearDrafts()">Discard all</button></div><p id="dmsg" class="err"></p></div>
         <div class="card">
           <h2 id="formTitle">New quest</h2>
           <input type="hidden" id="tid">
@@ -152,6 +180,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
       <p class="meta">Reports use the date chosen in the Quests tab. They summarize what you recorded here and are not verified against Facebook.</p>
     </div>
   </section>
+  <section class="view" id="v-profile">
+    <div class="card"><h2>Hunter profile</h2>
+      <input id="pname" placeholder="Display name" maxlength="24">
+      <div class="row"><button class="sec" onclick="document.getElementById('avFile').click()">Upload photo</button><button class="sec" id="toonBtn" onclick="toggleToon()">Toon style: off</button><button onclick="saveProfile()">Save profile</button></div>
+      <input id="avFile" type="file" accept="image/*" class="hide" onchange="pickAvatar(this.files[0]); this.value=''">
+      <p id="pmsg" class="meta"></p>
+    </div>
+    <div class="card"><h2>Evolution</h2><div class="evo" id="evo"></div>
+      <p class="meta">Your photo grows brighter, more colourful and more aura-lit as your rank rises from E to S. It is styling applied to your own picture, not AI-generated art. Photos are saved at a small size.</p></div>
+  </section>
 </div>
 </main>
 
@@ -173,8 +211,9 @@ const today = () => new Date().toLocaleDateString('en-CA', {timeZone: TZ});
 const nowHM = () => new Date().toLocaleTimeString('en-GB', {timeZone: TZ, hour12: false}).slice(0,5);
 const mins = t => { const [h,m] = t.split(':'); return +h*60 + +m; };
 const addDays = (s,n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0,10); };
-let tasks = [], reg = null, lastXp = null, lastLv = null, fxBoost = 0, justLoggedIn = false;
+let shotThumb = null, tasks = [], reg = null, lastXp = null, lastLv = null, fxBoost = 0, justLoggedIn = false;
 
+let drafts = [], profile = {name:'', avatar:null}, curRank = 'E', toon = localStorage.getItem('toon') === '1';
 $('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
 
 async function signUp(){ justLoggedIn = true; const {data, error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); if (error || !data.session) justLoggedIn = false; $('authMsg').textContent = error ? error.message : (data.session ? '' : 'Account created. Check your email if confirmation is required, then sign in.'); }
@@ -186,14 +225,14 @@ sb.auth.onAuthStateChange((_e, session) => {
     $('who').textContent = session.user.email || '';
     if (!$('day').value) { $('day').value = today(); $('tdate').value = today(); }
     load(); updatePreview();
-    if (justLoggedIn) { justLoggedIn = false; welcome(); }
-  }
+    const jl = justLoggedIn; justLoggedIn = false; loadProfile().then(() => { if (jl) welcome(); });
+  } else { profile = {name:'', avatar:null}; applyProfile(); }
 });
 function showView(v){ document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === 'v-' + v)); document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.v === v)); scrollTo({top:0, behavior:'smooth'}); }
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.v)));
 function welcome(){
   const el = document.createElement('div'); el.className = 'welcome';
-  el.innerHTML = '<div><div class="slits"><i></i><i></i></div><b>Welcome back, Hunter</b><span>Quest log opened</span></div>'; document.body.appendChild(el);
+  el.innerHTML = '<div><div class="slits"><i></i><i></i></div><b>Welcome back, ' + esc(profile.name || 'Hunter') + '</b><span>Quest log opened</span></div>'; document.body.appendChild(el);
   fxBoost = 1; const e = document.querySelector('.eyes'); if (e) { e.style.animation = 'none'; void e.getBoundingClientRect(); e.style.animation = ''; }
   setTimeout(() => el.remove(), 2200);
 }
@@ -212,8 +251,10 @@ function render(){
     <div class="task ${DONE.includes(t.status) ? 'done' : ''}">
       <div class="t">${esc(t.title)}</div>
       <div class="meta"><span class="badge s-${t.status}">${STATUS[t.status]}</span> ${esc(CAT[t.category])}${t.scheduled_time ? ' · ' + t.scheduled_time.slice(0,5) : ''}</div>
-      ${t.fb_url ? `<div class="meta"><a href="${esc(t.fb_url)}" target="_blank" rel="noopener">Facebook link</a></div>` : ''}
+      ${t.fb_url ? `${linkRow(t.fb_url)}` : ''}
       ${t.notes ? `<div class="meta">${esc(t.notes)}</div>` : ''}
+      ${t.post_id ? `<div class="pid">Post ID: ${esc(t.post_id)}</div>` : ''}
+      ${t.image_thumb ? `<img class="qimg" src="${esc(t.image_thumb)}" alt="Screenshot" onclick="zoomImg(this.src)">` : ''}
       <div class="row" style="margin-top:6px">
         <select onchange="setStatus('${t.id}',this.value)">${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${k===t.status?'selected':''}>${v}</option>`).join('')}</select>
         <button class="sec" onclick="editTask('${t.id}')">Edit</button>
@@ -225,6 +266,7 @@ function render(){
 async function saveTask(){
   const row = {title:$('title').value.trim(), category:$('cat').value, status:$('status').value, task_date:$('tdate').value,
     scheduled_time:$('ttime').value || null, fb_url:$('url').value.trim() || null, notes:$('notes').value.trim() || null, updated_at:new Date().toISOString()};
+  if (shotThumb) row.image_thumb = shotThumb;
   if (!row.title || !row.task_date) { $('formMsg').textContent = 'Title and date are required.'; return; }
   const id = $('tid').value;
   const {error} = id ? await sb.from('tasks').update(row).eq('id', id) : await sb.from('tasks').insert(row);
@@ -235,9 +277,11 @@ function editTask(id){
   const t = tasks.find(x => x.id === id); if (!t) return;
   $('tid').value = t.id; $('title').value = t.title; $('cat').value = t.category; $('status').value = t.status;
   $('tdate').value = t.task_date; $('ttime').value = t.scheduled_time ? t.scheduled_time.slice(0,5) : '';
-  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit quest'; showView('add'); updatePreview();
+  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit quest'; shotThumb = null; const im = $('shotImg'); if (t.image_thumb) { im.src = t.image_thumb; im.classList.remove('hide'); } else im.classList.add('hide');
+  showView('add'); updatePreview();
 }
-function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='New quest'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; updatePreview(); }
+function zoomImg(src){ const o = document.createElement('div'); o.style.cssText = 'position:fixed;inset:0;z-index:40;background:#000d;display:grid;place-items:center;cursor:zoom-out;padding:12px'; o.innerHTML = `<img src="${esc(src)}" style="max-width:100%;max-height:100%;border-radius:8px" alt="Screenshot">`; o.onclick = () => o.remove(); document.body.appendChild(o); }
+function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='New quest'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; shotThumb = null; updatePreview(); }
 async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
 async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
 
@@ -254,7 +298,7 @@ async function loadStats(){
   let best = 0, run = 0, prev = null;
   Object.keys(done).sort().forEach(x => { run = prev && addDays(prev, 1) === x ? run + 1 : 1; best = Math.max(best, run); prev = x; });
   const lv = Math.floor(Math.sqrt(xp / 40)) + 1, base = 40 * (lv - 1) ** 2, next = 40 * lv ** 2;
-  $('rank').textContent = rankOf(lv); $('lv').textContent = 'Level ' + lv;
+  $('rank').textContent = rankOf(lv); setRank(rankOf(lv)); $('lv').textContent = 'Level ' + lv;
   $('xpbar').style.width = Math.round((xp - base) / (next - base) * 100) + '%';
   $('xptxt').textContent = `${xp} XP · ${next - xp} to level ${lv + 1}`;
   countUp($('streak'), streak); $('best').textContent = 'Best ' + best;
@@ -266,6 +310,7 @@ async function loadStats(){
   const nq = openQ.find(t => t.scheduled_time && mins(t.scheduled_time.slice(0, 5)) >= nowM) || openQ[0];
   $('next').innerHTML = nq ? `<div class="t">${esc(nq.title)}</div><div class="meta"><span class="badge s-${nq.status}">${STATUS[nq.status]}</span> ${esc(CAT[nq.category])}${nq.scheduled_time ? ' · ' + nq.scheduled_time.slice(0, 5) : ''}</div>` : '<p class="meta">Nothing open. Add a quest to keep your streak going.</p>';
   $('week').innerHTML = [6,5,4,3,2,1,0].map(i => { const dd = addDays(today(), -i); return `<div class="day ${done[dd] ? 'on' : ''}"><i></i>${new Date(dd + 'T00:00:00Z').toLocaleDateString('en-US', {weekday:'short', timeZone:'UTC'})}</div>`; }).join('');
+  if (lastXp !== null && lv > lastLv) levelFx();
   if (lastXp !== null && xp > lastXp) toast(lv > lastLv ? `Level up! You are now level ${lv}` : `+${xp - lastXp} XP`);
   lastXp = xp; lastLv = lv;
 }
@@ -278,7 +323,7 @@ function range(kind){
 }
 async function fetchRange(kind){
   const [a,b] = range(kind);
-  const {data, error} = await sb.from('tasks').select('*').gte('task_date', a).lte('task_date', b).order('task_date').order('scheduled_time', {nullsFirst:false});
+  const {data, error} = await sb.from('tasks').select('id,title,category,task_date,scheduled_time,status,fb_url,notes').gte('task_date', a).lte('task_date', b).order('task_date').order('scheduled_time', {nullsFirst:false});
   return {a, b, data: data || [], error};
 }
 async function report(kind){
@@ -317,7 +362,7 @@ async function enableNotif(){
 }
 async function checkReminders(){
   const {data:{session}} = await sb.auth.getSession(); if (!session) return;
-  const {data} = await sb.from('tasks').select('*').eq('task_date', today()); const t = data || []; const now = mins(nowHM());
+  const {data} = await sb.from('tasks').select('id,title,status,scheduled_time').eq('task_date', today()); const t = data || []; const now = mins(nowHM());
   if (now >= 480 && !fired('morning')) notify('Morning planning', `${t.length} quest(s) today. Plan your posts.`);
   t.filter(x => x.scheduled_time && ['pending','prepared','scheduled'].includes(x.status)).forEach(x => {
     const m = mins(x.scheduled_time.slice(0,5));
@@ -337,63 +382,138 @@ function updatePreview(){
   const shot = !im.classList.contains('hide') && im.src ? `<img src="${esc(im.src)}" alt="Screenshot">` : '';
   if (!t && !u && !n && !shot) { $('pv').innerHTML = '<p class="meta">Your quest preview appears here as you type or add a screenshot.</p>'; return; }
   const miss = [!t && 'a title', !d && 'a date'].filter(Boolean);
-  $('pv').innerHTML = `<div class="pvtag">Preview. Not saved yet.</div><div class="pvq c-${c}"><div class="t">${esc(t || 'Untitled quest')}</div><div class="meta"><span class="badge s-${st}">${STATUS[st]}</span> ${esc(CAT[c])}</div><div class="meta">${esc(d || 'No date')}${tm ? ' · ' + esc(tm) : ''}</div>${u ? `<div class="meta">${esc(u)}</div>` : ''}${n ? `<div class="meta">${esc(n)}</div>` : ''}${st === 'scheduled' ? '<div class="meta">Scheduled does not count as published until you confirm it.</div>' : ''}${shot}</div>${miss.length ? `<p class="err">Add ${miss.join(' and ')} before saving.</p>` : ''}`;
+  $('pv').innerHTML = `<div class="pvtag">Preview. Not saved yet.</div><div class="pvq c-${c}"><div class="t">${esc(t || 'Untitled quest')}</div><div class="meta"><span class="badge s-${st}">${STATUS[st]}</span> ${esc(CAT[c])}</div><div class="meta">${esc(d || 'No date')}${tm ? ' · ' + esc(tm) : ''}</div>${u ? `<div class="meta">${esc(u)}</div>` : ''}${n ? `<div class="meta">${esc(n)}</div>` : ''}${st === 'scheduled' ? '<div class="meta">Scheduled does not count as published until you confirm it.</div>' : ''}${shot}${u ? linkRow(u) : ''}</div>${miss.length ? `<p class="err">Add ${miss.join(' and ')} before saving.</p>` : ''}`;
 }
 ['title','cat','status','tdate','ttime','url','notes'].forEach(id => { $(id).addEventListener('input', updatePreview); $(id).addEventListener('change', updatePreview); });
 
-/* Screenshot quick-add: reads text in the browser (OCR), then fills the form as a draft. Nothing is uploaded. */
+/* ===== Screenshot reader: one or many images become draft quests (text is read in your browser) ===== */
 const MON = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+const UI = /^(scheduled|published|draft|posted|edit|delete|boost post|boost|insights|share|like|comment|publish now|see more)$|^(post details|post overview|this view of your post|post id|id\s*:)/i;
 function ymd(y, mo, d){ y = +y || +today().slice(0,4); mo = +mo; d = +d; if (mo < 1 || mo > 12 || d < 1 || d > 31) return null; return `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
-function parseShot(text){
-  const out = {}, t = text.replace(/\r/g, ''); let m;
+function wdDate(wd, dn){ const names = ['sun','mon','tue','wed','thu','fri','sat']; for (let o = 0; o <= 30; o++) for (const sg of (o ? [o, -o] : [0])) { const d = addDays(today(), sg), dt = new Date(d + 'T00:00:00Z'); if (dt.getUTCDate() === dn && names[dt.getUTCDay()] === wd.slice(0,3).toLowerCase()) return d; } return null; }
+function timeOf(s){ const m = s.match(/(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]?/); if (!m) return null; let h = +m[1]; if (h > 12 || +m[2] > 59) return null; const pm = /p/i.test(m[3]); if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; return String(h).padStart(2,'0') + ':' + m[2]; }
+const fmt12 = hm => { const [h, m] = hm.split(':').map(Number); return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${h < 12 ? 'AM' : 'PM'}`; };
+function cleanTitle(l){ const tk = l.replace(/\s+/g, ' ').trim().split(' '); while (tk.length > 1 && tk[0].replace(/[^A-Za-z0-9]/g, '').length < 3) tk.shift(); return tk.join(' ').replace(/\s*(\.{2,}|…)?\s*See more\s*$/i, '').trim(); }
+function parseText(text){
+  const t = text.replace(/\r/g, ''), out = {}; let m;
+  if ((m = t.match(/\bID\s*[:：]?\s*(\d{8,20})\b/i))) out.postId = m[1];
   if ((m = t.match(/https?:\/\/(?:www\.|m\.)?(?:facebook\.com|fb\.watch|fb\.com)\/[^\s)]+/i))) out.url = m[0];
-  if ((m = t.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]\b/))) { let h = +m[1]; const pm = /p/i.test(m[3]); if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; if (h < 24) out.time = String(h).padStart(2,'0') + ':' + m[2]; }
+  if ((m = t.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]\b/))) out.time = timeOf(m[0]);
   else if ((m = t.match(/\b([01]?\d|2[0-3]):([0-5]\d)\b/))) out.time = m[1].padStart(2,'0') + ':' + m[2];
   const mons = 'Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec';
   if ((m = t.match(/\b(20\d{2})-(\d{2})-(\d{2})\b/))) out.date = ymd(m[1], m[2], m[3]);
-  else if ((m = t.match(new RegExp('\\b(' + mons + ')[a-z]*\\.?\\s+(\\d{1,2})(?!\\d)(?:st|nd|rd|th)?(?:,?\\s*(20\\d{2}))?', 'i')))) out.date = ymd(m[3], MON[m[1].toLowerCase()], m[2]);
   else if ((m = t.match(new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+(' + mons + ')[a-z]*\\.?(?:,?\\s*(20\\d{2}))?', 'i')))) out.date = ymd(m[3], MON[m[2].toLowerCase()], m[1]);
+  else if ((m = t.match(new RegExp('\\b(' + mons + ')[a-z]*\\.?\\s+(\\d{1,2})(?!\\d)(?:st|nd|rd|th)?(?:,?\\s*(20\\d{2}))?', 'i')))) out.date = ymd(m[3], MON[m[1].toLowerCase()], m[2]);
   else if ((m = t.match(/\b(\d{1,2})\/(\d{1,2})\/(20\d{2})\b/))) out.date = +m[1] > 12 ? ymd(m[3], m[2], m[1]) : ymd(m[3], m[1], m[2]);
-  const lines = t.split('\n').map(l => l.trim()).filter(l => l.length >= 6 && !/^https?:/i.test(l) && !/^[\d\s:\/.,APMapm-]+$/.test(l));
-  const UI = /^(scheduled|published|draft|posted|edit|delete|boost post|boost|insights|share|like|comment)$/i;
-  const good = lines.filter(l => !UI.test(l) && l.split(/\s+/).length >= 2);
-  const pick = good[0] || lines.find(l => !UI.test(l));
-  if (pick) out.title = pick.slice(0, 90);
-  if (lines.length) out.notes = ('From screenshot: ' + lines.slice(0, 6).join(' ')).slice(0, 400);
-  out.cat = /trivia/i.test(t) ? 'trivia' : /barangay|saturation|coverage|on-?site/i.test(t) ? 'barangay' : 'posting';
-  out.status = /\bscheduled\b/i.test(t) ? 'scheduled' : 'pending'; // never auto-set to Published or Completed
+  if (!out.date && !out.time && (m = t.match(/\bin\s+(\d+)\s+(minute|hour|day)s?\b/i))) {
+    const dt = new Date(Date.now() + +m[1] * ({minute:6e4, hour:36e5, day:864e5})[m[2].toLowerCase()]);
+    out.date = dt.toLocaleDateString('en-CA', {timeZone:TZ}); out.time = dt.toLocaleTimeString('en-GB', {timeZone:TZ, hour12:false}).slice(0,5); out.est = `${m[1]} ${m[2].toLowerCase()}${+m[1] > 1 ? 's' : ''}`;
+  }
+  const lines = t.split('\n').map(l => l.trim()).filter(l => l.length >= 3);
+  let start = -1; lines.slice(0, 14).forEach((l, i) => { if (/\bin \d+ (minute|hour|day)s?\b/i.test(l) || /sky trufiber by ahba/i.test(l)) start = i; });
+  const pool = (start >= 0 ? lines.slice(start + 1) : lines).filter(l => !UI.test(l) && !/^https?:/i.test(l) && !/^[\W\d_]+$/.test(l));
+  const cl = pool.map(cleanTitle), title = cl.find(l => l.length >= 5 && l.split(' ').length >= 2) || cl.find(l => l.length >= 3);
+  if (title) out.title = title.slice(0, 90);
+  if (pool.length) out.notes = ('From screenshot: ' + pool.slice(0, 5).join(' ')).slice(0, 300);
+  out.cat = /trivia/i.test(t) ? 'trivia' : /barangay|saturation|coverage|on-?site|brgy/i.test(t) ? 'barangay' : 'posting';
+  out.status = (/publish now|\bscheduled\b/i.test(t) || out.est) ? 'scheduled' : 'pending'; // never auto Published or Completed
   return out;
 }
-function applyShot(text){
-  const p = parseShot(text), got = [];
-  if (p.title) { $('title').value = p.title; got.push('title'); }
-  if (p.date) { $('tdate').value = p.date; got.push('date'); }
-  if (p.time) { $('ttime').value = p.time; got.push('time'); }
-  if (p.url) { $('url').value = p.url; got.push('Facebook link'); }
-  if (p.notes) $('notes').value = p.notes;
-  $('cat').value = p.cat; $('status').value = p.status; $('tid').value = '';
-  $('formTitle').textContent = 'New quest (draft from screenshot)';
-  $('shotMsg').textContent = got.length ? `Filled: ${got.join(', ')}. Check everything, fix mistakes, then click Save quest.` : 'Could not find a title, date or time in this image. Try a sharper, zoomed-in screenshot.';
-  updatePreview(); $('formTitle').scrollIntoView({behavior:'smooth'});
+function findMarkers(words){
+  let out = [];
+  words.forEach((w, i) => {
+    const tx = (w.text || '').trim(); if (!/^\d{1,2}[:.]\d{2}([AaPp][Mm]?)?$/.test(tx)) return;
+    const nx = (words[i + 1]?.text || '').trim(), s = /[AaPp]/.test(tx) ? tx : (/^[AaPp][Mm]?$/.test(nx) ? tx + nx : null); if (!s) return;
+    const hm = timeOf(s); if (hm && w.bbox) out.push({hm, x0:w.bbox.x0, y0:w.bbox.y0});
+  });
+  out.sort((a, b) => a.y0 - b.y0); out = out.filter((m, i) => !i || m.y0 - out[i - 1].y0 > 12);
+  if (out.length < 2) return out;
+  const xs = out.map(m => m.x0).sort((a, b) => a - b), med = xs[xs.length >> 1];
+  return out.filter(m => Math.abs(m.x0 - med) < 60);
 }
-async function readShot(file){
-  if (!file || !file.type.startsWith('image/')) return;
-  const st = $('shotMsg'), im = $('shotImg'); im.src = URL.createObjectURL(file); im.classList.remove('hide'); updatePreview();
+function loadImg(file){ return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('Could not open the image')); im.src = URL.createObjectURL(file); }); }
+function crop(img, sx, sy, sw, sh, maxW){ const k = Math.min(1, maxW / sw), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(sw * k)); c.height = Math.max(1, Math.round(sh * k)); c.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', .7); }
+async function readOne(file, prog){
+  const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight, sc = W < 700 ? 3 : 1;
+  const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+  const r = await Tesseract.recognize(c, 'eng', {logger: m => { if (m.status === 'recognizing text') prog(Math.round(m.progress * 100)); }});
+  const text = r.data.text || '', mk = findMarkers(r.data.words || []), base = {on:true, status:'scheduled', cat:'posting'};
+  const dm = text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s*(\d{1,2})\b/i), day = (dm && wdDate(dm[1], +dm[2])) || $('day').value || today();
+  if (mk.length >= 2) { // calendar column: one quest per time label
+    const gap = (mk[mk.length - 1].y0 - mk[0].y0) / (mk.length - 1) / sc;
+    return mk.map((m, i) => { const top = Math.max(0, m.y0 / sc - 3), bot = Math.min(H, i < mk.length - 1 ? mk[i + 1].y0 / sc - 3 : top + gap);
+      return {...base, title:'Scheduled post ' + fmt12(m.hm), date:day, time:m.hm, thumb:crop(img, 0, top, W, Math.max(12, bot - top), 480)}; });
+  }
+  const p = parseText(text);
+  return [{...base, title:p.title || '', date:p.date || day, time:p.time || '', cat:p.cat, status:p.status, url:p.url || '', postId:p.postId || '', notes:p.notes || '', est:p.est || '', thumb:crop(img, 0, 0, W, H, 640)}];
+}
+async function readShots(list){
+  const files = [...(list || [])].filter(f => f.type.startsWith('image/')), st = $('shotMsg'); if (!files.length) return;
   if (!window.Tesseract) { st.textContent = 'The text reader did not load. Check your connection and reload the page.'; return; }
-  st.textContent = 'Loading text reader (first time takes longer)…';
-  try {
-    const r = await Tesseract.recognize(file, 'eng', {logger: m => { if (m.status === 'recognizing text') st.textContent = 'Reading image… ' + Math.round(m.progress * 100) + '%'; }});
-    applyShot(r.data.text || '');
-  } catch (e) { st.textContent = 'Could not read this image: ' + e.message; }
+  let added = 0;
+  for (let i = 0; i < files.length; i++) {
+    const tag = `Reading image ${i + 1} of ${files.length}`; st.textContent = tag + '… (the first one takes longer)';
+    try { const ds = await readOne(files[i], p => st.textContent = `${tag}… ${p}%`); drafts.push(...ds); added += ds.length; } catch (e) { st.textContent = 'Could not read an image: ' + e.message; }
+  }
+  if (added) st.textContent = `Found ${added} quest draft(s). Check each one, fix anything wrong, then click Save selected.`;
+  drafts.sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || ''))); renderDrafts();
+}
+const opts = (o, sel) => Object.entries(o).map(([k, v]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${v}</option>`).join('');
+function renderDrafts(){
+  $('draftCard').classList.toggle('hide', !drafts.length);
+  $('drafts').innerHTML = drafts.map((d, i) => `<div class="draft"><label><input type="checkbox" data-i="${i}" data-k="on" ${d.on ? 'checked' : ''} aria-label="Include"></label>${d.thumb ? `<img src="${esc(d.thumb)}" alt="Screenshot" onclick="zoomImg(this.src)">` : ''}<div class="f">
+    <input data-i="${i}" data-k="title" value="${esc(d.title)}" placeholder="Quest title">
+    <div class="row"><input type="date" data-i="${i}" data-k="date" value="${esc(d.date)}"><input type="time" data-i="${i}" data-k="time" value="${esc(d.time || '')}"></div>
+    <div class="row"><select data-i="${i}" data-k="cat">${opts(CAT, d.cat)}</select><select data-i="${i}" data-k="status">${opts(STATUS, d.status)}</select></div>
+    <input data-i="${i}" data-k="postId" value="${esc(d.postId || '')}" placeholder="Post ID (optional)"><input data-i="${i}" data-k="url" value="${esc(d.url || '')}" placeholder="Facebook link (optional)">
+    ${d.est ? `<div class="meta">Time estimated from "in ${esc(d.est)}". Confirm it in Business Suite.</div>` : ''}</div></div>`).join('');
+}
+['input', 'change'].forEach(ev => $('drafts').addEventListener(ev, e => { const i = e.target.dataset.i, k = e.target.dataset.k; if (i === undefined || !k) return; drafts[+i][k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }));
+function clearDrafts(){ drafts = []; renderDrafts(); $('shotMsg').textContent = ''; $('dmsg').textContent = ''; }
+async function saveDrafts(){
+  const sel = drafts.filter(d => d.on), msg = $('dmsg'); msg.textContent = '';
+  if (!sel.length) { msg.textContent = 'Tick at least one draft.'; return; }
+  if (sel.some(d => !d.date)) { msg.textContent = 'Every selected draft needs a date.'; return; }
+  const ids = sel.map(d => (d.postId || '').trim()).filter(Boolean), dup = new Set();
+  if (ids.length) { const {data} = await sb.from('tasks').select('post_id').in('post_id', ids); (data || []).forEach(x => dup.add(x.post_id)); }
+  const todo = sel.filter(d => !((d.postId || '').trim() && dup.has(d.postId.trim())));
+  const rows = todo.map(d => ({title:(d.title || '').trim() || ('Post' + (d.time ? ' at ' + d.time : '')), category:d.cat, status:d.status, task_date:d.date, scheduled_time:d.time || null, fb_url:(d.url || '').trim() || null, notes:d.notes || null, post_id:(d.postId || '').trim() || null, image_thumb:d.thumb || null}));
+  if (!rows.length) { msg.textContent = 'Those posts are already saved (same Post ID).'; return; }
+  const {error} = await sb.from('tasks').insert(rows); if (error) { msg.textContent = error.message; return; }
+  const skipped = sel.length - rows.length; drafts = drafts.filter(d => !d.on); renderDrafts(); $('shotMsg').textContent = '';
+  $('day').value = rows[0].task_date; load(); showView('quests'); toast(`${rows.length} quest(s) saved` + (skipped ? `, ${skipped} duplicate skipped` : ''));
 }
 document.addEventListener('paste', e => {
-  const it = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith('image/')); const f = it && it.getAsFile();
-  if (f && !$('app').classList.contains('hide')) { e.preventDefault(); readShot(f); }
+  const fs = [...(e.clipboardData?.items || [])].filter(i => i.type.startsWith('image/')).map(i => i.getAsFile()).filter(Boolean);
+  if (fs.length && !$('app').classList.contains('hide')) { e.preventDefault(); showView('add'); readShots(fs); }
 });
 const dz = $('drop');
 ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('on'); }));
 ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('on'); }));
-dz.addEventListener('drop', e => readShot(e.dataTransfer.files[0]));
+dz.addEventListener('drop', e => readShots(e.dataTransfer.files));
+
+/* Link preview: Facebook's own public embed. Works only for public, already-published posts. */
+function linkRow(u){ if (!/^https?:\/\//i.test(u)) return ''; return `<div class="lnkrow"><a href="${esc(u)}" target="_blank" rel="noopener">Open post</a><button class="sec" data-u="${esc(u)}" onclick="fbEmbed(this)">Show Facebook preview</button></div>`; }
+function fbEmbed(b){ const u = b.dataset.u; if (!/^https:\/\/(www\.|m\.)?(facebook\.com|fb\.com|fb\.watch)\//i.test(u)) { b.textContent = 'Not a Facebook link'; return; } const f = document.createElement('iframe'); f.className = 'fbf'; f.loading = 'lazy'; f.title = 'Facebook post preview'; f.src = 'https://www.facebook.com/plugins/post.php?href=' + encodeURIComponent(u) + '&show_text=true&width=500'; b.parentNode.after(f); b.remove(); }
+
+/* Profile: your photo, restyled by rank. This is CSS styling of your own picture, not AI-generated art. */
+const RANKS = [['E','Lv 1'], ['D','Lv 3'], ['C','Lv 5'], ['B','Lv 8'], ['A','Lv 12'], ['S','Lv 18']];
+function renderEvo(){ const e = $('evo'); e.classList.toggle('toon', toon); e.innerHTML = RANKS.map(([r, l]) => `<div class="ev rk-${r} ${r === curRank ? 'cur' : ''}"><div class="ph">${profile.avatar ? `<img src="${esc(profile.avatar)}" alt="Rank ${r}">` : ''}</div>${r}<br>${l}</div>`).join(''); }
+function setRank(r){ curRank = r; $('hero').dataset.rank = r; $('avatar').className = 'avatar rk-' + r; renderEvo(); }
+function applyProfile(){ const h = $('hero'); h.classList.toggle('hasav', !!profile.avatar); h.classList.toggle('toon', toon); if (profile.avatar) $('avImg').src = profile.avatar; $('hname').textContent = profile.name || 'Hunter'; $('toonBtn').textContent = 'Toon style: ' + (toon ? 'on' : 'off'); renderEvo(); }
+async function loadProfile(){ const {data} = await sb.from('profiles').select('display_name,avatar').maybeSingle(); profile = {name:data?.display_name || '', avatar:data?.avatar || null}; $('pname').value = profile.name; applyProfile(); }
+async function pickAvatar(file){
+  if (!file || !file.type.startsWith('image/')) return;
+  const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight; let sw = W, sh = W * 4 / 3; if (sh > H) { sh = H; sw = H * 3 / 4; }
+  const c = document.createElement('canvas'); c.width = 300; c.height = 400; c.getContext('2d').drawImage(img, (W - sw) / 2, (H - sh) * .15, sw, sh, 0, 0, 300, 400);
+  profile.avatar = c.toDataURL('image/jpeg', .85); applyProfile(); $('pmsg').textContent = 'Photo ready. Click Save profile to keep it.';
+}
+async function saveProfile(){
+  const name = $('pname').value.trim(); const {error} = await sb.from('profiles').upsert({display_name:name || null, avatar:profile.avatar, updated_at:new Date().toISOString()}, {onConflict:'user_id'});
+  if (!error) { profile.name = name; applyProfile(); } $('pmsg').textContent = error ? error.message : 'Profile saved.';
+}
+function toggleToon(){ toon = !toon; localStorage.setItem('toon', toon ? '1' : '0'); applyProfile(); }
+function levelFx(){ const h = $('hero'); h.classList.remove('levelup'); void h.offsetWidth; h.classList.add('levelup'); fxBoost = 1; setTimeout(() => h.classList.remove('levelup'), 1500); }
 
 /* 3D hero: rising shadow-particle vortex that follows your pointer. */
 function initFx(){
