@@ -85,9 +85,29 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .ev{text-align:center;font-size:13px;color:var(--mut)}.ev .ph{aspect-ratio:3/4;border-radius:10px;border:1px solid var(--line);background:#080c1f;margin-bottom:4px}.ev.cur{color:var(--gold)}.ev.cur .ph{border-color:var(--gold);box-shadow:0 0 12px #f5c45144}
 .hero.levelup{animation:flash 1.4s}.hero.levelup::after{content:"";position:absolute;left:50%;top:55%;width:40px;height:40px;border-radius:50%;border:3px solid var(--gold);transform:translate(-50%,-50%);animation:shock 1.4s ease-out forwards;pointer-events:none}
 @keyframes flash{0%{filter:brightness(2.2)}100%{filter:none}}@keyframes shock{to{width:900px;height:900px;opacity:0}}
+.hero{touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.avatar{transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px)) perspective(800px) rotateY(calc(var(--yaw,0)*1deg));transition:none}
+.avatar .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,3,10,var(--sh2,0)),transparent 45%,transparent 55%,rgba(2,3,10,var(--sh,0)))}
+.fig{transition:none}
+.still .eyes,.still .avatar .ph,.still .avatar::before{animation:none}
+.rem{display:flex;align-items:center;gap:8px;color:var(--mut);margin:6px 0;font-size:16px}.rem input{width:auto;margin:0;accent-color:var(--aura)}
+.warn{background:#3d2410;border:1px solid #b8742a;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;gap:10px;justify-content:space-between;align-items:center}.warn button{margin:0;flex:none}
+button.ok{background:#14804a}
+.view.on{animation:viewIn .38s cubic-bezier(.2,.7,.2,1)}.view.on .card{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.view.on .card:nth-child(2){animation-delay:.05s}.view.on .card:nth-child(3){animation-delay:.1s}.view.on .card:nth-child(4){animation-delay:.15s}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.task{animation:fadeIn .3s both}.draft{animation:rise .35s both}
+input,select,textarea{transition:border-color .2s,box-shadow .2s,background .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--aura);box-shadow:0 0 0 3px #5b7cff33,0 0 16px #5b7cff33;outline:none;background:#0a1030}
+button{transition:transform .12s,box-shadow .2s,filter .2s}button:hover{filter:brightness(1.14);box-shadow:0 4px 18px #5b7cff44}button:active{transform:scale(.96)}
+#auth{position:relative;overflow:hidden;animation:rise .5s both}#auth::before{content:"";position:absolute;inset:0;border-radius:10px;padding:1px;background:linear-gradient(120deg,transparent 30%,#7f9bffcc,transparent 70%);background-size:300% 100%;animation:sheen 4s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+@keyframes sheen{to{background-position:-300% 0}}
+@media(max-width:600px){.tab{min-width:0;padding:10px 4px;font-size:15px}}
 .hide{display:none}.err{color:var(--bad);font-size:14px}
 #auth{margin-top:14px}
-@media(prefers-reduced-motion:reduce){.avatar .ph,.avatar::before,.hero.levelup,.hero.levelup::after{animation:none}.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
+@media(prefers-reduced-motion:reduce){.hero.levelup,.hero.levelup::after{animation:none}.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
 </style>
 </head>
 <body>
@@ -96,13 +116,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <header class="hero" id="hero">
   <canvas id="fx" aria-hidden="true"></canvas>
   <svg class="fig" viewBox="0 0 400 420" aria-hidden="true">
-    <path d="M10 420C24 330 110 300 158 286h84c48 14 134 44 148 134Z" fill="#04060f" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/>
-    <rect x="176" y="236" width="48" height="62" fill="#050813"/>
-    <ellipse cx="200" cy="190" rx="62" ry="76" fill="#0a0e22" stroke="#5b7cff" stroke-opacity=".55" stroke-width="2"/>
-    <path d="M130 172C122 96 168 70 202 72c38-2 78 26 68 100-12-30-28-46-70-48-40 2-56 18-70 48Z" fill="#03040b" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/>
-    <path d="M150 140l26 50 8-58ZM224 132l8 56 26-46Z" fill="#03040b"/>
-    <path d="M178 232c14 8 30 8 44 0" stroke="#1a2250" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <g class="eyes" fill="#eef4ff"><path d="M162 186l30 6-2 7-30-5Z"/><path d="M238 186l-30 6 2 7 30-5Z"/></g>
+    <g id="gBody"><path d="M10 420C24 330 110 300 158 286h84c48 14 134 44 148 134Z" fill="#04060f" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/><rect x="176" y="236" width="48" height="62" fill="#050813"/></g>
+    <g id="gHead">
+      <ellipse cx="200" cy="190" rx="62" ry="76" fill="#0a0e22" stroke="#5b7cff" stroke-opacity=".55" stroke-width="2"/>
+      <g id="gHair"><path d="M130 172C122 96 168 70 202 72c38-2 78 26 68 100-12-30-28-46-70-48-40 2-56 18-70 48Z" fill="#03040b" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/><path d="M150 140l26 50 8-58ZM224 132l8 56 26-46Z" fill="#03040b"/></g>
+      <g id="gFace"><path d="M178 232c14 8 30 8 44 0" stroke="#1a2250" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <g class="eyes" fill="#eef4ff"><path d="M162 186l30 6-2 7-30-5Z"/><path d="M238 186l-30 6 2 7 30-5Z"/></g></g>
+    </g>
   </svg>
   <div class="avatar rk-E" id="avatar"><div class="ph"><img id="avImg" alt="Your avatar"></div></div>
   <div class="hud">
@@ -115,7 +135,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <div id="auth" class="card hide">
   <h2>Sign in</h2>
-  <input id="email" type="email" placeholder="Email" autocomplete="email">
+  <input id="email" type="email" placeholder="Email" autocomplete="username">
+  <label class="rem"><input type="checkbox" id="rem"> Remember my email</label>
   <input id="pass" type="password" placeholder="Password (min 6 chars)" autocomplete="current-password">
   <div class="row"><button onclick="signIn()">Sign in</button><button class="sec" onclick="signUp()">Sign up</button></div>
   <p id="authMsg" class="err"></p>
@@ -123,9 +144,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 <div id="app" class="hide">
   <div class="top"><span class="meta" id="who"></span><span class="row"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></span></div>
-  <nav class="tabs" id="tabs"><button class="tab on" data-v="overview">Overview</button><button class="tab" data-v="quests">Quests</button><button class="tab" data-v="add">Add quest</button><button class="tab" data-v="reports">Reports</button><button class="tab" data-v="profile">Profile</button></nav>
+  <nav class="tabs" id="tabs"><button class="tab on" data-v="overview">Overview</button><button class="tab" data-v="quests">Quests</button><button class="tab" data-v="add">Add</button><button class="tab" data-v="reports">Reports</button><button class="tab" data-v="profile">Profile</button></nav>
 
   <section class="view on" id="v-overview">
+    <div id="tip"></div><div id="risk"></div>
     <div class="card"><h2>Today</h2><div class="tiles" id="tiles"></div></div>
     <div class="two">
       <div class="card"><h2>Next up</h2><div id="next"></div></div>
@@ -182,15 +204,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   </section>
   <section class="view" id="v-profile">
     <div class="card"><h2>Hunter profile</h2>
-      <input id="pname" placeholder="Display name" maxlength="24">
-      <div class="row"><button class="sec" onclick="document.getElementById('avFile').click()">Upload photo</button><button class="sec" id="toonBtn" onclick="toggleToon()">Toon style: off</button><button onclick="saveProfile()">Save profile</button></div>
+      <input id="pname" placeholder="Nickname (shown in the hero and welcome)" maxlength="24">
+      <div class="row"><button class="sec" onclick="document.getElementById('avFile').click()">Upload photo</button><button class="sec" id="toonBtn" onclick="toggleToon()">Toon style: off</button><button class="sec" id="motionBtn" onclick="toggleMotion()">Motion: on</button><button onclick="saveProfile()">Save profile</button></div>
       <input id="avFile" type="file" accept="image/*" class="hide" onchange="pickAvatar(this.files[0]); this.value=''">
-      <p id="pmsg" class="meta"></p>
+      <p id="pmsg" class="meta"></p><p class="meta">Nothing moving on your phone? Tap Motion above, or check iPhone Settings, Accessibility, Motion, Reduce Motion.</p>
     </div>
     <div class="card"><h2>Evolution</h2><div class="evo" id="evo"></div>
       <p class="meta">Your photo grows brighter, more colourful and more aura-lit as your rank rises from E to S. It is styling applied to your own picture, not AI-generated art. Photos are saved at a small size.</p></div>
   </section>
 </div>
+<p class="meta" style="text-align:center;margin-top:16px">Content Tracker v4</p>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -213,11 +236,17 @@ const mins = t => { const [h,m] = t.split(':'); return +h*60 + +m; };
 const addDays = (s,n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0,10); };
 let shotThumb = null, tasks = [], reg = null, lastXp = null, lastLv = null, fxBoost = 0, justLoggedIn = false;
 
+let yawNow = 0;
+function motionOn(){ const m = localStorage.getItem('motion'); return m ? m === 'on' : !matchMedia('(prefers-reduced-motion: reduce)').matches; }
+function applyMotion(){ document.documentElement.classList.toggle('still', !motionOn()); const b = document.getElementById('motionBtn'); if (b) b.textContent = 'Motion: ' + (motionOn() ? 'on' : 'off'); }
+function toggleMotion(){ localStorage.setItem('motion', motionOn() ? 'off' : 'on'); applyMotion(); }
 let drafts = [], profile = {name:'', avatar:null}, curRank = 'E', toon = localStorage.getItem('toon') === '1';
 $('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
 
 async function signUp(){ justLoggedIn = true; const {data, error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); if (error || !data.session) justLoggedIn = false; $('authMsg').textContent = error ? error.message : (data.session ? '' : 'Account created. Check your email if confirmation is required, then sign in.'); }
-async function signIn(){ justLoggedIn = true; const {error} = await sb.auth.signInWithPassword({email:$('email').value, password:$('pass').value}); if (error) justLoggedIn = false; $('authMsg').textContent = error ? error.message : ''; }
+async function signIn(){ justLoggedIn = true; const em = $('email').value.trim(); const {error} = await sb.auth.signInWithPassword({email:em, password:$('pass').value}); if (error) justLoggedIn = false; else if ($('rem').checked) localStorage.setItem('cot_email', em); else localStorage.removeItem('cot_email'); $('authMsg').textContent = error ? error.message : ''; }
+const savedEmail = localStorage.getItem('cot_email'); if (savedEmail) { $('email').value = savedEmail; $('rem').checked = true; }
+$('pass').addEventListener('keydown', e => { if (e.key === 'Enter') signIn(); });
 async function signOut(){ await sb.auth.signOut(); }
 sb.auth.onAuthStateChange((_e, session) => {
   $('auth').classList.toggle('hide', !!session); $('app').classList.toggle('hide', !session);
@@ -256,7 +285,7 @@ function render(){
       ${t.post_id ? `<div class="pid">Post ID: ${esc(t.post_id)}</div>` : ''}
       ${t.image_thumb ? `<img class="qimg" src="${esc(t.image_thumb)}" alt="Screenshot" onclick="zoomImg(this.src)">` : ''}
       <div class="row" style="margin-top:6px">
-        <select onchange="setStatus('${t.id}',this.value)">${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${k===t.status?'selected':''}>${v}</option>`).join('')}</select>
+        ${t.status === 'scheduled' ? `<button class="ok" onclick="setStatus('${t.id}','published')">Confirm published</button>` : ''}<select onchange="setStatus('${t.id}',this.value)">${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${k===t.status?'selected':''}>${v}</option>`).join('')}</select>
         <button class="sec" onclick="editTask('${t.id}')">Edit</button>
         ${DONE.includes(t.status) ? `<button class="sec" onclick="setStatus('${t.id}','pending')">Reopen</button>` : ''}
         <button class="del" onclick="delTask('${t.id}')">Delete</button>
@@ -304,6 +333,7 @@ async function loadStats(){
   countUp($('streak'), streak); $('best').textContent = 'Best ' + best;
   const B = [[pub > 0, 'First confirmed post'], [best >= 3, '3-day streak'], [best >= 7, '7-day streak'], [perfect > 0, 'Perfect day'], [lv >= 5, 'Rank C reached']];
   $('badges').innerHTML = B.map(([on, n]) => `<span class="chip ${on ? 'on' : ''}">${n}</span>`).join('');
+  $('risk').innerHTML = streak > 0 && !done[today()] ? `<div class="warn"><span><b>Streak at risk.</b> Clear one quest today to keep your ${streak}-day streak.</span><button onclick="showView('add')">Add quest</button></div>` : '';
   const tdy = rows.filter(t => t.task_date === today()), cleared = tdy.filter(t => DONE.includes(t.status)).length;
   $('tiles').innerHTML = [[tdy.length, 'Quests today'], [cleared, 'Cleared'], [tdy.filter(t => t.status === 'scheduled').length, 'Scheduled, not yet confirmed'], [tdy.length - cleared, 'Still open']].map(([n, l]) => `<div class="tile"><b>${n}</b>${l}</div>`).join('');
   const nowM = mins(nowHM()), openQ = tdy.filter(t => !DONE.includes(t.status)).sort((a, b) => (a.scheduled_time || '99:99').localeCompare(b.scheduled_time || '99:99'));
@@ -517,14 +547,15 @@ function levelFx(){ const h = $('hero'); h.classList.remove('levelup'); void h.o
 
 /* 3D hero: rising shadow-particle vortex that follows your pointer. */
 function initFx(){
-  if (!window.THREE) return;
+  if (!window.THREE) { fx2d(); return; }
   const c = $('fx'), hero = $('hero');
   const R = new THREE.WebGLRenderer({canvas:c, alpha:true, antialias:true}); R.setPixelRatio(Math.min(devicePixelRatio, 2));
   const S = new THREE.Scene(), C = new THREE.PerspectiveCamera(55, 1, .1, 100); C.position.z = 14;
   const N = 1600, pos = new Float32Array(N * 3), seed = [];
   for (let i = 0; i < N; i++) seed.push({a:Math.random()*6.283, r:2.5+Math.random()*5.5, y:Math.random()*16-8, v:.012+Math.random()*.035, w:(Math.random()-.5)*.01+.006});
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const P = new THREE.Points(g, new THREE.PointsMaterial({color:0x7f9bff, size:.09, transparent:true, opacity:.85, blending:THREE.AdditiveBlending, depthWrite:false})); S.add(P);
+  const sp = document.createElement('canvas'); sp.width = sp.height = 64; const sg = sp.getContext('2d'), gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.3, 'rgba(160,185,255,.8)'); gr.addColorStop(1, 'rgba(91,124,255,0)'); sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
+  const P = new THREE.Points(g, new THREE.PointsMaterial({map:new THREE.CanvasTexture(sp), size:innerWidth < 600 ? .32 : .22, transparent:true, opacity:.9, blending:THREE.AdditiveBlending, depthWrite:false})); S.add(P);
   const size = () => { const w = hero.clientWidth, h = hero.clientHeight; R.setSize(w, h, false); C.aspect = w / h; C.updateProjectionMatrix(); };
   size(); addEventListener('resize', size);
   let mx = 0, my = 0;
@@ -532,13 +563,45 @@ function initFx(){
   const frame = () => { fxBoost *= .965;
     seed.forEach((s, i) => { s.a += s.w; s.y += s.v * (1 + fxBoost * 8); if (s.y > 8) s.y = -8; const r = s.r * (.6 + .4 * (1 - Math.abs(s.y) / 9)); pos[i*3] = Math.cos(s.a) * r; pos[i*3+1] = s.y; pos[i*3+2] = Math.sin(s.a) * r * .6; });
     g.attributes.position.needsUpdate = true;
-    P.rotation.y += (mx * .6 - P.rotation.y) * .05; P.rotation.x += (my * .3 - P.rotation.x) * .05;
+    P.rotation.y += (mx * .6 + yawNow * .03 - P.rotation.y) * .05; P.rotation.x += (my * .3 - P.rotation.x) * .05;
     R.render(S, C);
   };
-  frame(); if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  (function loop(){ if (!document.hidden) frame(); requestAnimationFrame(loop); })();
+  frame();
+  (function loop(){ if (!document.hidden && motionOn()) frame(); requestAnimationFrame(loop); })();
 }
-try { initFx(); } catch (e) { console.warn('3D hero unavailable', e); }
+function fx2d(){
+  const c = $('fx'), g = c.getContext('2d'), hero = $('hero'); if (!g) return; let w = 0, h = 0;
+  const size = () => { w = c.width = hero.clientWidth; h = c.height = hero.clientHeight; }; size(); addEventListener('resize', size);
+  const ps = Array.from({length:110}, () => ({a:Math.random() * 6.28, r:30 + Math.random() * 140, y:Math.random(), v:.0009 + Math.random() * .002}));
+  (function loop(){ requestAnimationFrame(loop); if (document.hidden || !motionOn()) return; g.clearRect(0, 0, w, h); g.globalCompositeOperation = 'lighter';
+    ps.forEach(p => { p.a += .01; p.y -= p.v; if (p.y < 0) p.y = 1; const x = w / 2 + Math.cos(p.a + yawNow * .02) * p.r * (.6 + .4 * p.y), y = p.y * h; g.fillStyle = 'rgba(130,160,255,.7)'; g.beginPath(); g.arc(x, y, 2.2, 0, 6.3); g.fill(); }); })();
+}
+/* Head turn: the figure (or your photo) sweeps left and right by itself. Drag it, or hover with a mouse, to look around. */
+function initTurn(){
+  const hero = $('hero'), gH = $('gHead'), gHr = $('gHair'), gF = $('gFace'), gB = $('gBody');
+  let drag = 0, dragging = false, sx = 0, hover = null;
+  hero.addEventListener('pointerdown', e => { dragging = true; sx = e.clientX; drag = 0; });
+  addEventListener('pointerup', () => { dragging = false; }); hero.addEventListener('pointercancel', () => { dragging = false; });
+  hero.addEventListener('pointermove', e => { if (dragging) drag = Math.max(-34, Math.min(34, (e.clientX - sx) / hero.clientWidth * 120)); else if (e.pointerType === 'mouse') { const b = hero.getBoundingClientRect(); hover = ((e.clientX - b.left) / b.width - .5) * 56; } });
+  hero.addEventListener('pointerleave', () => { hover = null; });
+  (function loop(t){
+    requestAnimationFrame(loop); if (document.hidden) return;
+    const target = dragging ? drag : (hover !== null ? hover : (motionOn() ? Math.sin(t / 2300) * 24 : 0));
+    yawNow += (target - yawNow) * .09;
+    const s = Math.sin(yawNow * Math.PI / 180), c = Math.cos(yawNow * Math.PI / 180);
+    gH.setAttribute('transform', `translate(${(s * 10).toFixed(2)} 0) translate(200 190) scale(${c.toFixed(3)} 1) translate(-200 -190)`);
+    gHr.setAttribute('transform', `translate(${(s * 6).toFixed(2)} 0)`);
+    gF.setAttribute('transform', `translate(${(s * 24).toFixed(2)} 0) translate(200 200) scale(${(.9 + .1 * c).toFixed(3)} 1) translate(-200 -200)`);
+    gB.setAttribute('transform', `translate(${(-s * 8).toFixed(2)} 0)`);
+    hero.style.setProperty('--yaw', yawNow.toFixed(2)); hero.style.setProperty('--sh', (Math.max(0, s) * .7).toFixed(2)); hero.style.setProperty('--sh2', (Math.max(0, -s) * .7).toFixed(2));
+  })(0);
+}
+applyMotion(); initTurn();
+try { initFx(); } catch (e) { console.warn('3D hero fallback', e); fx2d(); }
+
+/* Install tip for iPhone (alerts need the Home Screen app) */
+if (/iphone|ipad/i.test(navigator.userAgent) && !(navigator.standalone || matchMedia('(display-mode: standalone)').matches) && localStorage.getItem('tipx') !== '1')
+  $('tip').innerHTML = '<div class="warn"><span><b>Install on iPhone.</b> In Safari tap Share, then Add to Home Screen, and open the app from there. Alerts only work that way.</span><button class="sec" onclick="localStorage.setItem(\'tipx\',\'1\'); this.closest(\'.warn\').remove()">Got it</button></div>';
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(r => reg = r).catch(() => {});
 </script>
