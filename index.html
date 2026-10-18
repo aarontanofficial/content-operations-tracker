@@ -5,139 +5,147 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Content Tracker</title>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Content Tracker">
 <meta name="theme-color" content="#05060f">
+<script>try{var m=localStorage.getItem('theme')||'auto',h=parseInt(new Date().toLocaleString('en-GB',{timeZone:'Asia/Manila',hour:'2-digit',hourCycle:'h23'}),10);document.documentElement.dataset.theme=(m==='day'||(m==='auto'&&h>=6&&h<18))?'day':'night'}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--void:#05060f;--panel:#0c1128;--line:#1e2757;--aura:#5b7cff;--glow:#dfeaff;--gold:#f5c451;--txt:#e6ecff;--mut:#8b97c7;--bad:#ff5d73}
+:root{--void:#05060f;--panel:#0c1128;--line:#1e2757;--aura:#5b7cff;--glow:#dfeaff;--gold:#f5c451;--txt:#e6ecff;--mut:#8b97c7;--bad:#ff5d73;--inp:#080c1f;--btn2:#1a2250;--tab:#121a40;--barbg:#141a3a;--inpf:#0a1030;--navbg:#070a1cee;--link:#9bbcff;--shadow:#0008;--warnbg:#3d2410;--warnln:#b8742a;--hero:radial-gradient(circle at 82% 20%,#eaf1ff 0,#9bbcff 4.5%,transparent 5.2%),radial-gradient(ellipse at 50% 75%,#1b2468 0,#080c24 55%,#03040b 100%);color-scheme:dark}
+[data-theme=day]{--void:#e9f0ff;--panel:#fff;--line:#c9d6f5;--aura:#3a5bff;--glow:#2a3aa8;--gold:#b7791f;--txt:#14204a;--mut:#5a6a9a;--bad:#d63a52;--inp:#f2f5ff;--btn2:#dde5ff;--tab:#e0e7ff;--barbg:#d9e1fa;--inpf:#fff;--navbg:#ffffffee;--link:#2a4bd6;--shadow:#1a2a6030;--warnbg:#fff1dd;--warnln:#e0a060;--hero:radial-gradient(circle at 80% 22%,#fffbe0 0,#ffe58a 6%,#ffe58a55 12%,transparent 13%),linear-gradient(#7fb0ff 0,#cfe2ff 58%,#fdeed2 100%);color-scheme:light}
 *{box-sizing:border-box}
-body{margin:0;font:500 17px/1.35 'Rajdhani',system-ui,sans-serif;background:var(--void);color:var(--txt);padding-bottom:env(safe-area-inset-bottom)}
+body{margin:0;font:500 17px/1.35 'Rajdhani',system-ui,sans-serif;background:var(--void);color:var(--txt);padding-bottom:env(safe-area-inset-bottom);transition:background .5s,color .5s}
 main{max-width:980px;margin:0 auto;padding:0 12px 24px}
-.hero{--px:0;--py:0;position:relative;height:300px;overflow:hidden;margin:0 -12px;background:radial-gradient(ellipse at 50% 75%,#1b2468 0,#080c24 55%,#03040b 100%);padding-top:env(safe-area-inset-top)}
+.hero,.bdbox{--px:0;--py:0;--rc:#3a55ff88;--rg:14px;background:var(--hero)}
+.hero{position:relative;height:340px;overflow:hidden;margin:0 -12px;padding-top:env(safe-area-inset-top);touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:background .5s}
 @media(min-width:1000px){.hero{margin:0;border-radius:0 0 18px 18px}}
+.hero[data-rank=E]{--rc:#7b849977;--rg:8px}.hero[data-rank=D]{--rc:#4b8bff88;--rg:12px}.hero[data-rank=C]{--rc:#3fd18a88;--rg:16px}.hero[data-rank=B]{--rc:#a06bffaa;--rg:20px}.hero[data-rank=A]{--rc:#ff9f43bb;--rg:24px}.hero[data-rank=S]{--rc:#f5c451dd;--rg:30px}
 #fx{position:absolute;inset:0;width:100%;height:100%;display:block}
-.fig{position:absolute;bottom:0;left:50%;height:94%;transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px));transition:transform .15s ease-out;filter:drop-shadow(0 0 18px #3a55ff88)}
-.eyes{filter:drop-shadow(0 0 5px #9bbcff) drop-shadow(0 0 12px #5b7cff);animation:ignite 1.6s .4s both}
-@keyframes ignite{0%{opacity:0}40%{opacity:.15}55%{opacity:.9}100%{opacity:1}}
-.hud{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;gap:12px;padding:40px 14px 12px;background:linear-gradient(transparent,#03040bee)}
-.rank{width:58px;height:58px;display:grid;place-items:center;border:2px solid var(--gold);color:var(--gold);font-size:34px;font-weight:700;border-radius:10px;box-shadow:0 0 16px #f5c45155;flex:none}
-.lvbox{flex:1;min-width:0}.lv{font-size:22px;font-weight:700}
-.bar{height:10px;background:#141a3a;border-radius:6px;overflow:hidden;border:1px solid var(--line)}
-.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aura),#b7c8ff);transition:width .8s}
+.fig{-webkit-mask-image:linear-gradient(#000 80%,transparent 100%);mask-image:linear-gradient(#000 80%,transparent 100%);position:absolute;top:6px;left:50%;height:76%;transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px));filter:drop-shadow(0 0 var(--rg) var(--rc))}
+.fl,.wp{transform-box:fill-box;transform-origin:50% 100%;animation:fl .9s ease-in-out infinite alternate}.wp{animation-duration:1.8s}.rays{transform-box:fill-box;transform-origin:50% 50%;animation:spin 40s linear infinite}
+@keyframes fl{0%{transform:scaleY(.82)}100%{transform:scaleY(1.12)}}@keyframes spin{to{transform:rotate(360deg)}}
+.still .fl,.still .wp,.still .rays{animation:none}
+.status{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin:-24px 0 12px;position:relative;z-index:2;box-shadow:0 8px 24px var(--shadow)}
+.status .lvbox{flex:1;min-width:0}
+.rank{width:58px;height:58px;display:grid;place-items:center;border:2px solid var(--gold);color:var(--gold);font-size:34px;font-weight:700;border-radius:10px;box-shadow:0 0 16px #f5c45144;flex:none}
+.hn{font-size:13px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase}.lv{font-size:22px;font-weight:700}
+.bar{height:10px;background:var(--barbg);border-radius:6px;overflow:hidden;border:1px solid var(--line)}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aura),#9bb4ff);transition:width .8s}
 .xpt{font-size:14px;color:var(--mut)}
 .streak{text-align:right;flex:none}.streak b{font-size:40px;line-height:1;color:var(--glow);text-shadow:0 0 14px var(--aura)}.streak span{display:block;font-size:14px;color:var(--mut)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}
+.coin{display:inline-block;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#d9a53a);box-shadow:0 0 8px #f5c45166;vertical-align:-2px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;transition:background .5s,border-color .5s}
+[data-theme=day] .card{box-shadow:0 2px 10px #1a2a6014}
 h2{font-size:19px;margin:0 0 8px}
-input,select,textarea,button{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;width:100%;margin:3px 0;background:#080c1f;color:var(--txt)}
-input[type=date],input[type=time]{color-scheme:dark}
+input,select,textarea,button{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;width:100%;margin:3px 0;background:var(--inp);color:var(--txt)}
 button{background:var(--aura);color:#fff;border:0;cursor:pointer;width:auto;padding:10px 16px;font-weight:700}
-button.sec{background:#1a2250;color:var(--txt)}button.del{background:#8f2438}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+button.sec{background:var(--btn2);color:var(--txt)}button.del{background:#8f2438;color:#fff}button.ok{background:#14804a}
+:focus-visible{outline:2px solid var(--aura);outline-offset:2px}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
-.task{border-top:1px solid var(--line);padding:10px 0}.task.done .t{color:var(--mut);text-decoration:line-through}
-.t{font-weight:700;font-size:18px}.meta{font-size:14px;color:var(--mut)}.meta a{color:#9bbcff}
-.badge{display:inline-block;font-size:13px;padding:1px 9px;border-radius:99px;background:#1a2250;color:var(--txt)}
-.s-scheduled{background:#6b5a12}.s-published{background:#14633a}.s-completed{background:#1e4f9a}.s-prepared{background:#7a3d12}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:#080c1f;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;color:var(--mut)}.stats b{font-size:26px;display:block;color:var(--txt)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:6px 12px;border-radius:8px;border:1px solid var(--line);color:var(--mut);opacity:.55}.chip.on{opacity:1;color:var(--gold);border-color:var(--gold);box-shadow:0 0 10px #f5c45133}
-#banner{margin-top:8px}.alert{background:#6b5a12;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--gold);color:#201600;font-weight:700;padding:10px 18px;border-radius:99px;z-index:20;animation:pop 2.4s forwards}
+.task{border-top:1px solid var(--line);padding:10px 0;animation:fadeIn .3s both}.task.done .t{color:var(--mut);text-decoration:line-through}
+.t{font-weight:700;font-size:18px}.meta{font-size:14px;color:var(--mut)}.meta a{color:var(--link)}
+.badge{display:inline-block;font-size:13px;padding:1px 9px;border-radius:99px;background:var(--btn2);color:var(--txt)}
+.s-scheduled{background:#8a6d12;color:#fff}.s-published{background:#14733f;color:#fff}.s-completed{background:#1e56b0;color:#fff}.s-prepared{background:#9a4a14;color:#fff}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:var(--inp);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;color:var(--mut)}.stats b{font-size:26px;display:block;color:var(--txt)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:6px 12px;border-radius:8px;border:1px solid var(--line);color:var(--mut);opacity:.6}.chip.on{opacity:1;color:var(--gold);border-color:var(--gold);box-shadow:0 0 10px #f5c45133}
+#banner{margin-top:8px}.alert{background:#8a6d12;color:#fff;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#f5c451;color:#201600;font-weight:700;padding:10px 18px;border-radius:99px;z-index:60;animation:pop 2.4s forwards}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,12px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
-.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}.drop img{max-height:70px;max-width:100%;border-radius:8px;margin-top:8px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}.top .row{flex:none}.top button{margin:0}
-.tabs{display:flex;gap:6px;position:sticky;top:0;z-index:8;background:var(--void);padding:8px 0;margin-bottom:10px;overflow-x:auto}
-.tab{flex:1;min-width:92px;background:#121a40;color:var(--mut);margin:0}.tab.on{background:var(--aura);color:#fff;box-shadow:0 0 14px #5b7cff66}
-.view{display:none}.view.on{display:block}
+.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}
+.tabs{display:flex;gap:6px;position:sticky;top:0;z-index:8;background:var(--void);padding:8px 0;margin-bottom:10px}
+.tab{flex:1;min-width:0;margin:0;padding:11px 0;background:var(--tab);color:var(--mut);display:grid;place-items:center;border-radius:12px}
+.tab svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.tab.on{background:var(--aura);color:#fff;box-shadow:0 0 16px #5b7cff66}
+.view{display:none}.view.on{display:block;animation:viewIn .38s cubic-bezier(.2,.7,.2,1)}.view.on .card{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
+.view.on .card:nth-child(2){animation-delay:.05s}.view.on .card:nth-child(3){animation-delay:.1s}.view.on .card:nth-child(4){animation-delay:.15s}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}@media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
-.tile{background:#080c1f;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14px;color:var(--mut)}.tile b{display:block;font-size:34px;line-height:1.1;color:var(--txt)}
+.tile{background:var(--inp);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14px;color:var(--mut)}.tile b{display:block;font-size:34px;line-height:1.1;color:var(--txt)}
 .two,.addgrid{display:grid;gap:12px}@media(min-width:820px){.two,.addgrid{grid-template-columns:1fr 1fr}}
-.week{display:flex;gap:6px}.day{flex:1;text-align:center;font-size:13px;color:var(--mut)}.day i{display:block;height:36px;border-radius:6px;background:#080c1f;border:1px solid var(--line);margin-bottom:4px}.day.on i{background:linear-gradient(#5b7cff,#2a3aa8);box-shadow:0 0 10px #5b7cff77}
-.pvq{border:1px solid var(--line);border-left:4px solid var(--aura);border-radius:10px;padding:12px;background:#080c1f}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:8px;margin-top:8px}
-.qimg{display:block;max-width:100%;max-height:200px;border-radius:8px;margin-top:6px;cursor:zoom-in}
-.pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
-.welcome{position:fixed;inset:0;z-index:30;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 45%,#2a3aa8cc,#03040bf5 70%);animation:wel 2.1s forwards;pointer-events:none}
-.welcome b{display:block;font-size:30px;margin-top:16px;text-shadow:0 0 16px var(--aura)}.welcome span{color:var(--mut)}
+.week{display:flex;gap:6px}.day{flex:1;text-align:center;font-size:13px;color:var(--mut)}.day i{display:block;height:36px;border-radius:6px;background:var(--inp);border:1px solid var(--line);margin-bottom:4px}.day.on i{background:linear-gradient(#5b7cff,#2a3aa8);box-shadow:0 0 10px #5b7cff77}
+.pvq{border:1px solid var(--line);border-left:4px solid var(--aura);border-radius:10px;padding:12px;background:var(--inp)}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:8px;margin-top:8px}
+.qimg{display:block;max-width:100%;max-height:200px;border-radius:8px;margin-top:6px;cursor:zoom-in}.pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
+.welcome{position:fixed;inset:0;z-index:70;display:grid;place-items:center;text-align:center;color:#e6ecff;background:radial-gradient(circle at 50% 45%,#2a3aa8cc,#03040bf5 70%);animation:wel 2.1s forwards;pointer-events:none}
+.welcome b{display:block;font-size:30px;margin-top:16px;text-shadow:0 0 16px #5b7cff}.welcome span{color:#8b97c7}
 .slits{display:flex;gap:46px;justify-content:center}.slits i{display:block;width:56px;height:7px;background:#eef4ff;border-radius:4px;box-shadow:0 0 14px #9bbcff,0 0 34px #5b7cff;animation:slit 1.2s .15s both}
-@keyframes slit{0%{transform:scaleX(0);opacity:0}30%,100%{transform:scaleX(1);opacity:1}}
-@keyframes wel{0%{opacity:0}14%,72%{opacity:1}100%{opacity:0}}
-.draft{display:flex;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;background:#080c1f}.draft>img{width:92px;max-height:130px;object-fit:cover;border-radius:8px;flex:none;align-self:flex-start;cursor:zoom-in}
+@keyframes slit{0%{transform:scaleX(0);opacity:0}30%,100%{transform:scaleX(1);opacity:1}}@keyframes wel{0%{opacity:0}14%,72%{opacity:1}100%{opacity:0}}
+.draft{display:flex;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;background:var(--inp);animation:rise .35s both}.draft>img{width:92px;max-height:130px;object-fit:cover;border-radius:8px;flex:none;align-self:flex-start;cursor:zoom-in}
 .draft .f{flex:1;min-width:0}.draft input,.draft select{padding:7px;margin:2px 0;font-size:15px}.draft .row>*{min-width:90px}.draft label{flex:none}.draft input[type=checkbox]{width:20px;height:20px;margin:6px 0 0}
 .pid{font-size:13px;color:var(--gold)}
-.lnkrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:14px}.lnkrow a{color:#9bbcff}.lnkrow button{padding:5px 10px;margin:0}.fbf{display:block;width:100%;height:520px;border:0;border-radius:8px;margin-top:8px;background:#fff}
-.hn{font-size:13px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase}
-.avatar{display:none;position:absolute;bottom:0;left:50%;height:94%;aspect-ratio:3/4;transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px));transition:transform .15s ease-out}
-.hero.hasav .fig{display:none}.hero.hasav .avatar{display:block}
-.avatar::before{content:"";position:absolute;inset:6% 4%;border-radius:50%;background:radial-gradient(circle,var(--rc,#5b7cff) 0,transparent 66%);opacity:var(--ra,.15);filter:blur(24px);animation:pulse 3s ease-in-out infinite}
-.ph{position:relative;overflow:hidden}.avatar .ph{position:absolute;inset:0;-webkit-mask-image:radial-gradient(ellipse 64% 60% at 50% 46%,#000 52%,transparent 100%);mask-image:radial-gradient(ellipse 64% 60% at 50% 46%,#000 52%,transparent 100%);animation:breathe 4.5s ease-in-out infinite}
-.ph img{width:100%;height:100%;object-fit:cover;display:block}
-@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
-@keyframes pulse{0%,100%{opacity:var(--ra,.15)}50%{opacity:calc(var(--ra,.15)*1.9)}}
-.rk-E{--rc:#7b8499;--ra:.08}.rk-E img{filter:grayscale(.95) brightness(.5) contrast(.9) blur(.6px)}
-.rk-D{--rc:#4b8bff;--ra:.15}.rk-D img{filter:grayscale(.65) brightness(.62) contrast(.95)}
-.rk-C{--rc:#3fd18a;--ra:.22}.rk-C img{filter:grayscale(.35) brightness(.75)}
-.rk-B{--rc:#a06bff;--ra:.3}.rk-B img{filter:grayscale(.15) brightness(.88) contrast(1.05)}
-.rk-A{--rc:#ff9f43;--ra:.42}.rk-A img{filter:saturate(1.15) contrast(1.1)}
-.rk-S{--rc:#f5c451;--ra:.6}.rk-S img{filter:saturate(1.25) contrast(1.15) brightness(1.08) drop-shadow(0 0 6px #f5c45199)}
-.toon .ph{filter:url(#toon)}
-.evo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(min-width:700px){.evo{grid-template-columns:repeat(6,1fr)}}
-.ev{text-align:center;font-size:13px;color:var(--mut)}.ev .ph{aspect-ratio:3/4;border-radius:10px;border:1px solid var(--line);background:#080c1f;margin-bottom:4px}.ev.cur{color:var(--gold)}.ev.cur .ph{border-color:var(--gold);box-shadow:0 0 12px #f5c45144}
-.hero.levelup{animation:flash 1.4s}.hero.levelup::after{content:"";position:absolute;left:50%;top:55%;width:40px;height:40px;border-radius:50%;border:3px solid var(--gold);transform:translate(-50%,-50%);animation:shock 1.4s ease-out forwards;pointer-events:none}
-@keyframes flash{0%{filter:brightness(2.2)}100%{filter:none}}@keyframes shock{to{width:900px;height:900px;opacity:0}}
-.hero{touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.avatar{transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px)) perspective(800px) rotateY(calc(var(--yaw,0)*1deg));transition:none}
-.avatar .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,3,10,var(--sh2,0)),transparent 45%,transparent 55%,rgba(2,3,10,var(--sh,0)))}
-.fig{transition:none}
-.still .eyes,.still .avatar .ph,.still .avatar::before{animation:none}
+.lnkrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:14px}.lnkrow a{color:var(--link)}.lnkrow button{padding:5px 10px;margin:0}.fbf{display:block;width:100%;height:520px;border:0;border-radius:8px;margin-top:8px;background:#fff}
 .rem{display:flex;align-items:center;gap:8px;color:var(--mut);margin:6px 0;font-size:16px}.rem input{width:auto;margin:0;accent-color:var(--aura)}
-.warn{background:#3d2410;border:1px solid #b8742a;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;gap:10px;justify-content:space-between;align-items:center}.warn button{margin:0;flex:none}
-button.ok{background:#14804a}
-.view.on{animation:viewIn .38s cubic-bezier(.2,.7,.2,1)}.view.on .card{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
-.view.on .card:nth-child(2){animation-delay:.05s}.view.on .card:nth-child(3){animation-delay:.1s}.view.on .card:nth-child(4){animation-delay:.15s}
-@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.task{animation:fadeIn .3s both}.draft{animation:rise .35s both}
+.warn{background:var(--warnbg);border:1px solid var(--warnln);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;gap:10px;justify-content:space-between;align-items:center}.warn button{margin:0;flex:none}
 input,select,textarea{transition:border-color .2s,box-shadow .2s,background .2s}
-input:focus,select:focus,textarea:focus{border-color:var(--aura);box-shadow:0 0 0 3px #5b7cff33,0 0 16px #5b7cff33;outline:none;background:#0a1030}
-button{transition:transform .12s,box-shadow .2s,filter .2s}button:hover{filter:brightness(1.14);box-shadow:0 4px 18px #5b7cff44}button:active{transform:scale(.96)}
-#auth{position:relative;overflow:hidden;animation:rise .5s both}#auth::before{content:"";position:absolute;inset:0;border-radius:10px;padding:1px;background:linear-gradient(120deg,transparent 30%,#7f9bffcc,transparent 70%);background-size:300% 100%;animation:sheen 4s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+input:focus,select:focus,textarea:focus{border-color:var(--aura);box-shadow:0 0 0 3px #5b7cff33,0 0 16px #5b7cff33;outline:none;background:var(--inpf)}
+button{transition:transform .12s,box-shadow .2s,filter .2s,background .3s}button:hover{filter:brightness(1.12);box-shadow:0 4px 18px #5b7cff44}button:active{transform:scale(.95)}
+#auth{position:relative;overflow:hidden;animation:rise .5s both;margin-top:14px}#auth::before{content:"";position:absolute;inset:0;border-radius:10px;padding:1px;background:linear-gradient(120deg,transparent 30%,#7f9bffcc,transparent 70%);background-size:300% 100%;animation:sheen 4s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 @keyframes sheen{to{background-position:-300% 0}}
-@media(max-width:600px){.tab{min-width:0;padding:10px 4px;font-size:15px}}
-.fig.rk-E,.mini.rk-E{filter:grayscale(.9) brightness(.62) drop-shadow(0 0 10px #7b849966)}
-.fig.rk-D,.mini.rk-D{filter:grayscale(.55) brightness(.72) drop-shadow(0 0 14px #4b8bff77)}
-.fig.rk-C,.mini.rk-C{filter:grayscale(.28) brightness(.84) drop-shadow(0 0 18px #3fd18a77)}
-.fig.rk-B,.mini.rk-B{filter:grayscale(.1) brightness(.94) drop-shadow(0 0 22px #a06bff99)}
-.fig.rk-A,.mini.rk-A{filter:saturate(1.15) drop-shadow(0 0 26px #ff9f43aa)}
-.fig.rk-S,.mini.rk-S{filter:saturate(1.25) brightness(1.08) drop-shadow(0 0 32px #f5c451cc)}
-.fig.face .eyes,.mini.face .eyes{display:none}.fig.face.rk-A .eyes,.fig.face.rk-S .eyes,.mini.face.rk-A .eyes,.mini.face.rk-S .eyes{display:inline}
-.mini{display:block;width:100%;height:100%}.ev .ph{aspect-ratio:400/420;background:radial-gradient(ellipse at 50% 70%,#1b2468,#05060f)}
-.status{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin:-24px 0 12px;position:relative;z-index:2;box-shadow:0 8px 24px #0008}
-.status .lvbox{flex:1;min-width:0}
-.modal{position:fixed;inset:0;z-index:50;background:#03040bee;display:grid;place-items:center;padding:12px;overflow:auto}
-.mbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;max-width:360px;width:100%;max-height:100%;overflow:auto}
-#cv{display:block;width:100%;max-width:300px;height:auto;margin:6px auto;touch-action:none;border-radius:10px;background:#000}
-.pvbox{display:flex;align-items:center;gap:10px}.pvbox img{width:84px;border-radius:10px;border:1px solid var(--line)}
+.modal{position:fixed;inset:0;z-index:50;background:#03040bee;display:grid;place-items:center;padding:12px;overflow:auto}.mbox{background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:14px;padding:14px;max-width:360px;width:100%;max-height:100%;overflow:auto}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}@media(min-width:700px){.grid{grid-template-columns:repeat(5,1fr)}}
-.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:zoom-in;background:#080c1f}
-@media(max-width:600px){.hero{height:270px}.draft{flex-direction:column}.draft>img{width:100%;max-height:200px}.row>*{min-width:100px}}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:zoom-in;background:var(--inp)}
+.shopTop{position:sticky;top:6px;z-index:6;display:flex;gap:12px;align-items:center}
+.pvfig{width:128px;height:134px;flex:none;border-radius:12px;overflow:hidden;border:1px solid var(--line);position:relative}.pvfig svg{width:100%;height:100%;display:block}
+.shopInfo{flex:1;min-width:0}.goldrow{display:flex;align-items:center;gap:6px;margin:4px 0}.goldrow b{font-size:26px;color:var(--gold)}
+.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:4px}.cat{flex:none;padding:7px 14px;background:var(--btn2);color:var(--txt);margin:0;border-radius:99px;font-size:15px}.cat.on{background:var(--aura);color:#fff}
+.shopGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(min-width:700px){.shopGrid{grid-template-columns:repeat(5,1fr)}}
+.itm{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px;margin:0;background:var(--inp);color:var(--txt);border:1px solid var(--line);border-radius:12px;text-align:center;min-width:0}
+.itm svg,.itm .bdp{width:100%;aspect-ratio:1;border-radius:8px;background:radial-gradient(ellipse at 50% 70%,#1b2468,#05060f);display:block}.itm .bdp{background:var(--hero)}
+.itm .sw{display:block;width:44px;height:44px;border-radius:50%;margin:8px 0;border:2px solid var(--line)}
+.itm .nm{font-size:14px;font-weight:700;line-height:1.1}.itm .pr{font-size:13px;color:var(--gold)}
+.itm.eq{border-color:var(--aura);box-shadow:0 0 0 2px #5b7cff55}.itm.eq .pr{color:#2ec27e}.itm.lock{opacity:.55}.itm.lock .pr{color:var(--mut)}
+[data-bd=gate]{--hero:radial-gradient(ellipse 36% 58% at 50% 56%,#e0c8ff 0,#8a4bff 24%,transparent 64%),linear-gradient(#0a0618,#1d0b3d 60%,#08040f)}
+[data-bd=roof]{--hero:linear-gradient(#10163a,#3a2a66 55%,#ff9d6b 100%)}
+[data-bd=moon]{--hero:radial-gradient(circle at 72% 28%,#ff8a8a 0,#d8334c 8%,#d8334c33 16%,transparent 17%),radial-gradient(ellipse at 50% 85%,#4a0f1f,#12030a 72%)}
+[data-bd=throne]{--hero:repeating-linear-gradient(90deg,transparent 0 54px,#2a165066 54px 62px),radial-gradient(ellipse at 50% 60%,#6a46b0,#150a2e 75%)}
+.hero[data-bd=roof]::before{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'><path fill='%2308091c' d='M0 100V60h30V30h28v40h24V45h34V20h26v50h30V50h40V25h30v45h26V40h40v60Z'/></svg>") bottom/400px 100% repeat-x}
+html{--pc:#b8c4e6}[data-phase="2"]{--pc:#4b8bff}[data-phase="3"]{--pc:#35d0ff}[data-phase="4"]{--pc:#a06bff}
+:root{--btn:#4a67f0}[data-theme=day]{--btn:#3a5bff;--gold:#946313}
+button{background:var(--btn);min-height:46px}button.sec{background:var(--btn2)}button.del{background:#8f2438}button.ok{background:#14804a}
+.cat{min-height:40px}.cat.on{background:var(--btn)}.meta{font-size:15px}
+.tab{display:flex;align-items:center;justify-content:center;flex:1 1 0;min-width:0;padding:11px 0}.tab.on{flex:2.2 1 0;background:var(--btn)}
+.tab .lbl{display:none;font-size:14px;font-weight:700;margin-left:6px}.tab.on .lbl{display:inline}
+.skip{position:absolute;left:-999px;top:8px;background:var(--btn);color:#fff;padding:10px 14px;border-radius:8px;z-index:100}.skip:focus{left:8px}
+.cap{position:absolute;left:0;right:0;bottom:0;padding:40px 16px 32px;text-align:center;color:#fff;background:linear-gradient(transparent,#03040bd9 72%);pointer-events:none}
+.cap small{display:block;letter-spacing:.35em;font-size:13px;opacity:.92}.cap b{display:block;font-size:30px;letter-spacing:.12em;line-height:1.05;color:var(--pc);text-shadow:0 0 18px var(--pc),0 2px 4px #000}.cap span{display:block;font-size:14px;margin-top:2px;text-shadow:0 1px 3px #000}
+.portrait{display:none;position:absolute;bottom:0;left:50%;height:100%;width:min(78%,360px);transform:translateX(-50%) perspective(900px) rotateY(calc(var(--yaw,0)*.35deg));animation:breathe 5s ease-in-out infinite}
+.hasPortrait .portrait{display:block}.hasPortrait .fig{display:none}
+.portrait::before{content:"";position:absolute;inset:0 -12%;background:radial-gradient(ellipse at 50% 55%,var(--pc),transparent 65%);opacity:.5;filter:blur(24px)}
+.portrait img{position:relative;width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+@keyframes breathe{0%,100%{scale:1}50%{scale:1.02}}.still .portrait{animation:none}
+.holo{position:absolute;top:12px;right:12px;width:118px;padding:8px 10px;border:1px solid #35d0ff88;border-radius:8px;background:#06214ae6;color:#bfefff;font-size:12px;box-shadow:0 0 18px #35d0ff55;pointer-events:none}
+.holo b{display:block;letter-spacing:.2em;font-size:11px;margin-bottom:4px}.holo div{display:flex;justify-content:space-between}.holo em{font-style:normal;font-weight:700}
+.sysw{border-color:#35d0ff66;box-shadow:inset 0 0 24px #35d0ff14}[data-theme=day] .sysw{border-color:#9bb4f0;box-shadow:none}
+.sysw h2{letter-spacing:.18em;text-transform:uppercase;font-size:15px;color:var(--link)}
+.stat{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;margin:8px 0}.stat span{color:var(--mut)}.stat b{font-size:20px}.stat i{grid-column:1/-1;display:block;height:6px;background:var(--barbg);border-radius:4px;overflow:hidden}.stat u{display:block;height:100%;background:linear-gradient(90deg,var(--aura),#35d0ff);border-radius:4px}
+.skill{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);opacity:.65}.skill:first-child{border-top:0}.skill.on{opacity:1}.skill b{display:block}.skill small{color:var(--mut);font-size:13px}.skill em{font-style:normal;font-size:12px;color:var(--mut)}.skill.on em{color:#2ec27e}
+.hex{width:26px;height:26px;background:var(--btn2);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.skill.on .hex{background:linear-gradient(#9bb4ff,#35d0ff)}
+.rw{display:inline-block;margin-left:8px;font-size:13px;color:var(--gold);font-weight:700}
+.ph4grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(min-width:760px){.ph4grid{grid-template-columns:repeat(4,1fr)}}
+.ph4{border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--inp)}.ph4.cur{border-color:var(--pcol);box-shadow:0 0 0 2px #5b7cff44}
+.ph4 .pimg{aspect-ratio:2/3;border-radius:8px;overflow:hidden;background:var(--barbg);display:grid;place-items:center;margin-bottom:6px;color:var(--mut);font-size:13px}.ph4 img{width:100%;height:100%;object-fit:cover}
+.ph4 .row>*{min-width:0;padding:8px 6px}.ph4 .meta{display:block;margin:2px 0 8px}
+.hide{display:none}.err{color:var(--bad);font-size:14px}
+@media(max-width:600px){.hero{height:318px}.draft{flex-direction:column}.draft>img{width:100%;max-height:200px}.row>*{min-width:100px}.pvfig{width:104px;height:110px}}
 @media(max-width:700px){
-  .tabs{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;margin:0;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:#070a1cee;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line);gap:4px;overflow:visible}
-  .tab{font-size:12.5px;padding:9px 2px;border-radius:10px;min-width:0}
+  .tabs{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:var(--navbg);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);gap:4px}
+  .tab{border-radius:12px;padding:10px 0;background:transparent}.tab.on{background:var(--aura)}
   main{padding-bottom:96px}.toast{bottom:92px}
 }
-.hide{display:none}.err{color:var(--bad);font-size:14px}
-#auth{margin-top:14px}
-@media(prefers-reduced-motion:reduce){.hero.levelup,.hero.levelup::after{animation:none}.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.eyes{animation:none}.bar i,.fig{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
+@media(prefers-reduced-motion:reduce){.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.bar i{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><clipPath id="hc"><ellipse cx="200" cy="190" rx="62" ry="76"/></clipPath><linearGradient id="chin" x1="0" y1="0" x2="0" y2="1"><stop offset=".62" stop-color="#02030a" stop-opacity="0"/><stop offset="1" stop-color="#02030a" stop-opacity=".8"/></linearGradient></defs><filter id="toon"><feColorMatrix type="saturate" values="1.4"/><feComponentTransfer><feFuncR type="discrete" tableValues="0 .2 .4 .6 .8 1"/><feFuncG type="discrete" tableValues="0 .2 .4 .6 .8 1"/><feFuncB type="discrete" tableValues="0 .2 .4 .6 .8 1"/></feComponentTransfer></filter></svg>
-<main>
-<header class="hero" id="hero">
+<a class="skip" href="#main">Skip to main content</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="ablur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter><filter id="eglow" x="-40%" y="-80%" width="180%" height="260%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
+<main id="main" tabindex="-1">
+<header class="hero" id="hero" data-bd="auto" data-rank="E">
   <canvas id="fx" aria-hidden="true"></canvas>
-  <svg class="fig rk-E" id="fig" viewBox="0 0 400 420" aria-hidden="true"></svg>
+  <div class="portrait" id="portrait"><img id="portraitImg" alt="Your picture for this phase"></div>
+  <svg class="fig" id="fig" viewBox="0 40 400 380" aria-label="Your character"></svg>
+  <div class="holo hide" id="holo" aria-hidden="true"></div>
+  <div class="cap" id="cap"><small id="capPhase">PHASE 1</small><b id="capName">HUMAN</b><span id="capQuote"></span></div>
 </header>
 <div id="banner"></div>
 
@@ -151,8 +159,8 @@ button{transition:transform .12s,box-shadow .2s,filter .2s}button:hover{filter:b
 </div>
 
 <div id="app" class="hide">
-  <div class="status"><div class="rank" id="rank" title="Hunter rank">E</div><div class="lvbox"><div class="hn" id="hname">Hunter</div><div class="lv" id="lv">Level 1</div><div class="bar"><i id="xpbar"></i></div><div class="xpt" id="xptxt">0 XP</div></div><div class="streak"><b id="streak">0</b><span>day streak</span><span id="best">Best 0</span></div></div>
-  <nav class="tabs" id="tabs"><button class="tab on" data-v="overview">Home</button><button class="tab" data-v="quests">Quests</button><button class="tab" data-v="add">Add</button><button class="tab" data-v="album">Album</button><button class="tab" data-v="reports">Reports</button><button class="tab" data-v="profile">Profile</button></nav>
+  <div class="status"><div class="rank" id="rank" title="Hunter rank">E</div><div class="lvbox"><div class="hn" id="hname">Hunter</div><div class="lv" id="lv">Level 1</div><div class="bar"><i id="xpbar"></i></div><div class="xpt"><span id="xptxt">0 XP</span> · <span class="coin"></span> <span class="goldv">0</span> gold</div></div><div class="streak"><b id="streak">0</b><span>day streak</span><span id="best">Best 0</span></div></div>
+  <nav class="tabs" id="tabs"><button class="tab on" data-v="overview" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg><span class="lbl">Home</span></button><button class="tab" data-v="quests" aria-label="Quests" title="Quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.6 1.6L7 5M3 12l1.6 1.6L7 11M3 18l1.6 1.6L7 17"/></svg><span class="lbl">Quests</span></button><button class="tab" data-v="add" aria-label="Add quest" title="Add quest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lbl">Add</span></button><button class="tab" data-v="album" aria-label="Album" title="Album"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg><span class="lbl">Album</span></button><button class="tab" data-v="reports" aria-label="Reports" title="Reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-7M2 20h20"/></svg><span class="lbl">Reports</span></button><button class="tab" data-v="hunter" aria-label="Hunter and shop" title="Hunter and shop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.6-3.2 7.8-8 9-4.8-1.2-8-4.4-8-9V6z"/><circle cx="12" cy="10" r="2.6"/><path d="M7.6 17c1-2.4 2.8-3.4 4.4-3.4s3.4 1 4.4 3.4"/></svg><span class="lbl">Hunter</span></button></nav>
 
   <section class="view on" id="v-overview">
     <div id="tip"></div><div id="risk"></div>
@@ -161,14 +169,16 @@ button{transition:transform .12s,box-shadow .2s,filter .2s}button:hover{filter:b
       <div class="card"><h2>Next up</h2><div id="next"></div></div>
       <div class="card"><h2>Last 7 days</h2><div class="week" id="week"></div><p class="meta">Lit days have at least one Published or Completed quest.</p></div>
     </div>
-    <div class="card"><h2>Achievements</h2><div class="chips" id="badges"></div>
-      <p class="meta">XP: Prepared 5, Scheduled 10, Completed 20, Published (confirmed) 30, +25 for a day with 3+ quests all cleared.</p></div>
+    <div class="two">
+      <div class="card sysw"><h2>Status</h2><div id="stats"></div></div>
+      <div class="card sysw"><h2>Skills</h2><div id="badges"></div><p class="meta">XP: Prepared 5, Scheduled 10, Completed 20, Published (confirmed) 30, +25 for a day with 3 or more quests all cleared. Gold equals XP earned.</p></div>
+    </div>
   </section>
 
   <section class="view" id="v-quests">
     <div class="card"><div class="row"><input id="day" type="date" onchange="load()"><button class="sec" onclick="showView('add')">New quest</button></div>
       <div id="progress" class="meta" style="margin-top:8px"></div></div>
-    <div class="card"><h2>Quests</h2><div id="list"></div></div>
+    <div class="card"><h2>Quests</h2><div class="cats" id="qf" role="group" aria-label="Filter quests"><button class="cat on" data-f="all" aria-pressed="true">All</button><button class="cat" data-f="open" aria-pressed="false">Open</button><button class="cat" data-f="scheduled" aria-pressed="false">Scheduled</button><button class="cat" data-f="done" aria-pressed="false">Done</button></div><div id="list"></div></div>
   </section>
 
   <section class="view" id="v-add">
@@ -222,28 +232,28 @@ button{transition:transform .12s,box-shadow .2s,filter .2s}button:hover{filter:b
     <div class="card"><h2>Albums</h2><select id="albView" onchange="showAlbum()"></select><p class="meta" id="albCount"></p><div class="grid" id="albGrid"></div></div>
   </section>
 
-  <section class="view" id="v-profile">
-    <div class="card"><h2>Hunter profile</h2>
-      <input id="pname" placeholder="Nickname (shown in the hero and welcome)" maxlength="24">
-      <div class="row"><button class="sec" onclick="document.getElementById('avFile').click()">Upload face photo</button><button class="sec" onclick="removeFace()">Remove photo</button><button class="sec" id="motionBtn" onclick="toggleMotion()">Motion: on</button><button onclick="saveProfile()">Save profile</button></div>
-      <input id="avFile" type="file" accept="image/*" class="hide" onchange="openCropper(this.files[0]); this.value=''">
-      <p id="pmsg" class="meta"></p><p class="meta">Nothing moving on your phone? Tap Motion above, or check iPhone Settings, Accessibility, Motion, Reduce Motion.</p>
-    </div>
-    <div class="card"><h2>Evolution</h2><div class="evo" id="evo"></div>
-      <p class="meta">Your face is cropped, redrawn in a flat, ink-lined manhwa style and placed on the character. The character grows brighter and more aura-lit as your rank rises, and glowing eyes switch on at rank A. This is a filter, not AI-drawn art.</p></div>
-    <div class="card"><h2>Account</h2><p class="meta" id="who"></p>
+  <section class="view" id="v-hunter">
+    <div class="card shopTop"><div class="pvfig bdbox" id="pvBox" data-bd="auto"><svg id="pvFig" viewBox="0 40 400 380" aria-label="Your character"></svg></div>
+      <div class="shopInfo"><input id="pname" placeholder="Nickname" maxlength="24" aria-label="Nickname">
+        <div class="goldrow"><span class="coin"></span><b class="goldv">0</b><span class="meta">gold</span></div>
+        <div class="row"><button onclick="saveProfile(true)">Save</button></div><div class="meta" id="pmsg"></div></div></div>
+    <div class="card"><div class="cats" id="cats"></div><div class="shopGrid" id="shopGrid"></div>
+      <p class="meta">Gold is your total XP minus what you have spent. Clear quests to earn more. Items marked Lv need that level first.</p></div>
+    <div class="card"><h2>Phase portraits</h2>
+      <p class="meta">Your level moves you through four phases. Add your own picture for each one and the hero will show it. Without pictures, your avatar is shown and the wardrobe above applies.</p>
+      <div class="ph4grid" id="phGrid"></div>
+      <div class="row" style="margin-top:10px"><button class="sec" id="modeBtn" onclick="toggleMode()">Hero shows: Avatar</button><button class="sec" onclick="showPrompts()">Get prompts</button></div>
+      <input type="file" id="phFile" accept="image/*" class="hide" onchange="uploadPhase(this.files[0]); this.value=''"></div>
+    <div class="card"><h2>Settings</h2>
+      <div class="row"><button class="sec" id="themeBtn" onclick="cycleTheme()">Theme: Auto</button><button class="sec" id="motionBtn" onclick="toggleMotion()">Motion: on</button></div>
+      <p class="meta">Auto theme switches to day at 6:00 AM and night at 6:00 PM, Philippine time.</p>
+      <p class="meta" id="who" style="margin-top:12px"></p>
       <div class="row"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></div>
-      <p class="meta">Alerts while the app is closed come from a server schedule that has to be switched on separately. Until then you only get reminders while the app is open.</p></div>
+      <p class="meta">Alerts while the app is closed come from a server schedule that has to be switched on separately.</p></div>
   </section>
 </div>
-<p class="meta" style="text-align:center;margin-top:16px">Content Tracker v5</p>
+<p class="meta" style="text-align:center;margin-top:16px">Content Tracker v7</p>
 </main>
-<div id="crop" class="modal hide" role="dialog" aria-label="Fit your face"><div class="mbox"><h2>Fit your face</h2>
-  <p class="meta">Drag the photo, pinch or use the slider. Put your eyes on the dashed line and your chin at the bottom of the oval.</p>
-  <canvas id="cv" width="300" height="370"></canvas>
-  <input id="zoom" type="range" min="60" max="400" value="100" aria-label="Zoom">
-  <div class="pvbox"><img id="cvPrev" alt="Manhwa-style preview"><span class="meta">Preview of the finished face</span></div>
-  <div class="row" style="margin-top:10px"><button onclick="cropUse()">Use this face</button><button class="sec" onclick="cropClose()">Cancel</button></div></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
@@ -263,13 +273,116 @@ const today = () => new Date().toLocaleDateString('en-CA', {timeZone: TZ});
 const nowHM = () => new Date().toLocaleTimeString('en-GB', {timeZone: TZ, hour12: false}).slice(0,5);
 const mins = t => { const [h,m] = t.split(':'); return +h*60 + +m; };
 const addDays = (s,n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0,10); };
+
+/* ===== Character engine: layered SVG hunter (boy or girl) that the shop customises ===== */
+const SKIN = ['#ffe3cf','#f4c9a4','#dca878','#b8805a','#7e4f33'];
+const HAIRC = ['#17141f','#4a2f24','#d4daea','#2f5bff','#c9263f','#e9c65a','#7c4ddb'];
+const EYEC = ['#6b3a22','#2f7bff','#8a4bff','#e0334a','#f2c230','#bfe0ff'];
+const AURAC = {blue:'#4b8bff', emerald:'#2ee6a0', violet:'#9a4bff', flame:'#ff7a2e', gold:'#ffd24a'};
+const mixc = (a, b, t) => { const p = h => [1,3,5].map(i => parseInt(h.slice(i, i + 2), 16)), A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const dark = (c, t) => mixc(c, '#000000', t), lite = (c, t) => mixc(c, '#ffffff', t);
+const DEFAULT_LOOK = {body:'boy', skin:1, hair:'spiky', hairColor:0, eyes:0, outfit:'tee', weapon:'none', aura:'none', acc:'none', neck:'none', bd:'auto', mode:'avatar', pp:[]};
+
+function hairShapes(style, hc){
+  const hd = dark(hc, .35), hl = lite(hc, .3);
+  const cap = `<path d="M138 194C126 132 158 98 200 98C242 98 274 132 262 194C258 168 250 150 232 142C214 152 186 152 168 142C150 150 142 168 138 194Z" fill="${hc}"/>`;
+  const shine = `<path d="M166 116C188 106 216 106 236 118" stroke="${hl}" stroke-width="5" fill="none" stroke-linecap="round" opacity=".55"/>`;
+  const S = {
+    spiky: {back:'', front: `<path d="M142 140L150 90L172 118L186 78L204 114L222 76L234 116L254 88L260 142Z" fill="${hc}"/>${cap}<path d="M164 146L172 170L184 150ZM236 146L228 168L216 150Z" fill="${hc}"/>${shine}`},
+    swept: {back:'', front: `${cap}<path d="M144 152C170 120 226 116 256 152C236 148 214 156 200 172L184 174C174 164 160 158 144 152Z" fill="${hc}"/><path d="M204 146L210 168L220 150Z" fill="${hd}"/>${shine}`},
+    pomp: {back:'', front: `<path d="M138 156C122 92 176 66 214 74C256 82 276 120 262 156C254 130 232 122 200 124C168 124 146 134 138 156Z" fill="${hc}"/><path d="M138 194C136 176 140 160 152 150L160 190ZM262 194C264 176 260 160 248 150L240 190Z" fill="${hc}"/><path d="M160 98C186 80 226 84 244 102" stroke="${hl}" stroke-width="6" fill="none" stroke-linecap="round" opacity=".55"/>`},
+    bob: {back: `<path d="M124 196C116 130 150 96 200 96C250 96 284 130 276 196L278 256C268 270 248 264 244 246L156 246C152 264 132 270 122 256Z" fill="${hd}"/>`, front: `${cap}<path d="M140 160C164 134 236 134 260 160L258 188C238 168 162 168 142 188Z" fill="${hc}"/>${shine}`},
+    long: {back: `<path d="M122 196C112 126 150 94 200 94C250 94 288 126 278 196L296 346L104 346Z" fill="${hd}"/>`, front: `${cap}<path d="M138 194C142 156 168 142 200 144C232 142 258 156 262 194C250 172 230 160 200 160C170 160 150 172 138 194Z" fill="${hc}"/><path d="M138 194L134 250L150 232ZM262 194L266 250L250 232Z" fill="${hc}"/>${shine}`},
+    twin: {back: `<path d="M142 150C96 146 72 206 90 290C104 312 122 290 124 258C126 226 140 196 150 172Z" fill="${hd}"/><path d="M258 150C304 146 328 206 310 290C296 312 278 290 276 258C274 226 260 196 250 172Z" fill="${hd}"/>`, front: `${cap}<path d="M140 160C164 134 236 134 260 160L256 184C236 166 164 166 144 184Z" fill="${hc}"/><circle cx="140" cy="154" r="9" fill="#e0334a"/><circle cx="260" cy="154" r="9" fill="#e0334a"/>${shine}`},
+    pony: {back: `<path d="M246 122C310 104 346 176 322 262C314 292 294 292 290 270C288 226 274 180 240 150Z" fill="${hd}"/>`, front: `${cap}<path d="M144 150C170 120 230 118 258 150C236 148 214 158 198 180L186 214C180 186 166 162 144 150Z" fill="${hc}"/><circle cx="250" cy="130" r="8" fill="#e0334a"/>${shine}`}
+  };
+  return S[style] || S.spiky;
+}
+function outfitShapes(o, girl){
+  const torso = 'M16 420C24 336 104 304 160 292L240 292C296 304 376 336 384 420Z';
+  const O = {
+    shirt: `<path d="${torso}" fill="#15161f"/><path d="M16 420C24 336 104 304 160 292L178 292L172 420Z" fill="#f1f3fa"/><path d="M384 420C376 336 296 304 240 292L222 292L228 420Z" fill="#f1f3fa"/><path d="M160 292L178 292L188 320L166 306ZM240 292L222 292L212 320L234 306Z" fill="#ffffff" stroke="#c9d0e6" stroke-width="2"/><path d="M60 400C70 360 100 340 140 322M340 400C330 360 300 340 260 322" stroke="#c9d0e6" stroke-width="3" fill="none"/>`,
+    tee: `<path d="${torso}" fill="#3b4f94"/><path d="M158 292Q200 336 242 292" stroke="#8fa6ff" stroke-width="5" fill="none"/>`,
+    jacket: `<path d="${torso}" fill="#2a3f9c"/><path d="M168 292L200 392L232 292Z" fill="#e8ecff"/><path d="M158 292L190 400M242 292L210 400" stroke="#8fa6ff" stroke-width="4"/><path d="M200 330L200 420" stroke="#1a2a6c" stroke-width="3"/>`,
+    hoodie: `<path d="M126 306C132 252 168 258 200 272C232 258 268 252 274 306Z" fill="#2b2f4f"/><path d="${torso}" fill="#1c1e32"/><path d="M160 292Q200 322 240 292L246 300Q200 346 154 300Z" fill="#2b2f4f"/><path d="M188 318L186 372M212 318L214 372" stroke="#cfd6ff" stroke-width="3" stroke-linecap="round"/>`,
+    armor: `<path d="${torso}" fill="#7c859d"/><ellipse cx="112" cy="326" rx="58" ry="30" fill="#aeb7cc" stroke="#5a6279" stroke-width="3"/><ellipse cx="288" cy="326" rx="58" ry="30" fill="#aeb7cc" stroke="#5a6279" stroke-width="3"/><path d="M160 292Q200 330 240 292L250 312Q200 360 150 312Z" fill="#d9a53a"/><path d="M170 340H230L222 420H178Z" fill="#9aa3bb" stroke="#5a6279" stroke-width="3"/>`,
+    coat: `<path d="${torso}" fill="#0d0e18"/><path d="M146 298L156 244L188 290ZM254 298L244 244L212 290Z" fill="#14152a" stroke="#8a4bff" stroke-width="3"/><path d="M200 292L200 420" stroke="#8a4bff" stroke-width="3"/><path d="M150 330L176 420M250 330L224 420" stroke="#2a2d55" stroke-width="4"/>`,
+    mantle: `<path d="M0 420C10 330 100 296 160 288L240 288C300 296 390 330 400 420Z" fill="#12091f"/><path d="M118 296L100 262L146 284ZM282 296L300 262L254 284Z" fill="#d9a53a"/><path d="M150 296Q200 340 250 296L262 310Q200 372 138 310Z" fill="#d9a53a"/><circle cx="200" cy="352" r="12" fill="#9a4bff"/><circle cx="200" cy="352" r="5" fill="#f2e6ff"/><path d="M10 410C60 360 150 350 200 350" stroke="#d9a53a" stroke-width="3" fill="none" opacity=".7"/>`
+  };
+  return O[o] || O.tee;
+}
+function weaponShapes(w){
+  const W = {
+    none: '',
+    dagger: `<g transform="rotate(14 300 300)"><path d="M296 300L302 214L310 300Z" fill="#d6deef"/><rect x="290" y="296" width="26" height="8" rx="3" fill="#6b4a2a"/></g>`,
+    sword: `<g transform="rotate(16 300 300)"><path d="M294 300L304 80L314 300Z" fill="#d6deef"/><path d="M304 80L314 300L306 300Z" fill="#9aa8c4"/><rect x="282" y="296" width="44" height="9" rx="3" fill="#d9a53a"/></g>`,
+    twin: `<g><path d="M288 306L350 150L360 158L304 312Z" fill="#d6deef"/><path d="M112 306L50 150L40 158L96 312Z" fill="#d6deef"/><rect x="284" y="300" width="30" height="8" rx="3" fill="#6b4a2a" transform="rotate(-22 300 304)"/><rect x="86" y="300" width="30" height="8" rx="3" fill="#6b4a2a" transform="rotate(22 100 304)"/></g>`,
+    staff: `<g transform="rotate(12 320 300)"><rect x="316" y="110" width="8" height="200" rx="4" fill="#4a3a6a"/><circle cx="320" cy="96" r="22" fill="#9a4bff" filter="url(#ablur)" opacity=".8"/><circle cx="320" cy="96" r="13" fill="#e6d4ff"/></g>`,
+    demon: `<g transform="rotate(18 296 310)"><path d="M280 310L282 120L296 44L312 120L316 310Z" fill="#1a1230" stroke="#9a4bff" stroke-width="3"/><path d="M296 60L296 300" stroke="#c9a2ff" stroke-width="2" opacity=".8"/><rect x="266" y="306" width="60" height="10" rx="4" fill="#9a4bff"/></g>`
+  };
+  return W[w] || '';
+}
+function neckShapes(n){ if (n === 'chain') return '<path d="M160 294Q200 350 240 294" stroke="#d5dbea" stroke-width="3.5" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/>'; if (n === 'pendant') return '<path d="M160 294Q200 350 240 294" stroke="#d5dbea" stroke-width="2.5" fill="none"/><path d="M200 344L193 346L200 372L207 346Z" fill="#d5dbea" stroke="#8a94b0" stroke-width="1.5"/>'; return ''; }
+function accShapes(a, hc){
+  const A = {
+    none: '', shades: `<path d="M148 186Q148 180 156 180H186Q194 180 194 188V198Q194 210 184 210H160Q148 210 148 198Z" fill="#0d0f18"/><path d="M206 188Q206 180 214 180H244Q252 180 252 186V198Q252 210 240 210H216Q206 210 206 198Z" fill="#0d0f18"/><path d="M194 188Q200 184 206 188" stroke="#0d0f18" stroke-width="4" fill="none"/><path d="M148 186L138 182M252 186L262 182" stroke="#0d0f18" stroke-width="4" stroke-linecap="round"/><path d="M156 188L170 186M214 188L228 186" stroke="#fff" stroke-width="2" opacity=".4" stroke-linecap="round"/>`, glasses: `<g fill="rgba(190,225,255,.18)" stroke="#1d1d2b" stroke-width="3"><circle cx="171" cy="196" r="19"/><circle cx="229" cy="196" r="19"/></g><path d="M190 194Q200 188 210 194M152 192L140 188M248 192L260 188" stroke="#1d1d2b" stroke-width="3" fill="none"/>`,
+    headband: `<path d="M138 158Q200 128 262 158L262 174Q200 146 138 174Z" fill="#d6334a"/><path d="M262 162L284 150L280 176Z" fill="#d6334a"/>`,
+    earrings: `<circle cx="139" cy="216" r="5" fill="#ffd24a"/><circle cx="261" cy="216" r="5" fill="#ffd24a"/>`,
+    scarf: `<path d="M150 276Q200 304 250 276L256 300Q200 330 144 300Z" fill="#d6334a"/><path d="M228 304L246 360L224 352Z" fill="#b82840"/>`,
+    mask: `<path d="M146 212Q200 230 254 212L250 262Q200 290 150 262Z" fill="#151622" stroke="#3a3d66" stroke-width="2"/><path d="M160 236Q200 250 240 236" stroke="#3a3d66" stroke-width="2" fill="none"/>`,
+    crown: `<path d="M148 124L158 76L182 106L200 66L218 106L242 76L252 124Z" fill="#ffd24a" stroke="#b88a1a" stroke-width="3"/><circle cx="200" cy="96" r="5" fill="#e0334a"/><circle cx="170" cy="108" r="4" fill="#2f7bff"/><circle cx="230" cy="108" r="4" fill="#2ee6a0"/>`
+  };
+  return A[a] || '';
+}
+function auraShapes(t){
+  if (!t || t === 'none') return '';
+  const c = AURAC[t];
+  let s = `<g filter="url(#ablur)"><ellipse cx="200" cy="270" rx="176" ry="196" fill="${c}" opacity=".32"/><ellipse cx="200" cy="236" rx="120" ry="150" fill="${c}" opacity=".3"/></g>`;
+  if (t === 'flame' || t === 'violet') {
+    const col = t === 'flame' ? ['#ff5a1f', '#ffd24a'] : ['#5a1fc9', '#c9a2ff'];
+    let f = '';
+    [[64,150],[104,200],[150,230],[250,230],[296,200],[336,150],[200,250]].forEach(([x, h], i) => { const y = 326; f += `<g class="${t === 'flame' ? 'fl' : 'wp'}" style="animation-delay:${i * .17}s"><path d="M${x-22} ${y}Q${x-30} ${y-h*.55} ${x} ${y-h}Q${x+8} ${y-h*.5} ${x+22} ${y}Z" fill="${col[0]}" opacity=".85"/><path d="M${x-11} ${y}Q${x-14} ${y-h*.35} ${x} ${y-h*.62}Q${x+4} ${y-h*.3} ${x+11} ${y}Z" fill="${col[1]}" opacity=".9"/></g>`; });
+    s += f;
+  }
+  if (t === 'gold') { let r = ''; for (let i = 0; i < 14; i++) { const a = i / 14 * 6.2832, b = a + .1; r += `<path d="M200 240L${(200 + Math.cos(a) * 330).toFixed(0)} ${(240 + Math.sin(a) * 330).toFixed(0)}L${(200 + Math.cos(b) * 330).toFixed(0)} ${(240 + Math.sin(b) * 330).toFixed(0)}Z" fill="#ffd24a" opacity=".22"/>`; } s += `<g class="rays">${r}</g>`; }
+  return s;
+}
+function charInner(L, ids){
+  L = {...DEFAULT_LOOK, ...(L || {})};
+  const id = n => ids ? ` id="${n}"` : '', girl = L.body === 'girl';
+  const sk = SKIN[L.skin] || SKIN[1], skd = dark(sk, .16), hc = HAIRC[L.hairColor] || HAIRC[0], ec = EYEC[L.eyes] || EYEC[0], glow = L.eyes === 5;
+  const hair = hairShapes(L.hair, hc);
+  const face = girl ? 'M143 192C143 144 168 120 200 120C232 120 257 144 257 192C257 234 230 268 200 272C170 268 143 234 143 192Z' : 'M140 192C140 142 166 120 200 120C234 120 260 142 260 192C260 236 232 268 200 268C168 268 140 236 140 192Z';
+  const eye = (cx, m) => {
+    const up = girl ? 17 : 14, lo = girl ? 9 : 7, rx = girl ? 17 : 16, iy = 196, ir = girl ? 8.4 : 7.6;
+    const brow = girl ? `M${cx - m * 16} 176Q${cx} ${170} ${cx + m * 17} 177` : `M${cx - m * 18} 178Q${cx - m * 2} 168 ${cx + m * 17} 175`;
+    return `<path d="M${cx - rx} ${iy}Q${cx} ${iy - up} ${cx + rx} ${iy}Q${cx} ${iy + lo} ${cx - rx} ${iy}Z" fill="#fff"/>
+<ellipse cx="${cx}" cy="${iy}" rx="${ir}" ry="${ir + 1}" fill="${ec}"/><ellipse cx="${cx}" cy="${iy + 1}" rx="${ir * .48}" ry="${ir * .6}" fill="${glow ? '#ffffff' : '#120d1a'}"/><circle cx="${cx + 3}" cy="${iy - 3}" r="2.4" fill="#fff"/>
+<path d="M${cx - rx - 1} ${iy}Q${cx} ${iy - up - 2} ${cx + rx + 1} ${iy}" stroke="#1a1220" stroke-width="${girl ? 4 : 3.4}" fill="none" stroke-linecap="round"/>${girl ? `<path d="M${cx - m * rx} ${iy - 1}l${-m * 6} -5" stroke="#1a1220" stroke-width="3" stroke-linecap="round"/>` : ''}
+<path d="${brow}" stroke="${dark(hc, .1)}" stroke-width="${girl ? 3 : 4.6}" fill="none" stroke-linecap="round"/>`;
+  };
+  const neck = `<path d="M176 240L176 296Q200 312 224 296L224 240Z" fill="${skd}"/>`;
+  const body = `<g${id('gBody')}><g${girl ? ' transform="translate(200 0) scale(.94 1) translate(-200 0)"' : ''}>${weaponShapes(L.weapon)}${neck}${outfitShapes(L.outfit, girl)}${L.acc === 'scarf' ? accShapes('scarf', hc) : ''}${neckShapes(L.neck)}</g></g>`;
+  return `<g class="auraG">${auraShapes(L.aura)}</g>
+<g${id('gBack')}>${hair.back}</g>${body}
+<g${id('gHead')}>
+<ellipse cx="141" cy="200" rx="9" ry="14" fill="${sk}"/><ellipse cx="259" cy="200" rx="9" ry="14" fill="${sk}"/>
+<path d="${face}" fill="${sk}"/><path d="M146 214Q200 296 254 214Q246 262 200 270Q154 262 146 214Z" fill="${skd}" opacity=".3"/>
+<g${id('gHair')}>${hair.front}</g>
+<g${id('gFace')}><g${id('gEyes')}${glow ? ' filter="url(#eglow)"' : ''}>${eye(171, 1)}${eye(229, -1)}</g>
+<path d="M200 206Q196 218 203 221" stroke="${skd}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+${girl ? `<path d="M188 242Q200 252 212 242Q200 246 188 242Z" fill="#d4586f" stroke="#d4586f" stroke-width="2" stroke-linejoin="round"/><ellipse cx="158" cy="224" rx="11" ry="6" fill="#ff7a90" opacity=".25"/><ellipse cx="242" cy="224" rx="11" ry="6" fill="#ff7a90" opacity=".25"/>` : `<path d="M187 243Q200 249 213 243" stroke="#8a4a4a" stroke-width="3.2" fill="none" stroke-linecap="round"/>`}
+${L.acc !== 'scarf' && L.acc !== 'none' ? accShapes(L.acc, hc) : ''}</g>
+</g>`;
+}
+
 let shotThumb = null, tasks = [], reg = null, lastXp = null, lastLv = null, fxBoost = 0, justLoggedIn = false;
 
 let yawNow = 0;
 function motionOn(){ const m = localStorage.getItem('motion'); return m ? m === 'on' : !matchMedia('(prefers-reduced-motion: reduce)').matches; }
 function applyMotion(){ document.documentElement.classList.toggle('still', !motionOn()); const b = document.getElementById('motionBtn'); if (b) b.textContent = 'Motion: ' + (motionOn() ? 'on' : 'off'); }
 function toggleMotion(){ localStorage.setItem('motion', motionOn() ? 'off' : 'on'); applyMotion(); }
-let drafts = [], profile = {name:'', avatar:null}, curRank = 'E', toon = localStorage.getItem('toon') === '1';
+let drafts = [], profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}, curRank = 'E', totalXp = 0;
 $('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
 
 async function signUp(){ justLoggedIn = true; const {data, error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); if (error || !data.session) justLoggedIn = false; $('authMsg').textContent = error ? error.message : (data.session ? '' : 'Account created. Check your email if confirmation is required, then sign in.'); }
@@ -284,14 +397,14 @@ sb.auth.onAuthStateChange((_e, session) => {
     if (!$('day').value) { $('day').value = today(); $('tdate').value = today(); }
     load(); updatePreview();
     const jl = justLoggedIn; justLoggedIn = false; loadProfile().then(() => { if (jl) welcome(); });
-  } else { profile = {name:'', avatar:null}; applyProfile(); }
+  } else { resetProfile(); applyProfile(); }
 });
-function showView(v){ if (v === 'album') loadAlbum(); document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === 'v-' + v)); document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.v === v)); scrollTo({top:0, behavior:'smooth'}); }
+function showView(v){ if (v === 'album') loadAlbum(); if (v === 'hunter') { document.getElementById('v-hunter').classList.add('on'); renderShop(); } document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === 'v-' + v)); document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.v === v; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }); scrollTo({top:0, behavior:'smooth'}); }
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.v)));
 function welcome(){
   const el = document.createElement('div'); el.className = 'welcome';
   el.innerHTML = '<div><div class="slits"><i></i><i></i></div><b>Welcome back, ' + esc(profile.name || 'Hunter') + '</b><span>Quest log opened</span></div>'; document.body.appendChild(el);
-  fxBoost = 1; const e = document.querySelector('.eyes'); if (e) { e.style.animation = 'none'; void e.getBoundingClientRect(); e.style.animation = ''; }
+  fxBoost = 1;
   setTimeout(() => el.remove(), 2200);
 }
 function countUp(el, to){ const from = parseInt(el.textContent) || 0; if (from === to) { el.textContent = to; return; } const t0 = performance.now(); (function step(t){ const k = Math.min((t - t0) / 700, 1); el.textContent = Math.round(from + (to - from) * k); if (k < 1) requestAnimationFrame(step); })(t0); }
@@ -305,10 +418,10 @@ async function load(){
 function render(){
   const done = tasks.filter(t => DONE.includes(t.status)).length;
   $('progress').textContent = `${done} of ${tasks.length} quests cleared (published-confirmed or completed)`;
-  $('list').innerHTML = tasks.length ? tasks.map(t => `
+  const shown = tasks.filter(qMatch); $('list').innerHTML = shown.length ? shown.map(t => `
     <div class="task ${DONE.includes(t.status) ? 'done' : ''}">
       <div class="t">${esc(t.title)}</div>
-      <div class="meta"><span class="badge s-${t.status}">${STATUS[t.status]}</span> ${esc(CAT[t.category])}${t.scheduled_time ? ' · ' + t.scheduled_time.slice(0,5) : ''}</div>
+      <div class="meta"><span class="badge s-${t.status}">${STATUS[t.status]}</span> ${esc(CAT[t.category])}${t.scheduled_time ? ' · ' + t.scheduled_time.slice(0,5) : ''}${XP[t.status] ? `<span class="rw">+${XP[t.status]} XP · +${XP[t.status]} gold</span>` : ''}</div>
       ${t.fb_url ? `${linkRow(t.fb_url)}` : ''}
       ${t.notes ? `<div class="meta">${esc(t.notes)}</div>` : ''}
       ${t.post_id ? `<div class="pid">Post ID: ${esc(t.post_id)}</div>` : ''}
@@ -343,11 +456,11 @@ function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).va
 async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
 async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
 
-/* Game layer: everything is computed from your recorded tasks (last 150 days). */
+/* Game layer: XP, level, streak and gold are computed from your recorded tasks. */
 const rankOf = l => l >= 18 ? 'S' : l >= 12 ? 'A' : l >= 8 ? 'B' : l >= 5 ? 'C' : l >= 3 ? 'D' : 'E';
-function toast(msg){ const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 2500); }
+function toast(msg){ const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 2500); }
 async function loadStats(){
-  const {data} = await sb.from('tasks').select('id,title,task_date,status,scheduled_time,category').gte('task_date', addDays(today(), -150)).limit(5000);
+  const {data} = await sb.from('tasks').select('id,title,task_date,status,scheduled_time,category').limit(5000);
   const rows = data || []; let xp = 0, pub = 0, perfect = 0; const done = {}, tot = {};
   rows.forEach(t => { xp += XP[t.status] || 0; tot[t.task_date] = (tot[t.task_date] || 0) + 1; if (DONE.includes(t.status)) done[t.task_date] = (done[t.task_date] || 0) + 1; if (t.status === 'published') pub++; });
   Object.keys(tot).forEach(d => { if (tot[d] >= 3 && done[d] === tot[d]) { perfect++; xp += 25; } });
@@ -356,12 +469,16 @@ async function loadStats(){
   let best = 0, run = 0, prev = null;
   Object.keys(done).sort().forEach(x => { run = prev && addDays(prev, 1) === x ? run + 1 : 1; best = Math.max(best, run); prev = x; });
   const lv = Math.floor(Math.sqrt(xp / 40)) + 1, base = 40 * (lv - 1) ** 2, next = 40 * lv ** 2;
-  $('rank').textContent = rankOf(lv); setRank(rankOf(lv)); $('lv').textContent = 'Level ' + lv;
+  $('rank').textContent = rankOf(lv); setRank(rankOf(lv)); totalXp = xp; userLv = lv; updateGold(); const np = phaseOf(lv); if (lastPhase !== null && np > lastPhase) phaseUp(np); lastPhase = np; setPhase(np); $('lv').textContent = 'Level ' + lv;
   $('xpbar').style.width = Math.round((xp - base) / (next - base) * 100) + '%';
   $('xptxt').textContent = `${xp} XP · ${next - xp} to level ${lv + 1}`;
   countUp($('streak'), streak); $('best').textContent = 'Best ' + best;
-  const B = [[pub > 0, 'First confirmed post'], [best >= 3, '3-day streak'], [best >= 7, '7-day streak'], [perfect > 0, 'Perfect day'], [lv >= 5, 'Rank C reached']];
-  $('badges').innerHTML = B.map(([on, n]) => `<span class="chip ${on ? 'on' : ''}">${n}</span>`).join('');
+  const cnt = {barangay:0, trivia:0, posting:0}; rows.forEach(t => { if (DONE.includes(t.status) && t.category in cnt) cnt[t.category]++; });
+  const ST = [['Strength', 10 + 2 * cnt.barangay, 'Barangay events cleared'], ['Agility', 10 + 2 * cnt.posting, 'Posts cleared'], ['Intelligence', 10 + 2 * cnt.trivia, 'Trivia cleared'], ['Stamina', 10 + 3 * best, 'Best streak in days']];
+  $('stats').innerHTML = ST.map(([n, v, d]) => `<div class="stat" title="${d}"><span>${n}</span><b>${v}</b><i><u style="width:${Math.min(100, v)}%"></u></i></div>`).join('') + '<p class="meta">Strength comes from Barangay events, Agility from posts, Intelligence from trivia and Stamina from your best streak.</p>';
+  $('holo').innerHTML = '<b>STATUS</b>' + ST.map(([n, v]) => `<div><span>${n.slice(0, 3).toUpperCase()}</span><em>${v}</em></div>`).join('');
+  const SK = [[pub > 0, 'Confirmed Post', 'Confirm your first published post'], [best >= 3, 'Streak Walker', 'Reach a 3-day streak'], [best >= 7, 'Iron Will', 'Reach a 7-day streak'], [perfect > 0, 'Flawless Day', 'Clear 3 or more quests in one day'], [lv >= 5, 'Shadow Hunter', 'Reach level 5'], [lv >= 12, 'System User', 'Reach level 12'], [lv >= 18, 'Class S', 'Reach level 18']];
+  $('badges').innerHTML = SK.map(([on, n, d]) => `<div class="skill ${on ? 'on' : ''}"><span class="hex" aria-hidden="true"></span><div><b>${n}</b><small>${d}</small></div><em>${on ? 'Unlocked' : 'Locked'}</em></div>`).join('');
   $('risk').innerHTML = streak > 0 && !done[today()] ? `<div class="warn"><span><b>Streak at risk.</b> Clear one quest today to keep your ${streak}-day streak.</span><button onclick="showView('add')">Add quest</button></div>` : '';
   const tdy = rows.filter(t => t.task_date === today()), cleared = tdy.filter(t => DONE.includes(t.status)).length;
   $('tiles').innerHTML = [[tdy.length, 'Quests today'], [cleared, 'Cleared'], [tdy.filter(t => t.status === 'scheduled').length, 'Scheduled, not yet confirmed'], [tdy.length - cleared, 'Still open']].map(([n, l]) => `<div class="tile"><b>${n}</b>${l}</div>`).join('');
@@ -370,7 +487,7 @@ async function loadStats(){
   $('next').innerHTML = nq ? `<div class="t">${esc(nq.title)}</div><div class="meta"><span class="badge s-${nq.status}">${STATUS[nq.status]}</span> ${esc(CAT[nq.category])}${nq.scheduled_time ? ' · ' + nq.scheduled_time.slice(0, 5) : ''}</div>` : '<p class="meta">Nothing open. Add a quest to keep your streak going.</p>';
   $('week').innerHTML = [6,5,4,3,2,1,0].map(i => { const dd = addDays(today(), -i); return `<div class="day ${done[dd] ? 'on' : ''}"><i></i>${new Date(dd + 'T00:00:00Z').toLocaleDateString('en-US', {weekday:'short', timeZone:'UTC'})}</div>`; }).join('');
   if (lastXp !== null && lv > lastLv) levelFx();
-  if (lastXp !== null && xp > lastXp) toast(lv > lastLv ? `Level up! You are now level ${lv}` : `+${xp - lastXp} XP`);
+  if (lastXp !== null && xp > lastXp) toast(lv > lastLv ? `Level up! You are now level ${lv}` : `+${xp - lastXp} XP · +${xp - lastXp} gold`);
   lastXp = xp; lastLv = lv;
 }
 
@@ -555,75 +672,154 @@ dz.addEventListener('drop', e => readShots(e.dataTransfer.files));
 function linkRow(u){ if (!/^https?:\/\//i.test(u)) return ''; return `<div class="lnkrow"><a href="${esc(u)}" target="_blank" rel="noopener">Open post</a><button class="sec" data-u="${esc(u)}" onclick="fbEmbed(this)">Show Facebook preview</button></div>`; }
 function fbEmbed(b){ const u = b.dataset.u; if (!/^https:\/\/(www\.|m\.)?(facebook\.com|fb\.com|fb\.watch)\//i.test(u)) { b.textContent = 'Not a Facebook link'; return; } const f = document.createElement('iframe'); f.className = 'fbf'; f.loading = 'lazy'; f.title = 'Facebook post preview'; f.src = 'https://www.facebook.com/plugins/post.php?href=' + encodeURIComponent(u) + '&show_text=true&width=500'; b.parentNode.after(f); b.remove(); }
 
-/* ===== Character: your face is cropped, restyled as manhwa-style art, and placed on the character ===== */
-const RANKS = [['E','Lv 1'], ['D','Lv 3'], ['C','Lv 5'], ['B','Lv 8'], ['A','Lv 12'], ['S','Lv 18']];
-function figInner(face, ids){
-  const id = n => ids ? ` id="${n}"` : '';
-  const bangs = face ? '<path d="M148 138l24 24 6-28ZM226 134l6 28 24-24Z" fill="#03040b"/>' : '<path d="M150 140l26 50 8-58ZM224 132l8 56 26-46Z" fill="#03040b"/>';
-  return `<g${id('gBody')}><path d="M10 420C24 330 110 300 158 286h84c48 14 134 44 148 134Z" fill="#04060f" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/><rect x="176" y="236" width="48" height="62" fill="#050813"/></g>
-<g${id('gHead')}><ellipse cx="200" cy="190" rx="62" ry="76" fill="#0a0e22" stroke="#5b7cff" stroke-opacity=".55" stroke-width="2"/>${face ? `<image href="${face}" x="136" y="112" width="128" height="156" preserveAspectRatio="xMidYMid slice" clip-path="url(#hc)"/><ellipse cx="200" cy="190" rx="62" ry="76" fill="url(#chin)"/><ellipse cx="200" cy="190" rx="62" ry="76" fill="none" stroke="#5b7cff" stroke-opacity=".6" stroke-width="2"/>` : ''}
-<g${id('gHair')}><path d="M130 172C122 96 168 70 202 72c38-2 78 26 68 100-12-30-28-46-70-48-40 2-56 18-70 48Z" fill="#03040b" stroke="#5b7cff" stroke-opacity=".7" stroke-width="2"/>${bangs}</g>
-<g${id('gFace')}>${face ? '' : '<path d="M178 232c14 8 30 8 44 0" stroke="#1a2250" stroke-width="3" fill="none" stroke-linecap="round"/>'}<g class="eyes" fill="#eef4ff"><path d="M162 186l30 6-2 7-30-5Z"/><path d="M238 186l-30 6 2 7 30-5Z"/></g></g></g>`;
-}
-let figKey = '', evoKey = '';
-function drawFig(){ const key = curRank + '|' + (profile.avatar ? profile.avatar.length : 0); if (key === figKey) return; figKey = key; const f = $('fig'); f.innerHTML = figInner(profile.avatar, true); f.setAttribute('class', 'fig' + (profile.avatar ? ' face' : '') + ' rk-' + curRank); }
-function renderEvo(){ const key = curRank + '|' + (profile.avatar ? profile.avatar.length : 0); if (key === evoKey) return; evoKey = key; $('evo').innerHTML = RANKS.map(([r, l]) => `<div class="ev ${r === curRank ? 'cur' : ''}"><div class="ph"><svg class="mini${profile.avatar ? ' face' : ''} rk-${r}" viewBox="0 0 400 420" aria-hidden="true">${figInner(profile.avatar, false)}</svg></div>${r}<br>${l}</div>`).join(''); }
-function setRank(r){ curRank = r; $('hero').dataset.rank = r; drawFig(); renderEvo(); }
-function applyProfile(){ $('hname').textContent = profile.name || 'Hunter'; drawFig(); renderEvo(); }
-async function loadProfile(){ const {data} = await sb.from('profiles').select('display_name,avatar').maybeSingle(); profile = {name:data?.display_name || '', avatar:data?.avatar || null}; $('pname').value = profile.name; applyProfile(); }
-async function saveProfile(){
-  const name = $('pname').value.trim(); const {error} = await sb.from('profiles').upsert({display_name:name || null, avatar:profile.avatar, updated_at:new Date().toISOString()}, {onConflict:'user_id'});
-  if (!error) { profile.name = name; applyProfile(); } $('pmsg').textContent = error ? error.message : 'Profile saved.';
-}
-function removeFace(){ profile.avatar = null; applyProfile(); $('pmsg').textContent = 'Photo removed. Click Save profile to keep that.'; }
 
-/* Manhwa-style filter: soften, flatten colours into a few cool-toned bands, then draw dark ink outlines. */
-function toonData(d, w, h){
-  const n = w * h, tmp = new Uint8ClampedArray(d.length);
-  const blur = (src, dst) => { for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { let r = 0, g = 0, b = 0, c = 0; for (let dy = -1; dy <= 1; dy++) { const yy = y + dy; if (yy < 0 || yy >= h) continue; for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx < 0 || xx >= w) continue; const i = (yy * w + xx) * 4; r += src[i]; g += src[i + 1]; b += src[i + 2]; c++; } } const o = (y * w + x) * 4; dst[o] = r / c; dst[o + 1] = g / c; dst[o + 2] = b / c; dst[o + 3] = 255; } };
-  blur(d, tmp); blur(tmp, d);
-  const L = new Float32Array(n); for (let i = 0; i < n; i++) L[i] = .299 * d[i * 4] + .587 * d[i * 4 + 1] + .114 * d[i * 4 + 2];
-  const q = v => Math.round(Math.min(255, Math.max(0, (v - 128) * 1.2 + 128)) / 255 * 5) / 5 * 255;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const i = y * w + x; let ink = 0;
-    if (x > 0 && y > 0 && x < w - 1 && y < h - 1) { const gx = -L[i - w - 1] - 2 * L[i - 1] - L[i + w - 1] + L[i - w + 1] + 2 * L[i + 1] + L[i + w + 1], gy = -L[i - w - 1] - 2 * L[i - w] - L[i - w + 1] + L[i + w - 1] + 2 * L[i + w] + L[i + w + 1]; ink = Math.hypot(gx, gy); }
-    const o = i * 4, k = ink > 60 ? .22 : ink > 38 ? .55 : 1;
-    d[o] = q(d[o]) * .93 * k; d[o + 1] = q(d[o + 1]) * .97 * k; d[o + 2] = Math.min(255, q(d[o + 2]) * 1.1 + 6) * k; d[o + 3] = 255;
+/* ===== Hunter: wallet, shop and look ===== */
+const SHOP = {
+  body:{label:'Body', items:[['boy','Boy',0],['girl','Girl',0]]},
+  skin:{label:'Skin', items:[[0,'Fair',0],[1,'Light',0],[2,'Tan',0],[3,'Bronze',0],[4,'Deep',0]]},
+  hair:{label:'Hair', items:[['spiky','Spiky',0],['bob','Bob',0],['swept','Swept',120],['pomp','Pompadour',160],['long','Long',160],['twin','Twin tails',220],['pony','Ponytail',220]]},
+  hairColor:{label:'Hair color', items:[[0,'Black',0],[1,'Brown',0],[2,'Silver',200],[3,'Blue',150],[4,'Crimson',150],[5,'Blonde',120],[6,'Violet',300]]},
+  eyes:{label:'Eyes', items:[[0,'Brown',0],[1,'Blue',100],[2,'Violet',150],[3,'Red',150],[4,'Gold',200],[5,'Sovereign glow',900,12]]},
+  outfit:{label:'Outfit', items:[['tee','Novice tee',0],['shirt','Open shirt',100],['jacket','Hunter jacket',150],['hoodie','Dark hoodie',200],['armor','Knight armor',600,5],['coat','Shadow coat',900,8],['mantle','Sovereign mantle',2000,12]]},
+  weapon:{label:'Weapon', items:[['none','None',0],['dagger','Iron dagger',100],['sword','Hunter sword',300],['twin','Twin blades',600,5],['staff','Shadow staff',900,8],['demon','Demon blade',2500,12]]},
+  aura:{label:'Aura', items:[['none','None',0],['blue','Azure',120],['emerald','Emerald',250],['violet','Shadow violet',500,5],['flame','Flame',800,8],['gold','Sovereign gold',1800,12]]},
+  acc:{label:'Extras', items:[['none','None',0],['shades','Sunglasses',150],['glasses','Glasses',80],['headband','Headband',100],['earrings','Earrings',120],['scarf','Scarf',200],['mask','Half mask',300],['crown','Crown',1200,12]]},
+  neck:{label:'Necklace', items:[['none','None',0],['chain','Chain',90],['pendant','Pendant',140]]},
+  bd:{label:'Scene', items:[['auto','Sky (auto)',0],['gate','Dungeon gate',300],['roof','City roof',400],['moon','Blood moon',600,5],['throne','Throne room',1500,12]]}
+};
+let curPhase = 1, lastPhase = null, phaseUrls = {}, qFilter = 'all', shopCat = 'hair', userLv = 1, saveT, fxMat = null, fxCol = '#7f9bff', isDay = false, themeMode = localStorage.getItem('theme') || 'auto';
+const lookOf = () => ({...DEFAULT_LOOK, ...profile.look});
+const gold = () => Math.max(0, totalXp - profile.spent);
+function resetProfile(){ profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}; }
+function updateGold(){ document.querySelectorAll('.goldv').forEach(e => e.textContent = gold().toLocaleString()); if ($('v-hunter').classList.contains('on')) renderShop(); }
+let figKey = '';
+function drawFig(){
+  const L = lookOf(), eff = {...L, aura: effAura()}, key = JSON.stringify(eff); if (key === figKey) return; figKey = key;
+  $('fig').innerHTML = charInner(eff, true); $('pvFig').innerHTML = charInner(L, false);
+  $('hero').dataset.bd = L.bd; $('pvBox').dataset.bd = L.bd; applyFxTheme();
+}
+function setRank(r){ curRank = r; $('hero').dataset.rank = r; }
+function applyProfile(){ $('hname').textContent = profile.name || 'Hunter'; applyHero(); renderPhases(); }
+async function loadProfile(){
+  const {data, error} = await sb.from('profiles').select('display_name,look,owned,spent').maybeSingle();
+  $('pmsg').textContent = error ? 'Run the new SQL step so your look can be saved. (' + error.message + ')' : '';
+  profile = {name:data?.display_name || '', look:{...DEFAULT_LOOK, ...(data?.look || {})}, owned:Array.isArray(data?.owned) ? data.owned : [], spent:data?.spent || 0};
+  $('pname').value = profile.name; applyProfile(); updateGold(); loadPhaseUrls();
+}
+function queueSave(){ clearTimeout(saveT); saveT = setTimeout(() => saveProfile(), 600); }
+async function saveProfile(manual){
+  profile.name = $('pname').value.trim();
+  const {error} = await sb.from('profiles').upsert({display_name:profile.name || null, look:profile.look, owned:profile.owned, spent:profile.spent, updated_at:new Date().toISOString()}, {onConflict:'user_id'});
+  $('pmsg').textContent = error ? error.message : (manual ? 'Saved.' : 'Look saved.'); applyProfile();
+}
+/* ===== Phases: your level decides which chapter of the story you are in ===== */
+const PHASES = [
+  {n:1, name:'Human', from:1, quote:'An ordinary day. A different dream.', col:'#b8c4e6', aura:'none'},
+  {n:2, name:'Shadow Hunter', from:5, quote:'The light fades. The shadows answer.', col:'#4b8bff', aura:'blue'},
+  {n:3, name:'System User', from:12, quote:'Not luck. Not talent. Just a system that works.', col:'#35d0ff', aura:'emerald'},
+  {n:4, name:'Class S', from:18, quote:'Not the strongest. The one who kept going.', col:'#a06bff', aura:'violet'}
+];
+const phaseOf = lv => PHASES.filter(p => lv >= p.from).pop().n;
+const effAura = () => lookOf().aura !== 'none' ? lookOf().aura : PHASES[curPhase - 1].aura;
+function setPhase(p){
+  curPhase = p; const P = PHASES[p - 1]; document.documentElement.dataset.phase = p;
+  $('capPhase').textContent = 'PHASE ' + p; $('capName').textContent = P.name.toUpperCase(); $('capQuote').textContent = P.quote; $('holo').classList.toggle('hide', p < 3);
+  figKey = ''; applyHero(); renderPhases();
+}
+function phaseUp(p){
+  const P = PHASES[p - 1], el = document.createElement('div'); el.className = 'welcome'; el.setAttribute('role', 'status');
+  el.innerHTML = `<div><small style="letter-spacing:.35em">PHASE ${p}</small><b style="color:${P.col}">${esc(P.name.toUpperCase())}</b><span>${esc(P.quote)}</span></div>`; document.body.appendChild(el); fxBoost = 1; setTimeout(() => el.remove(), 2200);
+}
+function applyHero(){
+  const url = phaseUrls[curPhase], use = lookOf().mode === 'portrait' && !!url;
+  $('hero').classList.toggle('hasPortrait', use); if (use) $('portraitImg').src = url; drawFig();
+}
+/* Phase portraits: your own pictures (made with any AI image tool), one per phase, shown in the hero. */
+const PROMPTS = [
+  'Using my photo as the reference, draw a full-body anime illustration of me in a bright casual look: open white short-sleeve shirt over a black tee, light trousers, relaxed smile, concrete wall background. Keep my face recognisable.',
+  'Using my photo as the reference, draw a full-body dark-fantasy anime illustration of me in a long black coat and sunglasses, calm confident pose, glowing blue shadow energy swirling around me. Keep my face recognisable.',
+  'Using my photo as the reference, draw me in a black high-collar coat and sunglasses with a hand raised to the frame, glowing blue holographic status windows floating beside me. Anime style. Keep my face recognisable.',
+  'Using my photo as the reference, draw me in a black coat with a chain at the belt, calm downward stare, surrounded by violet lightning and dark purple flames. Anime style, dramatic lighting. Keep my face recognisable.'
+];
+let phSlot = 0;
+function renderPhases(){
+  const pp = lookOf().pp || [];
+  $('phGrid').innerHTML = PHASES.map(P => { const has = pp.includes(P.n) && phaseUrls[P.n], cur = P.n === curPhase;
+    return `<div class="ph4${cur ? ' cur' : ''}" style="--pcol:${P.col}"><div class="pimg">${has ? `<img src="${esc(phaseUrls[P.n])}" alt="Phase ${P.n} picture">` : '<span>No picture yet</span>'}</div><b>Phase ${P.n}</b><span class="meta">${esc(P.name)} · Lv ${P.from}+${cur ? ' · now' : ''}</span><div class="row"><button class="sec" onclick="pickPhase(${P.n})">${pp.includes(P.n) ? 'Replace' : 'Upload'}</button>${pp.includes(P.n) ? `<button class="sec" onclick="removePhase(${P.n})" aria-label="Remove phase ${P.n} picture">Remove</button>` : ''}</div></div>`; }).join('');
+  $('modeBtn').textContent = 'Hero shows: ' + (lookOf().mode === 'portrait' ? 'My pictures' : 'Avatar');
+}
+function pickPhase(n){ phSlot = n; $('phFile').click(); }
+async function uploadPhase(file){
+  if (!file || !file.type.startsWith('image/')) return; const n = phSlot, msg = $('pmsg');
+  try {
+    msg.textContent = 'Saving picture…'; const img = await loadImg(file), blob = await shrink(img, 1080, .82); URL.revokeObjectURL(img.src);
+    const {data:{session}} = await sb.auth.getSession(), path = `${session.user.id}/phases/p${n}.jpg`;
+    await sb.storage.from('album').remove([path]);
+    const up = await sb.storage.from('album').upload(path, blob, {contentType:'image/jpeg'}); if (up.error) throw up.error;
+    const first = !(lookOf().pp || []).length, pp = new Set(lookOf().pp || []); pp.add(n); profile.look.pp = [...pp].sort();
+    if (first) profile.look.mode = 'portrait';
+    await loadPhaseUrls(); queueSave(); msg.textContent = first ? 'Picture saved. The hero now shows your pictures. Use the Hero shows button to switch back.' : 'Picture saved.';
+  } catch (e) { msg.textContent = 'Could not save the picture: ' + e.message; }
+}
+async function removePhase(n){
+  if (!confirm(`Remove your phase ${n} picture?`)) return; const {data:{session}} = await sb.auth.getSession();
+  await sb.storage.from('album').remove([`${session.user.id}/phases/p${n}.jpg`]); profile.look.pp = (lookOf().pp || []).filter(x => x !== n); delete phaseUrls[n]; applyHero(); renderPhases(); queueSave();
+}
+async function loadPhaseUrls(){
+  const pp = lookOf().pp || []; phaseUrls = {};
+  if (pp.length) { const {data:{session}} = await sb.auth.getSession(); if (session) { const {data} = await sb.storage.from('album').createSignedUrls(pp.map(n => `${session.user.id}/phases/p${n}.jpg`), 3600); (data || []).forEach(x => { const m = /p(\d)\.jpg$/.exec(x.path || ''); if (m && x.signedUrl) phaseUrls[+m[1]] = x.signedUrl; }); } }
+  applyHero(); renderPhases();
+}
+setInterval(() => { if (!document.hidden && (lookOf().pp || []).length) loadPhaseUrls(); }, 3000000);
+function toggleMode(){ profile.look.mode = lookOf().mode === 'portrait' ? 'avatar' : 'portrait'; applyHero(); renderPhases(); queueSave(); }
+function showPrompts(){
+  const o = document.createElement('div'); o.className = 'modal'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'Prompts for your pictures');
+  o.innerHTML = `<div class="mbox" style="max-width:520px"><h2>Prompts for your pictures</h2><p class="meta">Open any AI image tool, attach a clear photo of yourself, paste a prompt, and save the result. Then upload it to the matching phase.</p>${PROMPTS.map((t, i) => `<div class="card"><b>Phase ${i + 1}: ${esc(PHASES[i].name)}</b><p class="meta" id="pr${i}">${esc(t)}</p><button class="sec" onclick="navigator.clipboard.writeText(document.getElementById('pr${i}').textContent).then(() => toast('Copied'))">Copy prompt</button></div>`).join('')}<button id="pcl">Close</button></div>`;
+  document.body.appendChild(o); o.querySelector('#pcl').onclick = () => o.remove();
+}
+/* Quest filter */
+const qMatch = t => qFilter === 'all' || (qFilter === 'open' && !DONE.includes(t.status) && t.status !== 'scheduled') || (qFilter === 'scheduled' && t.status === 'scheduled') || (qFilter === 'done' && DONE.includes(t.status));
+$('qf').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; qFilter = b.dataset.f; document.querySelectorAll('#qf button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); }); render(); });
+
+function renderShop(){
+  $('cats').innerHTML = Object.entries(SHOP).map(([k, v]) => `<button class="cat ${k === shopCat ? 'on' : ''}" data-c="${k}">${v.label}</button>`).join('');
+  const L = lookOf(), base = {...L, aura:'none', weapon:'none', acc:'none', neck:'none'}, box = {hair:'100 70 200 220', acc:'100 60 200 240', body:'100 70 200 220', outfit:'0 236 400 184', neck:'0 236 400 184', weapon:'0 20 400 400', aura:'0 20 400 400'};
+  $('shopGrid').innerHTML = SHOP[shopCat].items.map(([id, name, price, minLv = 0]) => {
+    const own = price === 0 || profile.owned.includes(shopCat + ':' + id), eq = String(L[shopCat]) === String(id), locked = !own && userLv < minLv;
+    const thumb = shopCat === 'skin' ? `<i class="sw" style="background:${SKIN[id]}"></i>` : shopCat === 'hairColor' ? `<i class="sw" style="background:${HAIRC[id]}"></i>` : shopCat === 'eyes' ? `<i class="sw" style="background:${EYEC[id]}"></i>` : shopCat === 'bd' ? `<div class="bdp" data-bd="${id}"></div>` : `<svg viewBox="${box[shopCat]}" aria-hidden="true">${charInner({...base, [shopCat]:id}, false)}</svg>`;
+    return `<button class="itm${eq ? ' eq' : ''}${locked ? ' lock' : ''}" data-i="${id}">${thumb}<span class="nm">${name}</span><span class="pr">${eq ? 'Equipped' : own ? 'Owned' : locked ? 'Lv ' + minLv : price + ' gold'}</span></button>`;
+  }).join('');
+}
+function pick(cat, raw){
+  const it = SHOP[cat].items.find(x => String(x[0]) === raw); if (!it) return;
+  const [id, name, price, minLv = 0] = it, own = price === 0 || profile.owned.includes(cat + ':' + id);
+  if (!own) {
+    if (userLv < minLv) { toast(`Reach level ${minLv} to unlock ${name}`); return; }
+    if (gold() < price) { toast(`Need ${price - gold()} more gold`); return; }
+    if (!confirm(`Buy ${name} for ${price} gold?`)) return;
+    profile.owned.push(cat + ':' + id); profile.spent += price; fxBoost = 1; toast(`Bought ${name}`);
   }
+  profile.look[cat] = id; drawFig(); updateGold(); renderShop(); queueSave();
 }
-/* Face fitting: drag/pinch the photo until your eyes sit on the dashed line and your chin meets the bottom of the oval. */
-const CW = 300, CH = 370, OCX = 150, OCY = 185, ORX = 95, ORY = 116.5, ptrs = new Map(); let cp = {img:null, x:0, y:0, s:1, s0:1}, prevT;
-async function openCropper(file){
-  if (!file || !file.type.startsWith('image/')) return;
-  try { cp.img = await loadImg(file); } catch (e) { $('pmsg').textContent = e.message; return; }
-  cp.s0 = Math.max(CW / cp.img.naturalWidth, CH / cp.img.naturalHeight); cp.s = cp.s0; cp.x = (CW - cp.img.naturalWidth * cp.s) / 2; cp.y = (CH - cp.img.naturalHeight * cp.s) / 2;
-  $('zoom').value = 100; $('crop').classList.remove('hide'); drawCrop(); previewCrop();
+$('cats').addEventListener('click', e => { const b = e.target.closest('.cat'); if (b) { shopCat = b.dataset.c; renderShop(); } });
+$('shopGrid').addEventListener('click', e => { const b = e.target.closest('.itm'); if (b) pick(shopCat, b.dataset.i); });
+
+/* ===== Day and night follow the Philippines (Asia/Manila): day is 6:00 AM to 6:00 PM ===== */
+const phHour = () => parseInt(new Date().toLocaleString('en-GB', {timeZone:TZ, hour:'2-digit', hourCycle:'h23'}), 10);
+function applyTheme(){
+  isDay = themeMode === 'day' || (themeMode === 'auto' && phHour() >= 6 && phHour() < 18);
+  document.documentElement.dataset.theme = isDay ? 'day' : 'night';
+  document.querySelector('meta[name=theme-color]').content = isDay ? '#e9f0ff' : '#05060f';
+  const b = $('themeBtn'); if (b) b.textContent = themeMode === 'auto' ? `Theme: Auto (${isDay ? 'day' : 'night'})` : `Theme: ${isDay ? 'Day' : 'Night'}`;
+  applyFxTheme();
 }
-function drawCrop(){
-  const g = $('cv').getContext('2d'), im = cp.img; g.fillStyle = '#000'; g.fillRect(0, 0, CW, CH); g.drawImage(im, cp.x, cp.y, im.naturalWidth * cp.s, im.naturalHeight * cp.s);
-  g.fillStyle = 'rgba(3,4,11,.74)'; g.beginPath(); g.rect(0, 0, CW, CH); g.ellipse(OCX, OCY, ORX, ORY, 0, 0, 6.2832); g.fill('evenodd');
-  g.strokeStyle = '#f5c451'; g.lineWidth = 2; g.beginPath(); g.ellipse(OCX, OCY, ORX, ORY, 0, 0, 6.2832); g.stroke();
-  g.setLineDash([6, 5]); g.strokeStyle = '#9bbcff'; g.beginPath(); g.moveTo(OCX - ORX, OCY); g.lineTo(OCX + ORX, OCY); g.stroke(); g.setLineDash([]);
+function cycleTheme(){ themeMode = {auto:'day', day:'night', night:'auto'}[themeMode]; localStorage.setItem('theme', themeMode); applyTheme(); }
+setInterval(applyTheme, 60000);
+function applyFxTheme(){
+  const a = effAura(); fxCol = isDay ? dark(a !== 'none' ? AURAC[a] : '#3a55ff', .2) : (a !== 'none' ? lite(AURAC[a], .3) : '#9bb4ff');
+  if (!fxMat || !window.THREE) return;
+  fxMat.blending = isDay ? THREE.NormalBlending : THREE.AdditiveBlending; fxMat.color.set(isDay ? fxCol : (a !== 'none' ? fxCol : '#ffffff')); fxMat.opacity = isDay ? .75 : .9; fxMat.needsUpdate = true;
 }
-function setZoom(v){ const ns = cp.s0 * v / 100, f = ns / cp.s; cp.x = OCX - (OCX - cp.x) * f; cp.y = OCY - (OCY - cp.y) * f; cp.s = ns; drawCrop(); }
-function cropOut(){
-  const c = document.createElement('canvas'); c.width = 248; c.height = 304; const g = c.getContext('2d'), k = 248 / (2 * ORX);
-  g.fillStyle = '#222'; g.fillRect(0, 0, 248, 304); g.save(); g.scale(k, k); g.translate(-(OCX - ORX), -(OCY - ORY)); g.drawImage(cp.img, cp.x, cp.y, cp.img.naturalWidth * cp.s, cp.img.naturalHeight * cp.s); g.restore();
-  const id = g.getImageData(0, 0, 248, 304); toonData(id.data, 248, 304); g.putImageData(id, 0, 0); return c.toDataURL('image/jpeg', .88);
-}
-function previewCrop(){ clearTimeout(prevT); prevT = setTimeout(() => { if (cp.img) $('cvPrev').src = cropOut(); }, 80); }
-function cropUse(){ profile.avatar = cropOut(); $('crop').classList.add('hide'); applyProfile(); $('pmsg').textContent = 'Face ready. Click Save profile to keep it.'; }
-function cropClose(){ $('crop').classList.add('hide'); }
-$('zoom').addEventListener('input', e => { if (cp.img) setZoom(+e.target.value); }); $('zoom').addEventListener('change', previewCrop);
-$('cv').addEventListener('pointerdown', e => { $('cv').setPointerCapture(e.pointerId); ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY}); });
-$('cv').addEventListener('pointermove', e => {
-  if (!ptrs.has(e.pointerId) || !cp.img) return;
-  const r = $('cv').getBoundingClientRect(), k = CW / r.width, p = ptrs.get(e.pointerId);
-  if (ptrs.size === 1) { cp.x += (e.clientX - p.x) * k; cp.y += (e.clientY - p.y) * k; }
-  else { const o = [...ptrs].find(([id]) => id !== e.pointerId)[1], d0 = Math.hypot(p.x - o.x, p.y - o.y), d1 = Math.hypot(e.clientX - o.x, e.clientY - o.y); if (d0 > 5) { const v = Math.max(60, Math.min(400, cp.s / cp.s0 * (d1 / d0) * 100)); setZoom(v); $('zoom').value = v; } }
-  ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY}); drawCrop();
-});
-['pointerup', 'pointercancel'].forEach(ev => $('cv').addEventListener(ev, e => { ptrs.delete(e.pointerId); previewCrop(); }));
 
 /* ===== Album (Supabase Storage). Photos are shrunk in your browser first so the free 1 GB lasts. ===== */
 const CAP_MB = 1024; let albumRows = [], albumTask = new Map();
@@ -672,19 +868,22 @@ async function openPhoto(id){
   o.querySelector('#pc').onclick = () => o.remove();
   o.querySelector('#pd').onclick = async () => { if (!confirm('Delete this photo?')) return; await sb.storage.from('album').remove([r.path, r.thumb_path]); await sb.from('album_photos').delete().eq('id', id); o.remove(); await loadAlbum(); showAlbum(); };
 }
+
 function levelFx(){ const h = $('hero'); h.classList.remove('levelup'); void h.offsetWidth; h.classList.add('levelup'); fxBoost = 1; setTimeout(() => h.classList.remove('levelup'), 1500); }
 
-/* 3D hero: rising shadow-particle vortex that follows your pointer. */
+
+/* 3D hero: rising particles tinted by your aura. */
 function initFx(){
   if (!window.THREE) { fx2d(); return; }
   const c = $('fx'), hero = $('hero');
   const R = new THREE.WebGLRenderer({canvas:c, alpha:true, antialias:true}); R.setPixelRatio(Math.min(devicePixelRatio, 2));
   const S = new THREE.Scene(), C = new THREE.PerspectiveCamera(55, 1, .1, 100); C.position.z = 14;
-  const N = 1600, pos = new Float32Array(N * 3), seed = [];
+  const N = 1500, pos = new Float32Array(N * 3), seed = [];
   for (let i = 0; i < N; i++) seed.push({a:Math.random()*6.283, r:2.5+Math.random()*5.5, y:Math.random()*16-8, v:.012+Math.random()*.035, w:(Math.random()-.5)*.01+.006});
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const sp = document.createElement('canvas'); sp.width = sp.height = 64; const sg = sp.getContext('2d'), gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.3, 'rgba(160,185,255,.8)'); gr.addColorStop(1, 'rgba(91,124,255,0)'); sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
-  const P = new THREE.Points(g, new THREE.PointsMaterial({map:new THREE.CanvasTexture(sp), size:innerWidth < 600 ? .32 : .22, transparent:true, opacity:.9, blending:THREE.AdditiveBlending, depthWrite:false})); S.add(P);
+  const sp = document.createElement('canvas'); sp.width = sp.height = 64; const sg = sp.getContext('2d'), gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.35, 'rgba(255,255,255,.7)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
+  fxMat = new THREE.PointsMaterial({map:new THREE.CanvasTexture(sp), size:innerWidth < 600 ? .32 : .22, transparent:true, depthWrite:false});
+  const P = new THREE.Points(g, fxMat); S.add(P); applyFxTheme();
   const size = () => { const w = hero.clientWidth, h = hero.clientHeight; R.setSize(w, h, false); C.aspect = w / h; C.updateProjectionMatrix(); };
   size(); addEventListener('resize', size);
   let mx = 0, my = 0;
@@ -702,10 +901,10 @@ function fx2d(){
   const c = $('fx'), g = c.getContext('2d'), hero = $('hero'); if (!g) return; let w = 0, h = 0;
   const size = () => { w = c.width = hero.clientWidth; h = c.height = hero.clientHeight; }; size(); addEventListener('resize', size);
   const ps = Array.from({length:110}, () => ({a:Math.random() * 6.28, r:30 + Math.random() * 140, y:Math.random(), v:.0009 + Math.random() * .002}));
-  (function loop(){ requestAnimationFrame(loop); if (document.hidden || !motionOn()) return; g.clearRect(0, 0, w, h); g.globalCompositeOperation = 'lighter';
-    ps.forEach(p => { p.a += .01; p.y -= p.v; if (p.y < 0) p.y = 1; const x = w / 2 + Math.cos(p.a + yawNow * .02) * p.r * (.6 + .4 * p.y), y = p.y * h; g.fillStyle = 'rgba(130,160,255,.7)'; g.beginPath(); g.arc(x, y, 2.2, 0, 6.3); g.fill(); }); })();
+  (function loop(){ requestAnimationFrame(loop); if (document.hidden || !motionOn()) return; g.clearRect(0, 0, w, h); g.globalCompositeOperation = isDay ? 'source-over' : 'lighter'; g.fillStyle = fxCol;
+    ps.forEach(p => { p.a += .01; p.y -= p.v * (1 + fxBoost * 8); if (p.y < 0) p.y = 1; fxBoost *= .9995; const x = w / 2 + Math.cos(p.a + yawNow * .02) * p.r * (.6 + .4 * p.y), y = p.y * h; g.globalAlpha = isDay ? .7 : .85; g.beginPath(); g.arc(x, y, 2.2, 0, 6.3); g.fill(); }); })();
 }
-/* Head turn: the figure (or your photo) sweeps left and right by itself. Drag it, or hover with a mouse, to look around. */
+/* Idle animation: head turns left and right, body breathes, eyes blink. Drag or hover to look around. */
 function initTurn(){
   const hero = $('hero');
   let drag = 0, dragging = false, sx = 0, hover = null;
@@ -715,21 +914,24 @@ function initTurn(){
   hero.addEventListener('pointerleave', () => { hover = null; });
   (function loop(t){
     requestAnimationFrame(loop); if (document.hidden) return;
-    const gH = $('gHead'), gHr = $('gHair'), gF = $('gFace'), gB = $('gBody'); if (!gH) return;
-    const target = dragging ? drag : (hover !== null ? hover : (motionOn() ? Math.sin(t / 2300) * 24 : 0));
+    const gH = $('gHead'), gHr = $('gHair'), gF = $('gFace'), gB = $('gBody'), gK = $('gBack'), gE = $('gEyes'); if (!gH) return;
+    const mo = motionOn(), target = dragging ? drag : (hover !== null ? hover : (mo ? Math.sin(t / 2300) * 24 : 0)), br = mo ? Math.sin(t / 900) * 1.8 : 0, bl = mo && (t % 4300) > 4120 ? .12 : 1;
     yawNow += (target - yawNow) * .09;
     const s = Math.sin(yawNow * Math.PI / 180), c = Math.cos(yawNow * Math.PI / 180);
-    gH.setAttribute('transform', `translate(${(s * 10).toFixed(2)} 0) translate(200 190) scale(${c.toFixed(3)} 1) translate(-200 -190)`);
-    gHr.setAttribute('transform', `translate(${(s * 6).toFixed(2)} 0)`);
-    gF.setAttribute('transform', `translate(${(s * 24).toFixed(2)} 0) translate(200 200) scale(${(.9 + .1 * c).toFixed(3)} 1) translate(-200 -200)`);
-    gB.setAttribute('transform', `translate(${(-s * 8).toFixed(2)} 0)`);
-    hero.style.setProperty('--yaw', yawNow.toFixed(2)); hero.style.setProperty('--sh', (Math.max(0, s) * .7).toFixed(2)); hero.style.setProperty('--sh2', (Math.max(0, -s) * .7).toFixed(2));
+    gH.setAttribute('transform', `translate(${(s * 10).toFixed(2)} ${br.toFixed(2)}) translate(200 190) scale(${c.toFixed(3)} 1) translate(-200 -190)`);
+    gHr.setAttribute('transform', `translate(${(s * 5).toFixed(2)} 0)`);
+    gF.setAttribute('transform', `translate(${(s * 22).toFixed(2)} 0) translate(200 200) scale(${(.9 + .1 * c).toFixed(3)} 1) translate(-200 -200)`);
+    gE.setAttribute('transform', `translate(0 196) scale(1 ${bl}) translate(0 -196)`);
+    gB.setAttribute('transform', `translate(${(-s * 8).toFixed(2)} ${(br * .6).toFixed(2)})`);
+    gK.setAttribute('transform', `translate(${(s * -6).toFixed(2)} ${br.toFixed(2)})`);
+    hero.style.setProperty('--yaw', yawNow.toFixed(2));
   })(0);
 }
-applyMotion(); drawFig(); initTurn();
-try { initFx(); } catch (e) { console.warn('3D hero fallback', e); fx2d(); }
 
 /* Install tip for iPhone (alerts need the Home Screen app) */
+applyTheme(); applyMotion(); setPhase(1); renderShop(); initTurn();
+try { initFx(); } catch (e) { console.warn('3D hero fallback', e); fx2d(); }
+
 if (/iphone|ipad/i.test(navigator.userAgent) && !(navigator.standalone || matchMedia('(display-mode: standalone)').matches) && localStorage.getItem('tipx') !== '1')
   $('tip').innerHTML = '<div class="warn"><span><b>Install on iPhone.</b> In Safari tap Share, then Add to Home Screen, and open the app from there. Alerts only work that way.</span><button class="sec" onclick="localStorage.setItem(\'tipx\',\'1\'); this.closest(\'.warn\').remove()">Got it</button></div>';
 
