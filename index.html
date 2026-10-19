@@ -8,145 +8,124 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Content Tracker">
-<meta name="theme-color" content="#05060f">
+<meta name="theme-color" content="#05071a">
 <script>try{var m=localStorage.getItem('theme')||'auto',h=parseInt(new Date().toLocaleString('en-GB',{timeZone:'Asia/Manila',hour:'2-digit',hourCycle:'h23'}),10);document.documentElement.dataset.theme=(m==='day'||(m==='auto'&&h>=6&&h<18))?'day':'night'}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--void:#05060f;--panel:#0c1128;--line:#1e2757;--aura:#5b7cff;--glow:#dfeaff;--gold:#f5c451;--txt:#e6ecff;--mut:#8b97c7;--bad:#ff5d73;--inp:#080c1f;--btn2:#1a2250;--tab:#121a40;--barbg:#141a3a;--inpf:#0a1030;--navbg:#070a1cee;--link:#9bbcff;--shadow:#0008;--warnbg:#3d2410;--warnln:#b8742a;--hero:radial-gradient(circle at 82% 20%,#eaf1ff 0,#9bbcff 4.5%,transparent 5.2%),radial-gradient(ellipse at 50% 75%,#1b2468 0,#080c24 55%,#03040b 100%);color-scheme:dark}
-[data-theme=day]{--void:#e9f0ff;--panel:#fff;--line:#c9d6f5;--aura:#3a5bff;--glow:#2a3aa8;--gold:#b7791f;--txt:#14204a;--mut:#5a6a9a;--bad:#d63a52;--inp:#f2f5ff;--btn2:#dde5ff;--tab:#e0e7ff;--barbg:#d9e1fa;--inpf:#fff;--navbg:#ffffffee;--link:#2a4bd6;--shadow:#1a2a6030;--warnbg:#fff1dd;--warnln:#e0a060;--hero:radial-gradient(circle at 80% 22%,#fffbe0 0,#ffe58a 6%,#ffe58a55 12%,transparent 13%),linear-gradient(#7fb0ff 0,#cfe2ff 58%,#fdeed2 100%);color-scheme:light}
-*{box-sizing:border-box}
-body{margin:0;font:500 17px/1.35 'Rajdhani',system-ui,sans-serif;background:var(--void);color:var(--txt);padding-bottom:env(safe-area-inset-bottom);transition:background .5s,color .5s}
-main{max-width:980px;margin:0 auto;padding:0 12px 24px}
-.hero,.bdbox{--px:0;--py:0;--rc:#3a55ff88;--rg:14px;background:var(--hero)}
-.hero{position:relative;height:340px;overflow:hidden;margin:0 -12px;padding-top:env(safe-area-inset-top);touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:background .5s}
-@media(min-width:1000px){.hero{margin:0;border-radius:0 0 18px 18px}}
-.hero[data-rank=E]{--rc:#7b849977;--rg:8px}.hero[data-rank=D]{--rc:#4b8bff88;--rg:12px}.hero[data-rank=C]{--rc:#3fd18a88;--rg:16px}.hero[data-rank=B]{--rc:#a06bffaa;--rg:20px}.hero[data-rank=A]{--rc:#ff9f43bb;--rg:24px}.hero[data-rank=S]{--rc:#f5c451dd;--rg:30px}
-#fx{position:absolute;inset:0;width:100%;height:100%;display:block}
-.fig{-webkit-mask-image:linear-gradient(#000 80%,transparent 100%);mask-image:linear-gradient(#000 80%,transparent 100%);position:absolute;top:6px;left:50%;height:76%;transform:translateX(-50%) translate(calc(var(--px)*12px),calc(var(--py)*6px));filter:drop-shadow(0 0 var(--rg) var(--rc))}
-.fl,.wp{transform-box:fill-box;transform-origin:50% 100%;animation:fl .9s ease-in-out infinite alternate}.wp{animation-duration:1.8s}.rays{transform-box:fill-box;transform-origin:50% 50%;animation:spin 40s linear infinite}
-@keyframes fl{0%{transform:scaleY(.82)}100%{transform:scaleY(1.12)}}@keyframes spin{to{transform:rotate(360deg)}}
-.still .fl,.still .wp,.still .rays{animation:none}
-.status{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin:-24px 0 12px;position:relative;z-index:2;box-shadow:0 8px 24px var(--shadow)}
-.status .lvbox{flex:1;min-width:0}
-.rank{width:58px;height:58px;display:grid;place-items:center;border:2px solid var(--gold);color:var(--gold);font-size:34px;font-weight:700;border-radius:10px;box-shadow:0 0 16px #f5c45144;flex:none}
-.hn{font-size:13px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase}.lv{font-size:22px;font-weight:700}
-.bar{height:10px;background:var(--barbg);border-radius:6px;overflow:hidden;border:1px solid var(--line)}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aura),#9bb4ff);transition:width .8s}
-.xpt{font-size:14px;color:var(--mut)}
-.streak{text-align:right;flex:none}.streak b{font-size:40px;line-height:1;color:var(--glow);text-shadow:0 0 14px var(--aura)}.streak span{display:block;font-size:14px;color:var(--mut)}
-.coin{display:inline-block;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#d9a53a);box-shadow:0 0 8px #f5c45166;vertical-align:-2px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;transition:background .5s,border-color .5s}
-[data-theme=day] .card{box-shadow:0 2px 10px #1a2a6014}
-h2{font-size:19px;margin:0 0 8px}
-input,select,textarea,button{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;width:100%;margin:3px 0;background:var(--inp);color:var(--txt)}
-button{background:var(--aura);color:#fff;border:0;cursor:pointer;width:auto;padding:10px 16px;font-weight:700}
-button.sec{background:var(--btn2);color:var(--txt)}button.del{background:#8f2438;color:#fff}button.ok{background:#14804a}
+:root{--bg1:#04061a;--bg2:#0a0f2e;--bg3:#150a33;--o1:#3b5bff;--o2:#8a4bff;--o3:#1fb6ff;--glass:rgba(16,22,58,.58);--glass2:rgba(255,255,255,.06);--glassb:rgba(140,160,255,.22);--solid:#10163a;--sh:0 10px 34px rgba(0,0,20,.45),inset 0 1px 0 rgba(255,255,255,.08);--txt:#eef1ff;--mut:#a6afd8;--aura:#6b8cff;--btn:linear-gradient(135deg,#4f74ff,#8a5bff);--gold:#ffd166;--bad:#ff6b81;--inp:rgba(255,255,255,.07);--barbg:rgba(255,255,255,.1);--link:#a9c0ff;--navbg:rgba(14,18,48,.66);--fc:#6fb7ff;--warnbg:rgba(255,170,60,.14);--warnln:rgba(255,170,60,.5);color-scheme:dark}
+[data-theme=day]{--bg1:#d9e8ff;--bg2:#ebe3ff;--bg3:#d8f1ff;--o1:#79a7ff;--o2:#c4a6ff;--o3:#8fe0ff;--glass:rgba(255,255,255,.58);--glass2:rgba(255,255,255,.5);--glassb:rgba(255,255,255,.8);--solid:#fff;--sh:0 10px 30px rgba(86,104,200,.2),inset 0 1px 0 rgba(255,255,255,.9);--txt:#16204a;--mut:#56608f;--aura:#3a5bff;--gold:#946313;--bad:#d63a52;--inp:rgba(255,255,255,.7);--barbg:rgba(60,80,170,.14);--link:#2a4bd6;--navbg:rgba(255,255,255,.7);--warnbg:rgba(255,190,100,.28);--warnln:rgba(224,140,40,.6);color-scheme:light}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;font:500 16px/1.4 -apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2) 55%,var(--bg3));background-attachment:fixed;color:var(--txt);min-height:100vh;transition:background .6s,color .4s}
+.bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}.bgfx i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:drift 24s ease-in-out infinite alternate}
+.bgfx i:nth-child(1){width:60vmax;height:60vmax;left:-20vmax;top:-18vmax;background:var(--o1)}.bgfx i:nth-child(2){width:50vmax;height:50vmax;right:-18vmax;top:22vh;background:var(--o2);animation-delay:-8s}.bgfx i:nth-child(3){width:44vmax;height:44vmax;left:10vw;bottom:-22vmax;background:var(--o3);animation-delay:-15s;opacity:.35}
+@keyframes drift{to{transform:translate(6vmax,4vmax) scale(1.12)}}
+main{max-width:980px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 14px 120px}
+h1,h2,h3{margin:0}h2{font-size:18px;font-weight:700;letter-spacing:.01em;margin-bottom:10px}h3{font-size:14px;font-weight:700;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;margin:12px 0 8px}
+.card,.glass{background:var(--glass);border:1px solid var(--glassb);border-radius:24px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);padding:16px;margin-bottom:14px}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card,.glass,.tabs{background:var(--solid)}}
+input,select,textarea,button{font:inherit;color:var(--txt);border:1px solid var(--glassb);border-radius:14px;padding:11px 14px;width:100%;margin:3px 0;background:var(--inp);transition:border-color .2s,box-shadow .2s,background .2s,transform .12s,filter .2s}
+input[type=checkbox]{width:auto}input::placeholder,textarea::placeholder{color:var(--mut)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--aura);box-shadow:0 0 0 3px rgba(107,140,255,.3)}
+button{width:auto;cursor:pointer;min-height:46px;font-weight:650;background:var(--btn);color:#fff;border:0;box-shadow:0 6px 18px rgba(90,100,255,.35)}
+button:hover{filter:brightness(1.08)}button:active{transform:scale(.96)}button:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+button.sec{background:var(--glass2);color:var(--txt);border:1px solid var(--glassb);box-shadow:none}button.del{background:linear-gradient(135deg,#d6455d,#a02440)}button.ok{background:linear-gradient(135deg,#1fa86a,#14804a)}
 :focus-visible{outline:2px solid var(--aura);outline-offset:2px}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
-.task{border-top:1px solid var(--line);padding:10px 0;animation:fadeIn .3s both}.task.done .t{color:var(--mut);text-decoration:line-through}
-.t{font-weight:700;font-size:18px}.meta{font-size:14px;color:var(--mut)}.meta a{color:var(--link)}
-.badge{display:inline-block;font-size:13px;padding:1px 9px;border-radius:99px;background:var(--btn2);color:var(--txt)}
-.s-scheduled{background:#8a6d12;color:#fff}.s-published{background:#14733f;color:#fff}.s-completed{background:#1e56b0;color:#fff}.s-prepared{background:#9a4a14;color:#fff}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:var(--inp);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;color:var(--mut)}.stats b{font-size:26px;display:block;color:var(--txt)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:6px 12px;border-radius:8px;border:1px solid var(--line);color:var(--mut);opacity:.6}.chip.on{opacity:1;color:var(--gold);border-color:var(--gold);box-shadow:0 0 10px #f5c45133}
-#banner{margin-top:8px}.alert{background:#8a6d12;color:#fff;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#f5c451;color:#201600;font-weight:700;padding:10px 18px;border-radius:99px;z-index:60;animation:pop 2.4s forwards}
-@keyframes pop{0%{opacity:0;transform:translate(-50%,12px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
-.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}
-.tabs{display:flex;gap:6px;position:sticky;top:0;z-index:8;background:var(--void);padding:8px 0;margin-bottom:10px}
-.tab{flex:1;min-width:0;margin:0;padding:11px 0;background:var(--tab);color:var(--mut);display:grid;place-items:center;border-radius:12px}
+.meta{font-size:14.5px;color:var(--mut)}.meta a,.lnkrow a{color:var(--link)}.err{color:var(--bad);font-size:14px}.hide{display:none!important}
+.hn{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+/* profile card */
+.pcard{display:grid;grid-template-columns:128px 1fr;gap:14px;align-items:center;position:relative;overflow:hidden;padding:16px;margin-top:4px}
+.pcard::before{content:"";position:absolute;inset:-40% -20% auto auto;width:70%;aspect-ratio:1;background:radial-gradient(circle,var(--fc),transparent 65%);opacity:.28;filter:blur(30px);pointer-events:none}
+.avframe{position:relative;width:128px;aspect-ratio:1/1.12;border-radius:26px;overflow:hidden;border:1px solid var(--glassb);box-shadow:0 0 0 1px rgba(255,255,255,.06),0 0 30px color-mix(in srgb,var(--fc) 50%,transparent);background:#0a1030}
+.avframe svg{width:100%;height:100%;display:block}
+.pcard.levelup .avframe{animation:lvl 1.5s}.pcard.levelup::after{content:"";position:absolute;left:64px;top:50%;width:30px;height:30px;border-radius:50%;border:3px solid var(--gold);transform:translate(-50%,-50%);animation:ring 1.5s ease-out forwards;pointer-events:none}
+@keyframes lvl{0%,100%{filter:none}30%{filter:brightness(1.6) saturate(1.3)}}@keyframes ring{to{width:360px;height:360px;opacity:0}}
+.pinfo{min-width:0;position:relative}.pname{font-size:22px;font-weight:800;letter-spacing:.01em;line-height:1.1;margin:2px 0 4px;overflow:hidden;text-overflow:ellipsis}
+.ftag{display:flex;align-items:center;gap:8px;font-size:14px;letter-spacing:.1em;font-weight:700;color:var(--fc);text-transform:uppercase}
+.ftag b{display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 6px;border-radius:9px;border:1.5px solid var(--gold);color:var(--gold);font-size:15px;letter-spacing:0}
+.lv{font-size:17px;font-weight:700;margin-top:8px}.xpt{font-size:13px;color:var(--mut)}
+.bar{height:10px;background:var(--barbg);border-radius:99px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4b8bff,#8a5bff,#4b8bff);background-size:200% 100%;box-shadow:0 0 14px rgba(110,130,255,.7);transition:width .9s;animation:sheen 4s linear infinite}
+@keyframes sheen{to{background-position:-200% 0}}
+.chips2{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;background:var(--glass2);border:1px solid var(--glassb);font-weight:700;font-size:13px}.pill b{font-size:15px}
+.coin{display:inline-block;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#e0a93a);box-shadow:0 0 8px rgba(255,200,80,.6)}.flame{color:#ff9f43}
+.pcard .go{grid-column:1/-1;width:100%}
+/* tabs */
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom));width:min(calc(100% - 24px),540px);z-index:20;display:flex;gap:4px;padding:6px;border-radius:30px;background:var(--navbg);border:1px solid var(--glassb);box-shadow:var(--sh);-webkit-backdrop-filter:blur(24px) saturate(1.6);backdrop-filter:blur(24px) saturate(1.6)}
+.tab{flex:1 1 0;min-width:0;min-height:48px;padding:0;margin:0;display:flex;align-items:center;justify-content:center;border-radius:24px;background:transparent;color:var(--mut);box-shadow:none;border:0}
 .tab svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-.tab.on{background:var(--aura);color:#fff;box-shadow:0 0 16px #5b7cff66}
-.view{display:none}.view.on{display:block;animation:viewIn .38s cubic-bezier(.2,.7,.2,1)}.view.on .card{animation:rise .45s cubic-bezier(.2,.7,.2,1) both}
-.view.on .card:nth-child(2){animation-delay:.05s}.view.on .card:nth-child(3){animation-delay:.1s}.view.on .card:nth-child(4){animation-delay:.15s}
+.tab .lbl{display:none;font-size:14px;font-weight:700;margin-left:6px}.tab.on{flex:2.3 1 0;background:var(--btn);color:#fff;box-shadow:0 6px 20px rgba(100,110,255,.45)}.tab.on .lbl{display:inline}
+.view{display:none}.view.on{display:block;animation:viewIn .4s cubic-bezier(.2,.7,.2,1)}.view.on>.card,.view.on>.two>.card{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
 @keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes rise{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}@media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
-.tile{background:var(--inp);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14px;color:var(--mut)}.tile b{display:block;font-size:34px;line-height:1.1;color:var(--txt)}
-.two,.addgrid{display:grid;gap:12px}@media(min-width:820px){.two,.addgrid{grid-template-columns:1fr 1fr}}
-.week{display:flex;gap:6px}.day{flex:1;text-align:center;font-size:13px;color:var(--mut)}.day i{display:block;height:36px;border-radius:6px;background:var(--inp);border:1px solid var(--line);margin-bottom:4px}.day.on i{background:linear-gradient(#5b7cff,#2a3aa8);box-shadow:0 0 10px #5b7cff77}
-.pvq{border:1px solid var(--line);border-left:4px solid var(--aura);border-radius:10px;padding:12px;background:var(--inp)}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:8px;margin-top:8px}
-.qimg{display:block;max-width:100%;max-height:200px;border-radius:8px;margin-top:6px;cursor:zoom-in}.pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
-.welcome{position:fixed;inset:0;z-index:70;display:grid;place-items:center;text-align:center;color:#e6ecff;background:radial-gradient(circle at 50% 45%,#2a3aa8cc,#03040bf5 70%);animation:wel 2.1s forwards;pointer-events:none}
-.welcome b{display:block;font-size:30px;margin-top:16px;text-shadow:0 0 16px #5b7cff}.welcome span{color:#8b97c7}
-.slits{display:flex;gap:46px;justify-content:center}.slits i{display:block;width:56px;height:7px;background:#eef4ff;border-radius:4px;box-shadow:0 0 14px #9bbcff,0 0 34px #5b7cff;animation:slit 1.2s .15s both}
+/* home */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tile{background:var(--glass2);border:1px solid var(--glassb);border-radius:18px;padding:12px;font-size:14px;color:var(--mut)}.tile b{display:block;font-size:32px;line-height:1.1;color:var(--txt)}
+.two,.addgrid{display:grid;gap:14px}@media(min-width:820px){.two,.addgrid{grid-template-columns:1fr 1fr}}.two>.card{margin-bottom:14px}
+.week{display:flex;gap:6px}.day{flex:1;text-align:center;font-size:13px;color:var(--mut)}.day i{display:block;height:36px;border-radius:10px;background:var(--glass2);border:1px solid var(--glassb);margin-bottom:4px}.day.on i{background:linear-gradient(#6b8cff,#8a5bff);box-shadow:0 0 12px rgba(120,130,255,.6);border-color:transparent}
+.sysw h2{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--link)}
+.stat{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;margin:9px 0}.stat span{color:var(--mut)}.stat b{font-size:19px}.stat i{grid-column:1/-1;display:block;height:6px;background:var(--barbg);border-radius:6px;overflow:hidden}.stat u{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#4b8bff,#8a5bff);box-shadow:0 0 10px rgba(110,130,255,.6)}
+.skill{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--glassb);opacity:.6}.skill:first-child{border-top:0}.skill.on{opacity:1}.skill b{display:block}.skill small{color:var(--mut);font-size:13px}.skill em{font-style:normal;font-size:12px;color:var(--mut)}.skill.on em{color:#2ec27e}
+.hex{width:26px;height:26px;background:var(--barbg);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.skill.on .hex{background:linear-gradient(#a9c0ff,#8a5bff)}
+/* quests */
+.task{border-top:1px solid var(--glassb);padding:12px 0;animation:fadeIn .3s both}.task.done .t{color:var(--mut);text-decoration:line-through}.t{font-weight:700;font-size:17px}
+.badge{display:inline-block;font-size:12.5px;padding:2px 10px;border-radius:99px;background:var(--glass2);border:1px solid var(--glassb);color:var(--txt);font-weight:650}
+.s-scheduled{background:#8a6d12;color:#fff;border-color:transparent}.s-published{background:#14733f;color:#fff;border-color:transparent}.s-completed{background:#1e56b0;color:#fff;border-color:transparent}.s-prepared{background:#9a4a14;color:#fff;border-color:transparent}
+.rw{display:inline-block;margin-left:8px;font-size:13px;color:var(--gold);font-weight:700}.pid{font-size:13px;color:var(--gold)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.stats div{background:var(--glass2);border:1px solid var(--glassb);border-radius:16px;padding:8px;font-size:13px;color:var(--mut)}.stats b{font-size:26px;display:block;color:var(--txt)}
+.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:4px;-webkit-overflow-scrolling:touch}.cat{flex:none;min-height:40px;padding:7px 16px;background:var(--glass2);color:var(--txt);border:1px solid var(--glassb);box-shadow:none;border-radius:99px;font-size:15px;margin:0}.cat.on{background:var(--btn);color:#fff;border-color:transparent}
+#banner{margin-top:8px}.alert{background:#8a6d12;color:#fff;border-radius:16px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.toast{position:fixed;left:50%;bottom:calc(94px + env(safe-area-inset-bottom));transform:translateX(-50%);background:linear-gradient(135deg,#ffe08a,#ffc24a);color:#2a1c00;font-weight:700;padding:11px 20px;border-radius:99px;z-index:90;box-shadow:0 8px 24px rgba(0,0,0,.35);animation:pop 2.6s forwards;max-width:calc(100% - 32px);text-align:center}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,12px)}12%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.drop{border:1.5px dashed var(--glassb);border-radius:18px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}
+.pvq{border:1px solid var(--glassb);border-left:4px solid var(--aura);border-radius:16px;padding:12px;background:var(--glass2)}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:12px;margin-top:8px}
+.qimg{display:block;max-width:100%;max-height:200px;border-radius:12px;margin-top:6px;cursor:zoom-in}.pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
+.draft{display:flex;gap:10px;border:1px solid var(--glassb);border-radius:18px;padding:10px;margin-top:8px;background:var(--glass2);animation:rise .35s both}.draft>img{width:92px;max-height:130px;object-fit:cover;border-radius:12px;flex:none;align-self:flex-start;cursor:zoom-in}
+.draft .f{flex:1;min-width:0}.draft input,.draft select{padding:8px 10px;margin:2px 0;font-size:15px}.draft .row>*{min-width:90px}.draft label{flex:none}.draft input[type=checkbox]{width:20px;height:20px;margin:6px 0 0}
+.lnkrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:14px}.lnkrow button{padding:5px 12px;margin:0;min-height:36px}.fbf{display:block;width:100%;height:520px;border:0;border-radius:14px;margin-top:8px;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}@media(min-width:700px){.grid{grid-template-columns:repeat(5,1fr)}}.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;cursor:zoom-in;background:var(--inp)}
+.rem{display:flex;align-items:center;gap:8px;color:var(--mut);margin:6px 0;font-size:15px}.rem input{width:auto;margin:0;accent-color:var(--aura)}
+.warn{background:var(--warnbg);border:1px solid var(--warnln);border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;justify-content:space-between;align-items:center}.warn button{margin:0;flex:none}
+#auth{position:relative;overflow:hidden;margin-top:18px}
+.modal{position:fixed;inset:0;z-index:70;background:rgba(3,4,14,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;place-items:center;padding:12px;overflow:auto}.mbox{background:var(--solid);color:var(--txt);border:1px solid var(--glassb);border-radius:24px;padding:16px;max-width:520px;width:100%;max-height:100%;overflow:auto}
+.welcome{position:fixed;inset:0;z-index:95;display:grid;place-items:center;text-align:center;color:#eef1ff;background:radial-gradient(circle at 50% 45%,rgba(60,80,220,.75),rgba(3,4,14,.96) 70%);animation:wel 2.1s forwards;pointer-events:none}
+.welcome b{display:block;font-size:30px;margin-top:16px;text-shadow:0 0 16px #5b7cff}.welcome span{color:#a6afd8}.slits{display:flex;gap:46px;justify-content:center}.slits i{display:block;width:56px;height:7px;background:#eef4ff;border-radius:4px;box-shadow:0 0 14px #9bbcff,0 0 34px #5b7cff;animation:slit 1.2s .15s both}
 @keyframes slit{0%{transform:scaleX(0);opacity:0}30%,100%{transform:scaleX(1);opacity:1}}@keyframes wel{0%{opacity:0}14%,72%{opacity:1}100%{opacity:0}}
-.draft{display:flex;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px;background:var(--inp);animation:rise .35s both}.draft>img{width:92px;max-height:130px;object-fit:cover;border-radius:8px;flex:none;align-self:flex-start;cursor:zoom-in}
-.draft .f{flex:1;min-width:0}.draft input,.draft select{padding:7px;margin:2px 0;font-size:15px}.draft .row>*{min-width:90px}.draft label{flex:none}.draft input[type=checkbox]{width:20px;height:20px;margin:6px 0 0}
-.pid{font-size:13px;color:var(--gold)}
-.lnkrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:14px}.lnkrow a{color:var(--link)}.lnkrow button{padding:5px 10px;margin:0}.fbf{display:block;width:100%;height:520px;border:0;border-radius:8px;margin-top:8px;background:#fff}
-.rem{display:flex;align-items:center;gap:8px;color:var(--mut);margin:6px 0;font-size:16px}.rem input{width:auto;margin:0;accent-color:var(--aura)}
-.warn{background:var(--warnbg);border:1px solid var(--warnln);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;gap:10px;justify-content:space-between;align-items:center}.warn button{margin:0;flex:none}
-input,select,textarea{transition:border-color .2s,box-shadow .2s,background .2s}
-input:focus,select:focus,textarea:focus{border-color:var(--aura);box-shadow:0 0 0 3px #5b7cff33,0 0 16px #5b7cff33;outline:none;background:var(--inpf)}
-button{transition:transform .12s,box-shadow .2s,filter .2s,background .3s}button:hover{filter:brightness(1.12);box-shadow:0 4px 18px #5b7cff44}button:active{transform:scale(.95)}
-#auth{position:relative;overflow:hidden;animation:rise .5s both;margin-top:14px}#auth::before{content:"";position:absolute;inset:0;border-radius:10px;padding:1px;background:linear-gradient(120deg,transparent 30%,#7f9bffcc,transparent 70%);background-size:300% 100%;animation:sheen 4s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
-@keyframes sheen{to{background-position:-300% 0}}
-.modal{position:fixed;inset:0;z-index:50;background:#03040bee;display:grid;place-items:center;padding:12px;overflow:auto}.mbox{background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:14px;padding:14px;max-width:360px;width:100%;max-height:100%;overflow:auto}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}@media(min-width:700px){.grid{grid-template-columns:repeat(5,1fr)}}
-.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:zoom-in;background:var(--inp)}
-.shopTop{position:sticky;top:6px;z-index:6;display:flex;gap:12px;align-items:center}
-.pvfig{width:128px;height:134px;flex:none;border-radius:12px;overflow:hidden;border:1px solid var(--line);position:relative}.pvfig svg{width:100%;height:100%;display:block}
-.shopInfo{flex:1;min-width:0}.goldrow{display:flex;align-items:center;gap:6px;margin:4px 0}.goldrow b{font-size:26px;color:var(--gold)}
-.cats{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:4px}.cat{flex:none;padding:7px 14px;background:var(--btn2);color:var(--txt);margin:0;border-radius:99px;font-size:15px}.cat.on{background:var(--aura);color:#fff}
-.shopGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media(min-width:700px){.shopGrid{grid-template-columns:repeat(5,1fr)}}
-.itm{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px;margin:0;background:var(--inp);color:var(--txt);border:1px solid var(--line);border-radius:12px;text-align:center;min-width:0}
-.itm svg,.itm .bdp{width:100%;aspect-ratio:1;border-radius:8px;background:radial-gradient(ellipse at 50% 70%,#1b2468,#05060f);display:block}.itm .bdp{background:var(--hero)}
-.itm .sw{display:block;width:44px;height:44px;border-radius:50%;margin:8px 0;border:2px solid var(--line)}
-.itm .nm{font-size:14px;font-weight:700;line-height:1.1}.itm .pr{font-size:13px;color:var(--gold)}
-.itm.eq{border-color:var(--aura);box-shadow:0 0 0 2px #5b7cff55}.itm.eq .pr{color:#2ec27e}.itm.lock{opacity:.55}.itm.lock .pr{color:var(--mut)}
-[data-bd=gate]{--hero:radial-gradient(ellipse 36% 58% at 50% 56%,#e0c8ff 0,#8a4bff 24%,transparent 64%),linear-gradient(#0a0618,#1d0b3d 60%,#08040f)}
-[data-bd=roof]{--hero:linear-gradient(#10163a,#3a2a66 55%,#ff9d6b 100%)}
-[data-bd=moon]{--hero:radial-gradient(circle at 72% 28%,#ff8a8a 0,#d8334c 8%,#d8334c33 16%,transparent 17%),radial-gradient(ellipse at 50% 85%,#4a0f1f,#12030a 72%)}
-[data-bd=throne]{--hero:repeating-linear-gradient(90deg,transparent 0 54px,#2a165066 54px 62px),radial-gradient(ellipse at 50% 60%,#6a46b0,#150a2e 75%)}
-.hero[data-bd=roof]::before{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'><path fill='%2308091c' d='M0 100V60h30V30h28v40h24V45h34V20h26v50h30V50h40V25h30v45h26V40h40v60Z'/></svg>") bottom/400px 100% repeat-x}
-html{--pc:#b8c4e6}[data-phase="2"]{--pc:#4b8bff}[data-phase="3"]{--pc:#35d0ff}[data-phase="4"]{--pc:#a06bff}
-:root{--btn:#4a67f0}[data-theme=day]{--btn:#3a5bff;--gold:#946313}
-button{background:var(--btn);min-height:46px}button.sec{background:var(--btn2)}button.del{background:#8f2438}button.ok{background:#14804a}
-.cat{min-height:40px}.cat.on{background:var(--btn)}.meta{font-size:15px}
-.tab{display:flex;align-items:center;justify-content:center;flex:1 1 0;min-width:0;padding:11px 0}.tab.on{flex:2.2 1 0;background:var(--btn)}
-.tab .lbl{display:none;font-size:14px;font-weight:700;margin-left:6px}.tab.on .lbl{display:inline}
-.skip{position:absolute;left:-999px;top:8px;background:var(--btn);color:#fff;padding:10px 14px;border-radius:8px;z-index:100}.skip:focus{left:8px}
-.cap{position:absolute;left:0;right:0;bottom:0;padding:40px 16px 32px;text-align:center;color:#fff;background:linear-gradient(transparent,#03040bd9 72%);pointer-events:none}
-.cap small{display:block;letter-spacing:.35em;font-size:13px;opacity:.92}.cap b{display:block;font-size:30px;letter-spacing:.12em;line-height:1.05;color:var(--pc);text-shadow:0 0 18px var(--pc),0 2px 4px #000}.cap span{display:block;font-size:14px;margin-top:2px;text-shadow:0 1px 3px #000}
-.portrait{display:none;position:absolute;bottom:0;left:50%;height:100%;width:min(78%,360px);transform:translateX(-50%) perspective(900px) rotateY(calc(var(--yaw,0)*.35deg));animation:breathe 5s ease-in-out infinite}
-.hasPortrait .portrait{display:block}.hasPortrait .fig{display:none}
-.portrait::before{content:"";position:absolute;inset:0 -12%;background:radial-gradient(ellipse at 50% 55%,var(--pc),transparent 65%);opacity:.5;filter:blur(24px)}
-.portrait img{position:relative;width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
-@keyframes breathe{0%,100%{scale:1}50%{scale:1.02}}.still .portrait{animation:none}
-.holo{position:absolute;top:12px;right:12px;width:118px;padding:8px 10px;border:1px solid #35d0ff88;border-radius:8px;background:#06214ae6;color:#bfefff;font-size:12px;box-shadow:0 0 18px #35d0ff55;pointer-events:none}
-.holo b{display:block;letter-spacing:.2em;font-size:11px;margin-bottom:4px}.holo div{display:flex;justify-content:space-between}.holo em{font-style:normal;font-weight:700}
-.sysw{border-color:#35d0ff66;box-shadow:inset 0 0 24px #35d0ff14}[data-theme=day] .sysw{border-color:#9bb4f0;box-shadow:none}
-.sysw h2{letter-spacing:.18em;text-transform:uppercase;font-size:15px;color:var(--link)}
-.stat{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;margin:8px 0}.stat span{color:var(--mut)}.stat b{font-size:20px}.stat i{grid-column:1/-1;display:block;height:6px;background:var(--barbg);border-radius:4px;overflow:hidden}.stat u{display:block;height:100%;background:linear-gradient(90deg,var(--aura),#35d0ff);border-radius:4px}
-.skill{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);opacity:.65}.skill:first-child{border-top:0}.skill.on{opacity:1}.skill b{display:block}.skill small{color:var(--mut);font-size:13px}.skill em{font-style:normal;font-size:12px;color:var(--mut)}.skill.on em{color:#2ec27e}
-.hex{width:26px;height:26px;background:var(--btn2);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}.skill.on .hex{background:linear-gradient(#9bb4ff,#35d0ff)}
-.rw{display:inline-block;margin-left:8px;font-size:13px;color:var(--gold);font-weight:700}
-.ph4grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}@media(min-width:760px){.ph4grid{grid-template-columns:repeat(4,1fr)}}
-.ph4{border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--inp)}.ph4.cur{border-color:var(--pcol);box-shadow:0 0 0 2px #5b7cff44}
-.ph4 .pimg{aspect-ratio:2/3;border-radius:8px;overflow:hidden;background:var(--barbg);display:grid;place-items:center;margin-bottom:6px;color:var(--mut);font-size:13px}.ph4 img{width:100%;height:100%;object-fit:cover}
-.ph4 .row>*{min-width:0;padding:8px 6px}.ph4 .meta{display:block;margin:2px 0 8px}
-.hide{display:none}.err{color:var(--bad);font-size:14px}
-@media(max-width:600px){.hero{height:318px}.draft{flex-direction:column}.draft>img{width:100%;max-height:200px}.row>*{min-width:100px}.pvfig{width:104px;height:110px}}
-@media(max-width:700px){
-  .tabs{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:var(--navbg);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--line);gap:4px}
-  .tab{border-radius:12px;padding:10px 0;background:transparent}.tab.on{background:var(--aura)}
-  main{padding-bottom:96px}.toast{bottom:92px}
-}
-@media(prefers-reduced-motion:reduce){.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.bar i{transition:none}.toast{animation-duration:.01s;animation-delay:2.4s}}
+.unlock{position:fixed;inset:0;z-index:96;display:grid;place-items:center;background:rgba(3,4,14,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);animation:fadeIn .4s;padding:12px}
+.ubox{text-align:center;color:#eef1ff;display:grid;gap:8px;justify-items:center}.ubox small{letter-spacing:.35em;font-size:12px;color:var(--fc)}.ubox b{font-size:28px;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 20px var(--fc)}.ubox span{color:#a6afd8;max-width:320px}
+.ubox svg{height:54vh;max-width:88vw;border-radius:26px;box-shadow:0 0 70px var(--fc);animation:reveal 1.3s cubic-bezier(.2,.8,.2,1)}@keyframes reveal{0%{filter:brightness(3) blur(8px);transform:scale(.92)}100%{filter:none;transform:none}}
+/* hunter: sub navigation, forms, customize */
+.seg{display:flex;gap:4px;padding:5px;border-radius:20px;background:var(--glass);border:1px solid var(--glassb);margin-bottom:14px;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.seg button{flex:1;min-height:42px;margin:0;border-radius:15px;background:transparent;color:var(--mut);box-shadow:none;border:0}.seg button.on{background:var(--btn);color:#fff;box-shadow:0 4px 16px rgba(100,110,255,.4)}
+.sub{display:none}.sub.on{display:block;animation:viewIn .35s}
+.stagewrap{position:relative;max-width:360px;margin:0 auto 12px}.stage{position:relative;border-radius:28px;overflow:hidden;border:1px solid var(--glassb);box-shadow:0 0 50px color-mix(in srgb,var(--fc) 55%,transparent);aspect-ratio:400/780;touch-action:pan-y;background:#0a1030}
+.stage svg{width:100%;height:100%;display:block;transition:filter .5s}.stage.locked svg{filter:brightness(.16) saturate(0) contrast(1.2)}
+.flock{position:absolute;inset:auto 14px 14px;padding:12px 14px;border-radius:18px;background:rgba(8,10,30,.72);color:#eef1ff;border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}.flock b{display:block;margin-bottom:6px}
+.flock .bar{margin:8px 0 0}
+.fnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;min-height:44px;padding:0;border-radius:50%;display:grid;place-items:center;font-size:22px;background:rgba(10,14,40,.6);color:#fff;border:1px solid rgba(255,255,255,.2);box-shadow:none;z-index:3}.fnav.l{left:-6px}.fnav.r{right:-6px}
+.fstrip{display:flex;gap:10px;justify-content:center;margin:10px 0}.fth{position:relative;width:66px;height:66px;min-height:66px;padding:0;border-radius:20px;overflow:hidden;background:#0a1030;border:2px solid var(--glassb);box-shadow:none}.fth.on{border-color:var(--fc);box-shadow:0 0 18px color-mix(in srgb,var(--fc) 70%,transparent)}.fth svg{width:100%;height:100%;display:block}.fth.lk svg{filter:brightness(.25) saturate(0)}
+.fth span{position:absolute;right:5px;bottom:3px;font-size:12px;font-weight:800;color:#fff;text-shadow:0 1px 3px #000}
+.ftitle{font-size:22px;font-weight:800;text-align:center;letter-spacing:.02em}.fquote{text-align:center;font-style:italic;color:var(--mut);margin:4px 0 12px}
+.cvtop{position:sticky;top:calc(6px + env(safe-area-inset-top));z-index:6;display:flex;gap:14px;align-items:center}.cvav{width:112px;aspect-ratio:1/1.1;flex:none;border-radius:22px;overflow:hidden;border:1px solid var(--glassb);background:#0a1030;box-shadow:0 0 24px color-mix(in srgb,var(--fc) 45%,transparent)}.cvav svg{width:100%;height:100%;display:block}
+.cvtop .row{flex-wrap:nowrap}.cvtop .row>*{min-width:0}.fch{flex:0 0 44px;width:44px;min-height:44px;height:44px;padding:0;border-radius:14px;background:var(--glass2);color:var(--txt);border:1px solid var(--glassb);box-shadow:none;margin:0}.fch.on{background:var(--btn);color:#fff;border-color:transparent}
+.ctiles{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+.ct{flex:none;width:92px;min-height:0;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:18px;background:var(--glass2);color:var(--txt);border:1.5px solid var(--glassb);box-shadow:none;text-align:center;scroll-snap-align:start}
+.ct svg{width:76px;height:76px;border-radius:12px;display:block;background:radial-gradient(ellipse at 50% 60%,#1b2468,#070a1e)}.ct .sw{display:block;width:44px;height:44px;border-radius:50%;margin:16px 0 14px;border:2px solid var(--glassb)}.ct .sw.auto{background:conic-gradient(#3fa8ff,#9a6bff,#ffd166,#3fa8ff)}
+.ct.txt{width:auto;min-width:92px;padding:12px 14px;justify-content:center}.ct .nm{font-size:13px;font-weight:700;line-height:1.1}.ct .pr{font-size:12px;color:var(--gold)}
+.ct.eq{border-color:var(--aura);box-shadow:0 0 0 3px rgba(107,140,255,.3)}.ct.eq .pr{color:#2ec27e}.ct.lk{opacity:.55}.ct.lk .pr{color:var(--mut)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--btn);color:#fff;padding:10px 14px;border-radius:12px;z-index:200}.skip:focus{left:8px}
+.fl,.wp{transform-box:fill-box;transform-origin:50% 100%;animation:fl .9s ease-in-out infinite alternate}.wp{animation-duration:1.8s}.rays{transform-box:fill-box;transform-origin:50% 50%;animation:spin 40s linear infinite}.holo3{animation:hp 3s ease-in-out infinite}
+@keyframes fl{0%{transform:scaleY(.82)}100%{transform:scaleY(1.12)}}@keyframes spin{to{transform:rotate(360deg)}}@keyframes hp{50%{opacity:.7}}
+.still .fl,.still .wp,.still .rays,.still .holo3,.still .bar i,.still .bgfx i{animation:none}
+@media(min-width:700px){.pcard{grid-template-columns:200px 1fr}.avframe{width:200px}.pcard.levelup::after{left:100px}}
+@media(max-width:600px){.draft{flex-direction:column}.draft>img{width:100%;max-height:200px}.row>*{min-width:100px}}
+@media(prefers-reduced-motion:reduce){.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.bar i,.bgfx i{animation:none}.toast{animation-duration:.01s;animation-delay:2.6s}.view.on,.view.on>.card{animation:none}}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="ablur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter><filter id="eglow" x="-40%" y="-80%" width="180%" height="260%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
+<div class="bgfx" aria-hidden="true"><i></i><i></i><i></i></div>
+
 <main id="main" tabindex="-1">
-<header class="hero" id="hero" data-bd="auto" data-rank="E">
-  <canvas id="fx" aria-hidden="true"></canvas>
-  <div class="portrait" id="portrait"><img id="portraitImg" alt="Your picture for this phase"></div>
-  <svg class="fig" id="fig" viewBox="0 40 400 380" aria-label="Your character"></svg>
-  <div class="holo hide" id="holo" aria-hidden="true"></div>
-  <div class="cap" id="cap"><small id="capPhase">PHASE 1</small><b id="capName">HUMAN</b><span id="capQuote"></span></div>
-</header>
 <div id="banner"></div>
 
 <div id="auth" class="card hide">
@@ -159,11 +138,23 @@ button{background:var(--btn);min-height:46px}button.sec{background:var(--btn2)}b
 </div>
 
 <div id="app" class="hide">
-  <div class="status"><div class="rank" id="rank" title="Hunter rank">E</div><div class="lvbox"><div class="hn" id="hname">Hunter</div><div class="lv" id="lv">Level 1</div><div class="bar"><i id="xpbar"></i></div><div class="xpt"><span id="xptxt">0 XP</span> · <span class="coin"></span> <span class="goldv">0</span> gold</div></div><div class="streak"><b id="streak">0</b><span>day streak</span><span id="best">Best 0</span></div></div>
   <nav class="tabs" id="tabs"><button class="tab on" data-v="overview" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg><span class="lbl">Home</span></button><button class="tab" data-v="quests" aria-label="Quests" title="Quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.6 1.6L7 5M3 12l1.6 1.6L7 11M3 18l1.6 1.6L7 17"/></svg><span class="lbl">Quests</span></button><button class="tab" data-v="add" aria-label="Add quest" title="Add quest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lbl">Add</span></button><button class="tab" data-v="album" aria-label="Album" title="Album"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg><span class="lbl">Album</span></button><button class="tab" data-v="reports" aria-label="Reports" title="Reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-7M2 20h20"/></svg><span class="lbl">Reports</span></button><button class="tab" data-v="hunter" aria-label="Hunter and shop" title="Hunter and shop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.6-3.2 7.8-8 9-4.8-1.2-8-4.4-8-9V6z"/><circle cx="12" cy="10" r="2.6"/><path d="M7.6 17c1-2.4 2.8-3.4 4.4-3.4s3.4 1 4.4 3.4"/></svg><span class="lbl">Hunter</span></button></nav>
 
   <section class="view on" id="v-overview">
-    <div id="tip"></div><div id="risk"></div>
+    <div class="card pcard" id="pcard">
+    <div class="avframe"><svg id="avBust" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Your hunter avatar"></svg></div>
+    <div class="pinfo">
+      <div class="hn" id="formNo">PHASE 1</div>
+      <div class="pname" id="hname">Hunter</div>
+      <div class="ftag"><b id="rank">E</b><span id="formName">Human</span></div>
+      <div class="lv" id="lv">Level 1</div>
+      <div class="bar" role="progressbar" aria-label="XP progress"><i id="xpbar"></i></div>
+      <div class="xpt" id="xptxt">0 XP</div>
+      <div class="chips2"><span class="pill"><span class="coin"></span><b class="goldv">0</b> gold</span><span class="pill"><span class="flame" aria-hidden="true">&#9679;</span><b id="streak">0</b> day streak</span><span class="pill" id="best">Best 0</span></div>
+    </div>
+    <button class="go" onclick="showView('hunter'); setSub('custom')">Customize avatar</button>
+  </div>
+  <div id="tip"></div><div id="risk"></div>
     <div class="card"><h2>Today</h2><div class="tiles" id="tiles"></div></div>
     <div class="two">
       <div class="card"><h2>Next up</h2><div id="next"></div></div>
@@ -233,29 +224,42 @@ button{background:var(--btn);min-height:46px}button.sec{background:var(--btn2)}b
   </section>
 
   <section class="view" id="v-hunter">
-    <div class="card shopTop"><div class="pvfig bdbox" id="pvBox" data-bd="auto"><svg id="pvFig" viewBox="0 40 400 380" aria-label="Your character"></svg></div>
-      <div class="shopInfo"><input id="pname" placeholder="Nickname" maxlength="24" aria-label="Nickname">
-        <div class="goldrow"><span class="coin"></span><b class="goldv">0</b><span class="meta">gold</span></div>
-        <div class="row"><button onclick="saveProfile(true)">Save</button></div><div class="meta" id="pmsg"></div></div></div>
-    <div class="card"><div class="cats" id="cats"></div><div class="shopGrid" id="shopGrid"></div>
-      <p class="meta">Gold is your total XP minus what you have spent. Clear quests to earn more. Items marked Lv need that level first.</p></div>
-    <div class="card"><h2>Phase portraits</h2>
-      <p class="meta">Your level moves you through four phases. Add your own picture for each one and the hero will show it. Without pictures, your avatar is shown and the wardrobe above applies.</p>
-      <div class="ph4grid" id="phGrid"></div>
-      <div class="row" style="margin-top:10px"><button class="sec" id="modeBtn" onclick="toggleMode()">Hero shows: Avatar</button><button class="sec" onclick="showPrompts()">Get prompts</button></div>
-      <input type="file" id="phFile" accept="image/*" class="hide" onchange="uploadPhase(this.files[0]); this.value=''"></div>
-    <div class="card"><h2>Settings</h2>
-      <div class="row"><button class="sec" id="themeBtn" onclick="cycleTheme()">Theme: Auto</button><button class="sec" id="motionBtn" onclick="toggleMotion()">Motion: on</button></div>
-      <p class="meta">Auto theme switches to day at 6:00 AM and night at 6:00 PM, Philippine time.</p>
-      <p class="meta" id="who" style="margin-top:12px"></p>
-      <div class="row"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></div>
-      <p class="meta">Alerts while the app is closed come from a server schedule that has to be switched on separately.</p></div>
+    <div class="seg" id="hseg" role="tablist" aria-label="Hunter sections"><button class="on" data-s="profile" role="tab" aria-selected="true">Profile</button><button data-s="forms" role="tab" aria-selected="false">Forms</button><button data-s="custom" role="tab" aria-selected="false">Customize</button></div>
+
+    <div class="sub on" id="s-profile">
+      <div class="warn hide" id="dbNote"><span><b>Saved on this device only.</b> Your database has no avatar columns yet. Run the one-time update to sync across devices.</span><button onclick="copySql()">Copy SQL</button></div>
+      <div class="card"><h2>Hunter profile</h2><input id="pname" placeholder="Nickname" maxlength="24" aria-label="Nickname">
+        <div class="row"><button onclick="saveProfile(true)">Save profile</button></div><div class="meta" id="pmsg"></div></div>
+      <div class="card"><h2>Settings</h2>
+        <div class="row"><button class="sec" id="themeBtn" onclick="cycleTheme()">Theme: Auto</button><button class="sec" id="motionBtn" onclick="toggleMotion()">Motion: on</button></div>
+        <p class="meta">Auto theme switches to day at 6:00 AM and night at 6:00 PM, Philippine time.</p>
+        <p class="meta" id="who" style="margin-top:12px"></p>
+        <div class="row"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></div>
+        <p class="meta">Alerts while the app is closed come from a server schedule that has to be switched on separately.</p></div>
+    </div>
+
+    <div class="sub" id="s-forms">
+      <div class="stagewrap"><button class="fnav l" id="fPrev" onclick="fNav(-1)" aria-label="Previous form">&#8249;</button><button class="fnav r" id="fNext" onclick="fNav(1)" aria-label="Next form">&#8250;</button>
+        <div class="stage" id="stage"><svg id="stageSvg" viewBox="0 0 400 780" role="img" aria-label="Full body character"></svg>
+          <div class="flock hide" id="fLock"><b id="fLockTxt"></b><div class="bar"><i id="fLockBar" style="width:0"></i></div></div></div></div>
+      <div class="fstrip" id="fStrip"></div>
+      <div class="card"><div class="ftitle" id="fTitle"></div><div class="meta" style="text-align:center" id="fTag"></div><div class="fquote" id="fQuote"></div>
+        <div class="row"><button id="fUse" onclick="useForm()">Use this form</button></div>
+        <p class="meta">Forms unlock as your level rises: Phase 2 at level 5, Phase 3 at level 12 and Phase 4 at level 18. Your customizations carry across every form.</p></div>
+    </div>
+
+    <div class="sub" id="s-custom">
+      <div class="card cvtop"><div class="cvav"><svg id="cvSvg" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Avatar preview"></svg></div>
+        <div style="flex:1;min-width:0"><div class="hn">Gold</div><div class="pill" style="margin:4px 0 8px"><span class="coin"></span><b id="cvGold">0</b></div><div class="hn">Preview form</div><div class="row" id="cvForms" style="gap:6px;margin-top:4px"></div></div></div>
+      <div class="cats" id="cgroups" role="group" aria-label="Customization groups"></div>
+      <div class="card" id="crows"></div>
+      <p class="meta">Free items are marked Free. Others cost gold, earned by clearing quests. Items marked Lv unlock at that level. Changes save automatically.</p>
+    </div>
   </section>
 </div>
-<p class="meta" style="text-align:center;margin-top:16px">Content Tracker v7</p>
+<p class="meta" style="text-align:center;margin-top:16px">Content Tracker v8</p>
 </main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
@@ -274,106 +278,180 @@ const nowHM = () => new Date().toLocaleTimeString('en-GB', {timeZone: TZ, hour12
 const mins = t => { const [h,m] = t.split(':'); return +h*60 + +m; };
 const addDays = (s,n) => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0,10); };
 
-/* ===== Character engine: layered SVG hunter (boy or girl) that the shop customises ===== */
-const SKIN = ['#ffe3cf','#f4c9a4','#dca878','#b8805a','#7e4f33'];
-const HAIRC = ['#17141f','#4a2f24','#d4daea','#2f5bff','#c9263f','#e9c65a','#7c4ddb'];
-const EYEC = ['#6b3a22','#2f7bff','#8a4bff','#e0334a','#f2c230','#bfe0ff'];
-const AURAC = {blue:'#4b8bff', emerald:'#2ee6a0', violet:'#9a4bff', flame:'#ff7a2e', gold:'#ffd24a'};
+
+/* ===== Hunter avatar engine: layered SVG anime avatar, bust (profile) and full body (evolution) ===== */
+const SKIN = ['#ffe3d0','#f6cdb0','#e0ad82','#b8805a','#7e4f33'];
+const HAIRC = ['#14131c','#4a2f24','#cfd6e8','#2f5bff','#c9263f','#e9c65a','#7c4ddb'];
+const EYEC = ['#6b3a22','#2f9bff','#8a4bff','#e0334a','#f2c230','#9fe8ff'];
+const BASEC = {black:'#14151f', navy:'#18244d', charcoal:'#2b2d3a', wine:'#3a1426'};
+const ACCC = {blue:'#3fa8ff', violet:'#9a6bff', silver:'#cfd6e6', emerald:'#2ee6a0', gold:'#ffd166', crimson:'#ff5d73'};
+const FORMS = [
+  {n:1, name:'Human', from:1, aura:'none', col:'#6fb7ff', tag:'Everyday you', quote:'An ordinary day. A different dream.'},
+  {n:2, name:'Shadow Hunter', from:5, aura:'blue', col:'#4b8bff', tag:'Streetwear and a faint blue aura', quote:'The light fades. The shadows answer.'},
+  {n:3, name:'Awakened Hunter', from:12, aura:'bflame', col:'#35c8ff', tag:'Glowing eyes and a status window', quote:'Not luck. Not talent. Just a system that works.'},
+  {n:4, name:'Class S', from:18, aura:'violet', col:'#a06bff', tag:'Violet flames and shadow guardians', quote:'Not the strongest. The one who kept going.'}
+];
+const DEFAULT_LOOK = {body:'boy', skin:1, hair:'tousled', hairColor:0, eyes:1, eyeShape:'sharp', brows:'auto', base:'black', accent:'auto', acc:'headphones', neck:'none', aura:'auto', shadows:'auto', bd:'auto', pose:'calm', form:0};
 const mixc = (a, b, t) => { const p = h => [1,3,5].map(i => parseInt(h.slice(i, i + 2), 16)), A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
 const dark = (c, t) => mixc(c, '#000000', t), lite = (c, t) => mixc(c, '#ffffff', t);
-const DEFAULT_LOOK = {body:'boy', skin:1, hair:'spiky', hairColor:0, eyes:0, outfit:'tee', weapon:'none', aura:'none', acc:'none', neck:'none', bd:'auto', mode:'avatar', pp:[]};
+let UID = 0;
 
-function hairShapes(style, hc){
-  const hd = dark(hc, .35), hl = lite(hc, .3);
-  const cap = `<path d="M138 194C126 132 158 98 200 98C242 98 274 132 262 194C258 168 250 150 232 142C214 152 186 152 168 142C150 150 142 168 138 194Z" fill="${hc}"/>`;
-  const shine = `<path d="M166 116C188 106 216 106 236 118" stroke="${hl}" stroke-width="5" fill="none" stroke-linecap="round" opacity=".55"/>`;
+function hairParts(style, hc){
+  const hd = dark(hc, .4), hl = mixc(hc, '#5cb8ff', .5), hh = lite(hc, .3);
+  const sheen = (d, c = hl, o = .55) => `<path d="${d}" fill="${c}" opacity="${o}"/>`;
+  const cap = `<path d="M138 196C124 134 158 96 200 96C242 96 276 134 262 196C258 170 250 152 234 144C216 154 184 154 166 144C150 152 142 170 138 196Z" fill="url(#GH)"/>`;
   const S = {
-    spiky: {back:'', front: `<path d="M142 140L150 90L172 118L186 78L204 114L222 76L234 116L254 88L260 142Z" fill="${hc}"/>${cap}<path d="M164 146L172 170L184 150ZM236 146L228 168L216 150Z" fill="${hc}"/>${shine}`},
-    swept: {back:'', front: `${cap}<path d="M144 152C170 120 226 116 256 152C236 148 214 156 200 172L184 174C174 164 160 158 144 152Z" fill="${hc}"/><path d="M204 146L210 168L220 150Z" fill="${hd}"/>${shine}`},
-    pomp: {back:'', front: `<path d="M138 156C122 92 176 66 214 74C256 82 276 120 262 156C254 130 232 122 200 124C168 124 146 134 138 156Z" fill="${hc}"/><path d="M138 194C136 176 140 160 152 150L160 190ZM262 194C264 176 260 160 248 150L240 190Z" fill="${hc}"/><path d="M160 98C186 80 226 84 244 102" stroke="${hl}" stroke-width="6" fill="none" stroke-linecap="round" opacity=".55"/>`},
-    bob: {back: `<path d="M124 196C116 130 150 96 200 96C250 96 284 130 276 196L278 256C268 270 248 264 244 246L156 246C152 264 132 270 122 256Z" fill="${hd}"/>`, front: `${cap}<path d="M140 160C164 134 236 134 260 160L258 188C238 168 162 168 142 188Z" fill="${hc}"/>${shine}`},
-    long: {back: `<path d="M122 196C112 126 150 94 200 94C250 94 288 126 278 196L296 346L104 346Z" fill="${hd}"/>`, front: `${cap}<path d="M138 194C142 156 168 142 200 144C232 142 258 156 262 194C250 172 230 160 200 160C170 160 150 172 138 194Z" fill="${hc}"/><path d="M138 194L134 250L150 232ZM262 194L266 250L250 232Z" fill="${hc}"/>${shine}`},
-    twin: {back: `<path d="M142 150C96 146 72 206 90 290C104 312 122 290 124 258C126 226 140 196 150 172Z" fill="${hd}"/><path d="M258 150C304 146 328 206 310 290C296 312 278 290 276 258C274 226 260 196 250 172Z" fill="${hd}"/>`, front: `${cap}<path d="M140 160C164 134 236 134 260 160L256 184C236 166 164 166 144 184Z" fill="${hc}"/><circle cx="140" cy="154" r="9" fill="#e0334a"/><circle cx="260" cy="154" r="9" fill="#e0334a"/>${shine}`},
-    pony: {back: `<path d="M246 122C310 104 346 176 322 262C314 292 294 292 290 270C288 226 274 180 240 150Z" fill="${hd}"/>`, front: `${cap}<path d="M144 150C170 120 230 118 258 150C236 148 214 158 198 180L186 214C180 186 166 162 144 150Z" fill="${hc}"/><circle cx="250" cy="130" r="8" fill="#e0334a"/>${shine}`}
+    tousled: {
+      back: `<path d="M126 200C106 176 112 146 130 132L112 112L142 118L146 92L172 110L192 80L212 108L238 86L242 114L270 100L266 134C288 150 292 180 274 202L262 176L142 176Z" fill="${hd}"/>`,
+      front: `${cap}<path d="M140 150L130 122L156 138L158 102L182 128L200 90L218 126L246 98L242 138L270 122L262 160C250 140 232 132 200 132C170 132 150 140 140 150Z" fill="url(#GH)"/>
+<path d="M146 160C160 170 168 180 170 192C158 190 148 178 146 160Z" fill="url(#GH)"/><path d="M174 142C188 152 196 168 196 184C184 176 176 162 174 142Z" fill="url(#GH)"/><path d="M208 140C222 150 234 164 238 182C226 176 214 162 208 140Z" fill="url(#GH)"/><path d="M240 152C252 160 258 172 258 190C248 184 240 172 240 152Z" fill="url(#GH)"/>
+<path d="M141 180C138 200 142 216 150 228C148 212 150 196 156 184Z" fill="url(#GH)"/><path d="M259 180C262 200 258 216 250 228C252 212 250 196 244 184Z" fill="url(#GH)"/>
+${sheen('M168 112C186 103 208 104 224 112C208 111 188 115 168 112Z')}${sheen('M176 146C184 154 190 164 192 174C184 168 178 158 176 146Z', hl, .6)}${sheen('M210 144C218 150 226 160 230 172C222 168 214 158 210 144Z', hl, .6)}${sheen('M148 164C154 170 160 176 162 184C154 180 150 172 148 164Z', hl, .5)}`
+    },
+    spiky: {back: '', front: `<path d="M142 142L150 90L172 118L186 78L204 114L222 76L234 116L254 88L260 144Z" fill="url(#GH)"/>${cap}<path d="M164 146L172 172L184 150ZM236 146L228 170L216 150Z" fill="url(#GH)"/>${sheen('M168 114C188 104 214 106 232 118C212 112 190 114 168 114Z')}`},
+    swept: {back: '', front: `${cap}<path d="M144 152C170 120 226 116 256 152C236 148 214 156 200 174L184 176C174 166 160 160 144 152Z" fill="url(#GH)"/><path d="M204 148L210 170L220 152Z" fill="${hd}"/>${sheen('M166 118C190 108 222 110 240 124C218 118 190 118 166 118Z')}`},
+    pomp: {back: '', front: `<path d="M138 158C122 92 176 66 214 74C256 82 276 120 262 158C254 132 232 124 200 126C168 126 146 136 138 158Z" fill="url(#GH)"/><path d="M138 196C136 176 140 160 152 150L160 190ZM262 196C264 176 260 160 248 150L240 190Z" fill="url(#GH)"/>${sheen('M160 96C186 80 226 84 244 102C220 92 186 92 160 96Z')}`},
+    bob: {back: `<path d="M124 198C116 132 150 96 200 96C250 96 284 132 276 198L278 258C268 272 248 266 244 248L156 248C152 266 132 272 122 258Z" fill="${hd}"/>`, front: `${cap}<path d="M140 162C164 136 236 136 260 162L258 190C238 170 162 170 142 190Z" fill="url(#GH)"/>${sheen('M168 114C188 104 214 106 232 118C212 112 190 114 168 114Z')}`},
+    long: {back: `<path d="M122 198C112 128 150 94 200 94C250 94 288 128 278 198L298 348L102 348Z" fill="${hd}"/>`, front: `${cap}<path d="M138 196C142 158 168 144 200 146C232 144 258 158 262 196C250 174 230 162 200 162C170 162 150 174 138 196Z" fill="url(#GH)"/><path d="M138 196L132 254L150 234ZM262 196L268 254L250 234Z" fill="url(#GH)"/>${sheen('M168 114C188 104 214 106 232 118C212 112 190 114 168 114Z')}`},
+    twin: {back: `<path d="M142 152C96 148 72 208 90 292C104 314 122 292 124 260C126 228 140 198 150 174Z" fill="${hd}"/><path d="M258 152C304 148 328 208 310 292C296 314 278 292 276 260C274 228 260 198 250 174Z" fill="${hd}"/>`, front: `${cap}<path d="M140 162C164 136 236 136 260 162L256 186C236 168 164 168 144 186Z" fill="url(#GH)"/><circle cx="140" cy="156" r="9" fill="#e0334a"/><circle cx="260" cy="156" r="9" fill="#e0334a"/>${sheen('M168 114C188 104 214 106 232 118C212 112 190 114 168 114Z')}`},
+    pony: {back: `<path d="M246 124C310 106 346 178 322 264C314 294 294 294 290 272C288 228 274 182 240 152Z" fill="${hd}"/>`, front: `${cap}<path d="M144 152C170 122 230 120 258 152C236 150 214 160 198 182L186 214C180 188 166 164 144 152Z" fill="url(#GH)"/><circle cx="250" cy="132" r="8" fill="#e0334a"/>${sheen('M168 114C188 104 214 106 232 118C212 112 190 114 168 114Z')}`}
   };
-  return S[style] || S.spiky;
+  return S[style] || S.tousled;
 }
-function outfitShapes(o, girl){
-  const torso = 'M16 420C24 336 104 304 160 292L240 292C296 304 376 336 384 420Z';
-  const O = {
-    shirt: `<path d="${torso}" fill="#15161f"/><path d="M16 420C24 336 104 304 160 292L178 292L172 420Z" fill="#f1f3fa"/><path d="M384 420C376 336 296 304 240 292L222 292L228 420Z" fill="#f1f3fa"/><path d="M160 292L178 292L188 320L166 306ZM240 292L222 292L212 320L234 306Z" fill="#ffffff" stroke="#c9d0e6" stroke-width="2"/><path d="M60 400C70 360 100 340 140 322M340 400C330 360 300 340 260 322" stroke="#c9d0e6" stroke-width="3" fill="none"/>`,
-    tee: `<path d="${torso}" fill="#3b4f94"/><path d="M158 292Q200 336 242 292" stroke="#8fa6ff" stroke-width="5" fill="none"/>`,
-    jacket: `<path d="${torso}" fill="#2a3f9c"/><path d="M168 292L200 392L232 292Z" fill="#e8ecff"/><path d="M158 292L190 400M242 292L210 400" stroke="#8fa6ff" stroke-width="4"/><path d="M200 330L200 420" stroke="#1a2a6c" stroke-width="3"/>`,
-    hoodie: `<path d="M126 306C132 252 168 258 200 272C232 258 268 252 274 306Z" fill="#2b2f4f"/><path d="${torso}" fill="#1c1e32"/><path d="M160 292Q200 322 240 292L246 300Q200 346 154 300Z" fill="#2b2f4f"/><path d="M188 318L186 372M212 318L214 372" stroke="#cfd6ff" stroke-width="3" stroke-linecap="round"/>`,
-    armor: `<path d="${torso}" fill="#7c859d"/><ellipse cx="112" cy="326" rx="58" ry="30" fill="#aeb7cc" stroke="#5a6279" stroke-width="3"/><ellipse cx="288" cy="326" rx="58" ry="30" fill="#aeb7cc" stroke="#5a6279" stroke-width="3"/><path d="M160 292Q200 330 240 292L250 312Q200 360 150 312Z" fill="#d9a53a"/><path d="M170 340H230L222 420H178Z" fill="#9aa3bb" stroke="#5a6279" stroke-width="3"/>`,
-    coat: `<path d="${torso}" fill="#0d0e18"/><path d="M146 298L156 244L188 290ZM254 298L244 244L212 290Z" fill="#14152a" stroke="#8a4bff" stroke-width="3"/><path d="M200 292L200 420" stroke="#8a4bff" stroke-width="3"/><path d="M150 330L176 420M250 330L224 420" stroke="#2a2d55" stroke-width="4"/>`,
-    mantle: `<path d="M0 420C10 330 100 296 160 288L240 288C300 296 390 330 400 420Z" fill="#12091f"/><path d="M118 296L100 262L146 284ZM282 296L300 262L254 284Z" fill="#d9a53a"/><path d="M150 296Q200 340 250 296L262 310Q200 372 138 310Z" fill="#d9a53a"/><circle cx="200" cy="352" r="12" fill="#9a4bff"/><circle cx="200" cy="352" r="5" fill="#f2e6ff"/><path d="M10 410C60 360 150 350 200 350" stroke="#d9a53a" stroke-width="3" fill="none" opacity=".7"/>`
-  };
-  return O[o] || O.tee;
-}
-function weaponShapes(w){
-  const W = {
-    none: '',
-    dagger: `<g transform="rotate(14 300 300)"><path d="M296 300L302 214L310 300Z" fill="#d6deef"/><rect x="290" y="296" width="26" height="8" rx="3" fill="#6b4a2a"/></g>`,
-    sword: `<g transform="rotate(16 300 300)"><path d="M294 300L304 80L314 300Z" fill="#d6deef"/><path d="M304 80L314 300L306 300Z" fill="#9aa8c4"/><rect x="282" y="296" width="44" height="9" rx="3" fill="#d9a53a"/></g>`,
-    twin: `<g><path d="M288 306L350 150L360 158L304 312Z" fill="#d6deef"/><path d="M112 306L50 150L40 158L96 312Z" fill="#d6deef"/><rect x="284" y="300" width="30" height="8" rx="3" fill="#6b4a2a" transform="rotate(-22 300 304)"/><rect x="86" y="300" width="30" height="8" rx="3" fill="#6b4a2a" transform="rotate(22 100 304)"/></g>`,
-    staff: `<g transform="rotate(12 320 300)"><rect x="316" y="110" width="8" height="200" rx="4" fill="#4a3a6a"/><circle cx="320" cy="96" r="22" fill="#9a4bff" filter="url(#ablur)" opacity=".8"/><circle cx="320" cy="96" r="13" fill="#e6d4ff"/></g>`,
-    demon: `<g transform="rotate(18 296 310)"><path d="M280 310L282 120L296 44L312 120L316 310Z" fill="#1a1230" stroke="#9a4bff" stroke-width="3"/><path d="M296 60L296 300" stroke="#c9a2ff" stroke-width="2" opacity=".8"/><rect x="266" y="306" width="60" height="10" rx="4" fill="#9a4bff"/></g>`
-  };
-  return W[w] || '';
-}
-function neckShapes(n){ if (n === 'chain') return '<path d="M160 294Q200 350 240 294" stroke="#d5dbea" stroke-width="3.5" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/>'; if (n === 'pendant') return '<path d="M160 294Q200 350 240 294" stroke="#d5dbea" stroke-width="2.5" fill="none"/><path d="M200 344L193 346L200 372L207 346Z" fill="#d5dbea" stroke="#8a94b0" stroke-width="1.5"/>'; return ''; }
-function accShapes(a, hc){
-  const A = {
-    none: '', shades: `<path d="M148 186Q148 180 156 180H186Q194 180 194 188V198Q194 210 184 210H160Q148 210 148 198Z" fill="#0d0f18"/><path d="M206 188Q206 180 214 180H244Q252 180 252 186V198Q252 210 240 210H216Q206 210 206 198Z" fill="#0d0f18"/><path d="M194 188Q200 184 206 188" stroke="#0d0f18" stroke-width="4" fill="none"/><path d="M148 186L138 182M252 186L262 182" stroke="#0d0f18" stroke-width="4" stroke-linecap="round"/><path d="M156 188L170 186M214 188L228 186" stroke="#fff" stroke-width="2" opacity=".4" stroke-linecap="round"/>`, glasses: `<g fill="rgba(190,225,255,.18)" stroke="#1d1d2b" stroke-width="3"><circle cx="171" cy="196" r="19"/><circle cx="229" cy="196" r="19"/></g><path d="M190 194Q200 188 210 194M152 192L140 188M248 192L260 188" stroke="#1d1d2b" stroke-width="3" fill="none"/>`,
-    headband: `<path d="M138 158Q200 128 262 158L262 174Q200 146 138 174Z" fill="#d6334a"/><path d="M262 162L284 150L280 176Z" fill="#d6334a"/>`,
-    earrings: `<circle cx="139" cy="216" r="5" fill="#ffd24a"/><circle cx="261" cy="216" r="5" fill="#ffd24a"/>`,
-    scarf: `<path d="M150 276Q200 304 250 276L256 300Q200 330 144 300Z" fill="#d6334a"/><path d="M228 304L246 360L224 352Z" fill="#b82840"/>`,
-    mask: `<path d="M146 212Q200 230 254 212L250 262Q200 290 150 262Z" fill="#151622" stroke="#3a3d66" stroke-width="2"/><path d="M160 236Q200 250 240 236" stroke="#3a3d66" stroke-width="2" fill="none"/>`,
-    crown: `<path d="M148 124L158 76L182 106L200 66L218 106L242 76L252 124Z" fill="#ffd24a" stroke="#b88a1a" stroke-width="3"/><circle cx="200" cy="96" r="5" fill="#e0334a"/><circle cx="170" cy="108" r="4" fill="#2f7bff"/><circle cx="230" cy="108" r="4" fill="#2ee6a0"/>`
-  };
-  return A[a] || '';
-}
-function auraShapes(t){
+function auraSVG(t, tall){
   if (!t || t === 'none') return '';
-  const c = AURAC[t];
-  let s = `<g filter="url(#ablur)"><ellipse cx="200" cy="270" rx="176" ry="196" fill="${c}" opacity=".32"/><ellipse cx="200" cy="236" rx="120" ry="150" fill="${c}" opacity=".3"/></g>`;
-  if (t === 'flame' || t === 'violet') {
-    const col = t === 'flame' ? ['#ff5a1f', '#ffd24a'] : ['#5a1fc9', '#c9a2ff'];
-    let f = '';
-    [[64,150],[104,200],[150,230],[250,230],[296,200],[336,150],[200,250]].forEach(([x, h], i) => { const y = 326; f += `<g class="${t === 'flame' ? 'fl' : 'wp'}" style="animation-delay:${i * .17}s"><path d="M${x-22} ${y}Q${x-30} ${y-h*.55} ${x} ${y-h}Q${x+8} ${y-h*.5} ${x+22} ${y}Z" fill="${col[0]}" opacity=".85"/><path d="M${x-11} ${y}Q${x-14} ${y-h*.35} ${x} ${y-h*.62}Q${x+4} ${y-h*.3} ${x+11} ${y}Z" fill="${col[1]}" opacity=".9"/></g>`; });
-    s += f;
-  }
-  if (t === 'gold') { let r = ''; for (let i = 0; i < 14; i++) { const a = i / 14 * 6.2832, b = a + .1; r += `<path d="M200 240L${(200 + Math.cos(a) * 330).toFixed(0)} ${(240 + Math.sin(a) * 330).toFixed(0)}L${(200 + Math.cos(b) * 330).toFixed(0)} ${(240 + Math.sin(b) * 330).toFixed(0)}Z" fill="#ffd24a" opacity=".22"/>`; } s += `<g class="rays">${r}</g>`; }
-  return s;
+  const C = {blue:['#4b8bff','#1f4fd8','#9fd0ff'], bflame:['#2b8cff','#1f4fd8','#bfeaff'], violet:['#9a4bff','#5a1fc9','#e6d4ff'], emerald:['#2ee6a0','#128a64','#c8ffe8'], flame:['#ff7a2e','#ff5a1f','#ffd24a'], gold:['#ffd24a','#d9a53a','#fff2b0']}[t];
+  let s = `<g filter="url(#ablur)"><ellipse cx="200" cy="${tall ? 420 : 270}" rx="${tall ? 190 : 178}" ry="${tall ? 380 : 198}" fill="${C[0]}" opacity=".34"/><ellipse cx="200" cy="${tall ? 330 : 236}" rx="${tall ? 120 : 122}" ry="${tall ? 270 : 152}" fill="${C[0]}" opacity=".3"/></g>`;
+  const y = tall ? 740 : 330, hh = tall ? 1.7 : 1;
+  if (t === 'gold') { let r = ''; for (let i = 0; i < 14; i++) { const a = i / 14 * 6.2832, b = a + .1, cy = tall ? 330 : 240; r += `<path d="M200 ${cy}L${(200 + Math.cos(a) * 520).toFixed(0)} ${(cy + Math.sin(a) * 520).toFixed(0)}L${(200 + Math.cos(b) * 520).toFixed(0)} ${(cy + Math.sin(b) * 520).toFixed(0)}Z" fill="#ffd24a" opacity=".2"/>`; } return s + `<g class="rays">${r}</g>`; }
+  const flames = t === 'bflame' || t === 'violet' || t === 'flame', cls = flames ? 'fl' : 'wp', n = flames ? 9 : 7;
+  let f = '';
+  for (let i = 0; i < n; i++) { const x = 40 + i * (320 / (n - 1)), h = (flames ? 190 : 140) * hh * (.55 + .45 * Math.sin(i * 1.7 + 1) ** 2) * (1 - Math.abs(x - 200) / 520);
+    f += `<g class="${cls}" style="animation-delay:${(i * .13).toFixed(2)}s"><path d="M${x - 26} ${y}Q${x - 34} ${y - h * .55} ${x} ${y - h}Q${x + 10} ${y - h * .5} ${x + 26} ${y}Z" fill="${C[1]}" opacity=".85"/><path d="M${x - 13} ${y}Q${x - 16} ${y - h * .36} ${x} ${y - h * .64}Q${x + 5} ${y - h * .3} ${x + 13} ${y}Z" fill="${C[2]}" opacity=".9"/></g>`; }
+  return s + f;
 }
-function charInner(L, ids){
-  L = {...DEFAULT_LOOK, ...(L || {})};
-  const id = n => ids ? ` id="${n}"` : '', girl = L.body === 'girl';
-  const sk = SKIN[L.skin] || SKIN[1], skd = dark(sk, .16), hc = HAIRC[L.hairColor] || HAIRC[0], ec = EYEC[L.eyes] || EYEC[0], glow = L.eyes === 5;
-  const hair = hairShapes(L.hair, hc);
-  const face = girl ? 'M143 192C143 144 168 120 200 120C232 120 257 144 257 192C257 234 230 268 200 272C170 268 143 234 143 192Z' : 'M140 192C140 142 166 120 200 120C234 120 260 142 260 192C260 236 232 268 200 268C168 268 140 236 140 192Z';
+function creatures(tall){
+  const y0 = tall ? 220 : 30, sc = tall ? 1.55 : 1;
+  const knight = `<path d="M0 420L6 250L-8 210L14 214L10 170L36 196L44 140L66 186L92 170L88 214L110 232L104 300L124 420Z" fill="#0c0618" stroke="#9a4bff" stroke-opacity=".6" stroke-width="2"/><path d="M36 196L44 140L52 190" fill="#16092c"/><path d="M30 214L52 220L48 228L28 222ZM68 218L90 212L90 222L66 228Z" fill="#a8dcff"/>`;
+  const beast = `<path d="M0 420L-6 260L16 214L8 150C2 118 22 92 40 84C34 106 42 126 50 134C58 112 82 104 94 100C84 124 92 150 100 164L112 214L130 260L120 420Z" fill="#0c0618" stroke="#9a4bff" stroke-opacity=".6" stroke-width="2"/><path d="M40 190L62 196L58 204L38 198ZM82 192L104 186L102 196L80 202Z" fill="#d6b8ff"/>`;
+  return `<g opacity=".95" transform="translate(${tall ? -20 : -34} ${y0}) scale(${sc})">${knight}</g><g opacity=".95" transform="translate(${tall ? 215 : 296} ${y0}) scale(${sc})">${beast}</g>`;
+}
+function holoSVG(x, y, w){ const r = (i, wd) => `<rect x="${x + 10}" y="${y + 24 + i * 14}" width="${wd}" height="5" rx="2.5" fill="#8fe6ff" opacity=".8"/>`; return `<g class="holo3"><rect x="${x}" y="${y}" width="${w}" height="${w * .72}" rx="8" fill="#1d8cff" fill-opacity=".16" stroke="#6fdcff" stroke-width="2"/><rect x="${x + 10}" y="${y + 9}" width="${w * .4}" height="6" rx="3" fill="#bff3ff"/>${r(0, w * .66)}${r(1, w * .5)}${r(2, w * .58)}${r(3, w * .4)}</g>`; }
+function sceneSVG(bd, form, u, W, H){
+  const F = {1:['#2aa6ff','#59d2ff'], 2:['#0a1640','#1b3a8a'], 3:['#06122e','#0d3a7a'], 4:['#1a0b3d','#5a2bb0']};
+  const k = bd === 'auto' ? 'f' + form : bd;
+  const G = {f1:F[1], f2:F[2], f3:F[3], f4:F[4], sky:['#2aa6ff','#59d2ff'], dark:['#05070f','#141a3a'], gate:['#0a0618','#3a1580'], roof:['#10163a','#ff9d6b'], moon:['#12030a','#6a1426'], throne:['#150a2e','#6a46b0']}[k] || F[2];
+  let x = `<defs><linearGradient id="${u}bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${G[0]}"/><stop offset="1" stop-color="${G[1]}"/></linearGradient></defs><rect width="${W}" height="${H}" fill="url(#${u}bg)"/>`;
+  if (k === 'f3') for (let i = 0; i < 9; i++) x += `<path d="M0 ${i * H / 8}H${W}" stroke="#35c8ff" stroke-opacity=".08"/><path d="M${i * W / 8} 0V${H}" stroke="#35c8ff" stroke-opacity=".08"/>`;
+  if (k === 'f4') x += `<circle cx="${W * .5}" cy="${H * .16}" r="${W * .22}" fill="#b98bff" opacity=".28"/>`;
+  if (k === 'gate') x += `<ellipse cx="${W / 2}" cy="${H * .5}" rx="${W * .26}" ry="${H * .42}" fill="#c9a2ff" opacity=".55"/><ellipse cx="${W / 2}" cy="${H * .5}" rx="${W * .16}" ry="${H * .3}" fill="#f1e6ff" opacity=".6"/>`;
+  if (k === 'moon') x += `<circle cx="${W * .72}" cy="${H * .22}" r="${W * .12}" fill="#ff7a8a"/><circle cx="${W * .72}" cy="${H * .22}" r="${W * .2}" fill="#ff3a5a" opacity=".25"/>`;
+  if (k === 'roof') x += `<path d="M0 ${H}V${H * .74}h${W * .08}v-${H * .1}h${W * .07}v${H * .12}h${W * .08}v-${H * .06}h${W * .1}v-${H * .14}h${W * .06}v${H * .2}h${W * .08}v-${H * .08}h${W * .1}v-${H * .1}h${W * .08}v${H * .18}h${W * .08}v-${H * .06}h${W * .12}V${H}Z" fill="#08091c" opacity=".9"/>`;
+  if (k === 'throne') for (let i = 0; i < 6; i++) x += `<rect x="${i * W / 5 - 8}" y="0" width="16" height="${H}" fill="#2a1650" opacity=".7"/>`;
+  return x;
+}
+
+function bustSVG(L, form, o = {}){
+  L = {...DEFAULT_LOOK, ...(L || {})}; form = form || 1;
+  const u = 'a' + (++UID), ids = !!o.ids, id = n => ids ? ` id="${n}"` : '';
+  const girl = L.body === 'girl', sk = SKIN[L.skin] ?? SKIN[1], skd = dark(sk, .2), hc = HAIRC[L.hairColor] ?? HAIRC[0], ec = EYEC[L.eyes] ?? EYEC[1];
+  const base = BASEC[L.base] || BASEC.black, ac = ACCC[L.accent === 'auto' ? ({1:'blue', 2:'blue', 3:'blue', 4:'violet'})[form] : L.accent] || ACCC.blue, bd = L.bd, aura = L.aura === 'auto' ? FORMS[form - 1].aura : L.aura;
+  const glow = form >= 3 || L.eyes === 5, pose = L.pose;
+  const sh = L.shadows === 'off' ? false : (L.shadows === 'on' || (L.shadows === 'auto' && form === 4));
+  const hair = hairParts(L.hair, hc).back, hf = hairParts(L.hair, hc).front.replace(/GH/g, u + 'h'), hb = hairParts(L.hair, hc).back.replace(/GH/g, u + 'h');
+  const rot = pose === 'tilt' ? -6 : pose === 'glare' ? 3 : 0, lift = pose === 'glare' ? 5 : 0;
+  const brow = L.brows === 'auto' ? (form === 1 ? 'soft' : form === 2 ? 'straight' : 'angry') : L.brows;
+  const defs = `<defs><linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lite(sk, .12)}"/><stop offset=".6" stop-color="${sk}"/><stop offset="1" stop-color="${skd}"/></linearGradient>
+<linearGradient id="${u}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mixc(hc, '#5cb8ff', .22)}"/><stop offset=".55" stop-color="${hc}"/><stop offset="1" stop-color="${dark(hc, .4)}"/></linearGradient>
+<radialGradient id="${u}i" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="${lite(ec, .55)}"/><stop offset=".55" stop-color="${ec}"/><stop offset="1" stop-color="${dark(ec, .55)}"/></radialGradient>
+<linearGradient id="${u}c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${lite(base, .12)}"/><stop offset="1" stop-color="${dark(base, .35)}"/></linearGradient></defs>`;
+  const tors = 'M12 420C22 336 104 304 160 292L240 292C296 304 378 336 388 420Z';
+  const light = lite(base, .82);
+  const outfit = [
+    /* 1 Human: light open overshirt over a black tee */
+    `<path d="${tors}" fill="#15161f"/><path d="M12 420C22 336 104 304 160 292L178 292L170 420Z" fill="${light}"/><path d="M388 420C378 336 296 304 240 292L222 292L230 420Z" fill="${light}"/><path d="M160 292L178 292L190 322L166 308ZM240 292L222 292L210 322L234 308Z" fill="#fff" stroke="${dark(light, .12)}" stroke-width="2"/><path d="M56 404C66 362 100 340 140 324M344 404C334 362 300 340 260 324" stroke="${dark(light, .14)}" stroke-width="3" fill="none"/><path d="M178 292Q200 322 222 292" stroke="#2a2c3a" stroke-width="3" fill="none"/>`,
+    /* 2 Shadow Hunter: black hoodie, hood down, drawstrings */
+    `<path d="M118 312C122 252 166 256 200 270C234 256 278 252 282 312Z" fill="${dark(base, .15)}" stroke="${ac}" stroke-opacity=".6" stroke-width="3"/><path d="${tors}" fill="url(#${u}c)"/><path d="M162 292Q200 330 238 292L248 304Q200 352 152 304Z" fill="#0a0b12"/><path d="M162 292Q200 330 238 292" stroke="${ac}" stroke-width="3" fill="none" opacity=".85"/><path d="M186 322L182 384M214 322L218 384" stroke="${lite(ac, .3)}" stroke-width="3" stroke-linecap="round"/><circle cx="182" cy="388" r="4" fill="${ac}"/><circle cx="218" cy="388" r="4" fill="${ac}"/><path d="M200 330V420" stroke="${ac}" stroke-opacity=".5" stroke-width="2"/><path d="M40 392C60 350 110 332 150 322" stroke="${lite(base, .25)}" stroke-width="3" fill="none" opacity=".6"/>`,
+    /* 3 Awakened: long coat with a glowing armoured shoulder */
+    `<path d="M0 420C8 330 100 298 158 288L242 288C300 298 392 330 400 420Z" fill="url(#${u}c)"/><path d="M168 290L200 400L232 290Z" fill="#cfd3e6"/><path d="M146 298L156 246L190 292ZM254 298L244 246L210 292Z" fill="${dark(base, .1)}" stroke="${ac}" stroke-width="3"/><path d="M200 292V420" stroke="${ac}" stroke-width="2" opacity=".7"/><path d="M262 304C300 288 352 304 368 340C340 336 296 330 262 304Z" fill="#12306a" stroke="${ac}" stroke-width="3"/><path d="M276 312C310 306 340 316 354 332" stroke="#9fe0ff" stroke-width="3" fill="none"/><path d="M270 320C300 318 328 326 344 338" stroke="#9fe0ff" stroke-width="2" fill="none" opacity=".7"/><path d="M60 410C80 372 120 350 152 340" stroke="${ac}" stroke-width="2" fill="none" opacity=".6"/>`,
+    /* 4 Class S: spiked pauldrons, high collar, violet clasp */
+    `<path d="M-6 420C4 328 96 294 158 284L242 284C304 294 396 328 406 420Z" fill="url(#${u}c)"/><path d="M168 290L200 410L232 290Z" fill="#0a0b12"/><path d="M138 300L146 232L132 214L170 240L190 290ZM262 300L254 232L268 214L230 240L210 290Z" fill="${dark(base, .15)}" stroke="${ac}" stroke-width="3"/><path d="M104 314L70 262L92 270L84 232L118 280L150 296ZM296 314L330 262L308 270L316 232L282 280L250 296Z" fill="#171325" stroke="${ac}" stroke-width="3"/><path d="M56 336C80 322 112 322 134 330" stroke="${ac}" stroke-width="3" fill="none"/><path d="M344 336C320 322 288 322 266 330" stroke="${ac}" stroke-width="3" fill="none"/><circle cx="200" cy="344" r="12" fill="${ac}"/><circle cx="200" cy="344" r="5" fill="#fff"/><path d="M200 292V420" stroke="${ac}" stroke-width="2" opacity=".6"/>`
+  ][form - 1];
+  const neck = `<path d="M176 240L176 300Q200 316 224 300L224 240Z" fill="${skd}"/>`;
+  const chain = L.neck === 'chain' ? '<path d="M160 296Q200 354 240 296" stroke="#d5dbea" stroke-width="3.5" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/>' : L.neck === 'pendant' ? '<path d="M160 296Q200 354 240 296" stroke="#d5dbea" stroke-width="2.5" fill="none"/><path d="M200 346L193 348L200 376L207 348Z" fill="#d5dbea" stroke="#8a94b0" stroke-width="1.5"/>' : '';
+  const faceD = girl ? 'M145 190C145 142 170 118 200 118C230 118 255 142 255 190C255 224 238 252 214 268Q200 274 186 268C162 252 145 224 145 190Z' : 'M141 188C141 140 168 118 200 118C232 118 259 140 259 188C259 222 240 250 214 266Q200 275 186 266C160 250 141 222 141 188Z';
   const eye = (cx, m) => {
-    const up = girl ? 17 : 14, lo = girl ? 9 : 7, rx = girl ? 17 : 16, iy = 196, ir = girl ? 8.4 : 7.6;
-    const brow = girl ? `M${cx - m * 16} 176Q${cx} ${170} ${cx + m * 17} 177` : `M${cx - m * 18} 178Q${cx - m * 2} 168 ${cx + m * 17} 175`;
-    return `<path d="M${cx - rx} ${iy}Q${cx} ${iy - up} ${cx + rx} ${iy}Q${cx} ${iy + lo} ${cx - rx} ${iy}Z" fill="#fff"/>
-<ellipse cx="${cx}" cy="${iy}" rx="${ir}" ry="${ir + 1}" fill="${ec}"/><ellipse cx="${cx}" cy="${iy + 1}" rx="${ir * .48}" ry="${ir * .6}" fill="${glow ? '#ffffff' : '#120d1a'}"/><circle cx="${cx + 3}" cy="${iy - 3}" r="2.4" fill="#fff"/>
-<path d="M${cx - rx - 1} ${iy}Q${cx} ${iy - up - 2} ${cx + rx + 1} ${iy}" stroke="#1a1220" stroke-width="${girl ? 4 : 3.4}" fill="none" stroke-linecap="round"/>${girl ? `<path d="M${cx - m * rx} ${iy - 1}l${-m * 6} -5" stroke="#1a1220" stroke-width="3" stroke-linecap="round"/>` : ''}
-<path d="${brow}" stroke="${dark(hc, .1)}" stroke-width="${girl ? 3 : 4.6}" fill="none" stroke-linecap="round"/>`;
+    const sharp = L.eyeShape === 'sharp', up = sharp ? 17 : 21, lo = sharp ? 9 : 12, oy = sharp ? 193 : 196, iy = sharp ? 199 : 198, ox = cx - m * 18, ix = cx + m * 17, ir = sharp ? 10 : 11.5;
+    return `<path d="M${ox} ${oy}Q${cx} ${oy - up} ${ix} ${iy}Q${cx} ${iy + lo} ${ox} ${oy}Z" fill="#f4f7ff"/>
+<ellipse cx="${cx + m}" cy="${iy - 2}" rx="${ir}" ry="${ir + 2}" fill="url(#${u}i)"/><ellipse cx="${cx + m}" cy="${iy - 1}" rx="${ir * .42}" ry="${ir * .6}" fill="${glow ? '#ffffff' : '#0c0814'}"/><circle cx="${cx + m * 4}" cy="${iy - 7}" r="3.2" fill="#fff"/><circle cx="${cx - m * 3}" cy="${iy + 2}" r="1.6" fill="#fff" opacity=".85"/>
+<path d="M${ox - m} ${oy + 1}Q${cx} ${oy - up - 3} ${ix + m} ${iy - 1}" stroke="#120c1a" stroke-width="${girl ? 5 : 4.4}" fill="none" stroke-linecap="round"/><path d="M${ox - m} ${oy + 1}l${-m * 7} ${girl ? -6 : -3}" stroke="#120c1a" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M${ox + m * 3} ${oy - 4}Q${cx} ${oy - up + 2} ${ix - m * 3} ${iy - 6}" stroke="#000" stroke-opacity=".28" stroke-width="5" fill="none" stroke-linecap="round"/>`;
   };
-  const neck = `<path d="M176 240L176 296Q200 312 224 296L224 240Z" fill="${skd}"/>`;
-  const body = `<g${id('gBody')}><g${girl ? ' transform="translate(200 0) scale(.94 1) translate(-200 0)"' : ''}>${weaponShapes(L.weapon)}${neck}${outfitShapes(L.outfit, girl)}${L.acc === 'scarf' ? accShapes('scarf', hc) : ''}${neckShapes(L.neck)}</g></g>`;
-  return `<g class="auraG">${auraShapes(L.aura)}</g>
-<g${id('gBack')}>${hair.back}</g>${body}
-<g${id('gHead')}>
-<ellipse cx="141" cy="200" rx="9" ry="14" fill="${sk}"/><ellipse cx="259" cy="200" rx="9" ry="14" fill="${sk}"/>
-<path d="${face}" fill="${sk}"/><path d="M146 214Q200 296 254 214Q246 262 200 270Q154 262 146 214Z" fill="${skd}" opacity=".3"/>
-<g${id('gHair')}>${hair.front}</g>
-<g${id('gFace')}><g${id('gEyes')}${glow ? ' filter="url(#eglow)"' : ''}>${eye(171, 1)}${eye(229, -1)}</g>
-<path d="M200 206Q196 218 203 221" stroke="${skd}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-${girl ? `<path d="M188 242Q200 252 212 242Q200 246 188 242Z" fill="#d4586f" stroke="#d4586f" stroke-width="2" stroke-linejoin="round"/><ellipse cx="158" cy="224" rx="11" ry="6" fill="#ff7a90" opacity=".25"/><ellipse cx="242" cy="224" rx="11" ry="6" fill="#ff7a90" opacity=".25"/>` : `<path d="M187 243Q200 249 213 243" stroke="#8a4a4a" stroke-width="3.2" fill="none" stroke-linecap="round"/>`}
-${L.acc !== 'scarf' && L.acc !== 'none' ? accShapes(L.acc, hc) : ''}</g>
-</g>`;
+  const bro = (cx, m) => { const o = cx - m * 21, i = cx + m * 19; const P = {straight:[177, 172], angry:[172, 182], soft:[180, 176]}[brow] || [177, 172]; const y1 = P[0] - (girl ? 0 : 0), y2 = P[1];
+    return `<path d="M${o} ${y1}Q${cx} ${Math.min(y1, y2) - 6} ${i} ${y2}L${i} ${y2 + 4}Q${cx} ${Math.min(y1, y2) - 1} ${o} ${y1 + 4}Z" fill="${dark(hc, .15)}"/>`; };
+  const mouth = form === 1 ? '<path d="M188 240Q200 254 214 238Q200 246 188 240Z" fill="#7a2f3a"/><path d="M190 241Q200 248 212 240" stroke="#fff" stroke-width="2" fill="none" opacity=".8"/>' : pose === 'glare' || form === 4 ? '<path d="M190 244Q203 249 215 239" stroke="#8a4a4a" stroke-width="3.2" fill="none" stroke-linecap="round"/>' : '<path d="M189 243Q201 248 213 242" stroke="#8a4a4a" stroke-width="3.2" fill="none" stroke-linecap="round"/>';
+  const blush = girl ? '<ellipse cx="160" cy="226" rx="12" ry="6" fill="#ff7a90" opacity=".28"/><ellipse cx="240" cy="226" rx="12" ry="6" fill="#ff7a90" opacity=".28"/>' : '<ellipse cx="236" cy="226" rx="13" ry="7" fill="#ff7a90" opacity=".22"/>';
+  const accH = {
+    headphones: `<path d="M138 196C132 130 168 94 200 94C232 94 268 130 262 196" stroke="#10131f" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M138 196C132 130 168 94 200 94C232 94 268 130 262 196" stroke="${ac}" stroke-width="2.5" fill="none" opacity=".8"/><rect x="118" y="178" width="30" height="52" rx="12" fill="#10131f" stroke="${ac}" stroke-width="2.5"/><rect x="252" y="178" width="30" height="52" rx="12" fill="#10131f" stroke="${ac}" stroke-width="2.5"/><path d="M133 192l4.4 8.8 9.6 1.4-7 6.8 1.7 9.6-8.7-4.6-8.7 4.6 1.7-9.6-7-6.8 9.6-1.4Z" fill="${lite(ac, .25)}" filter="url(#eglow)"/>`,
+    glasses: `<g fill="rgba(190,225,255,.16)" stroke="#1d1d2b" stroke-width="3"><circle cx="172" cy="197" r="20"/><circle cx="228" cy="197" r="20"/></g><path d="M192 195Q200 189 208 195M152 194L142 190M248 194L258 190" stroke="#1d1d2b" stroke-width="3" fill="none"/>`,
+    shades: `<path d="M146 186Q146 180 154 180H186Q194 180 194 188V200Q194 212 184 212H158Q146 212 146 200Z" fill="#0d0f18"/><path d="M206 188Q206 180 214 180H246Q254 180 254 186V200Q254 212 242 212H216Q206 212 206 200Z" fill="#0d0f18"/><path d="M194 188Q200 184 206 188M146 186L136 182M254 186L264 182" stroke="#0d0f18" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M154 188L170 186M214 188L230 186" stroke="#fff" stroke-width="2" opacity=".4" stroke-linecap="round"/>`,
+    earring: `<circle cx="139" cy="222" r="5" fill="${ACCC.silver}"/><circle cx="261" cy="222" r="5" fill="${ACCC.silver}"/>`,
+    mask: `<path d="M148 214Q200 232 252 214L248 264Q200 292 152 264Z" fill="#151622" stroke="#3a3d66" stroke-width="2"/><path d="M162 238Q200 252 238 238" stroke="#3a3d66" stroke-width="2" fill="none"/>`,
+    crown: `<path d="M148 124L158 76L182 106L200 66L218 106L242 76L252 124Z" fill="#ffd24a" stroke="#b88a1a" stroke-width="3"/><circle cx="200" cy="96" r="5" fill="#e0334a"/><circle cx="170" cy="108" r="4" fill="#2f7bff"/><circle cx="230" cy="108" r="4" fill="#2ee6a0"/>`,
+    none: ''
+  }[L.acc] || '';
+  const bgOn = o.bg !== false, W = 400, H = 420;
+  const headG = `<g${id('gHead')} transform="rotate(${rot} 200 290) translate(0 ${-lift})"><ellipse cx="141" cy="202" rx="9" ry="14" fill="${sk}"/><ellipse cx="259" cy="202" rx="9" ry="14" fill="${sk}"/>
+<path d="${faceD}" fill="url(#${u}s)"/><path d="M150 214Q200 292 250 214Q242 262 200 272Q158 262 150 214Z" fill="${skd}" opacity=".22"/><path d="M142 150Q200 130 258 150L258 172Q200 152 142 172Z" fill="#000" opacity=".12"/>
+<g${id('gHair')}>${hf}</g>
+<g${id('gFace')}><g${id('gEyes')}${glow ? ' filter="url(#eglow)"' : ''}>${eye(172, 1)}${eye(228, -1)}</g>${bro(172, 1)}${bro(228, -1)}
+<path d="M200 208Q196 220 203 224" stroke="${skd}" stroke-width="2.6" fill="none" stroke-linecap="round"/>${mouth}${blush}${accH}</g></g>`;
+  if (o.headOnly) return `${defs}<g>${hb}</g>${headG}`;
+  return `${defs}${bgOn ? sceneSVG(bd, form, u, W, H) : ''}<g class="auraG">${auraSVG(aura, false)}</g>${sh ? creatures(false) : ''}${form === 3 ? holoSVG(262, 52, 120) : ''}
+<g${id('gBack')}>${hb}</g><g${id('gBody')}>${neck}${outfit}${chain}</g>
+<g${id('gSway')}>${headG}</g>`;
+}
+
+/* ---------- Full body (evolution screen) ---------- */
+function fullSVG(L, form, o = {}){
+  L = {...DEFAULT_LOOK, ...(L || {})}; form = form || 1;
+  const u = 'f' + (++UID), sk = SKIN[L.skin] ?? SKIN[1], skd = dark(sk, .2), base = BASEC[L.base] || BASEC.black;
+  const ac = ACCC[L.accent === 'auto' ? ({1:'blue', 2:'blue', 3:'blue', 4:'violet'})[form] : L.accent] || ACCC.blue;
+  const aura = L.aura === 'auto' ? FORMS[form - 1].aura : L.aura, sh = L.shadows === 'off' ? false : (L.shadows === 'on' || (L.shadows === 'auto' && form === 4));
+  const pose = L.pose, light = lite(base, .82), bd = dark(base, .2), g1 = `url(#${u}c)`;
+  const head = bustSVG(L, form, {headOnly:true, bg:false, ids:!!o.ids});
+  const defs = `<defs><linearGradient id="${u}c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${lite(base, .14)}"/><stop offset="1" stop-color="${dark(base, .4)}"/></linearGradient></defs>`;
+  const side = (m, mode, color, cuff, short) => {
+    const x = v => m > 0 ? v : 400 - v, pts = mode === 'pocket' ? [[146, 224], [120, 332], [160, 436]] : [[146, 224], [126, 332], [124, 426]];
+    const P = pts.map(p => `${x(p[0])} ${p[1]}`);
+    let s = '';
+    if (short) { s += `<path d="M${P[1]}L${P[2]}" stroke="${sk}" stroke-width="26" stroke-linecap="round"/>`; s += `<path d="M${P[0]}L${P[1]}" stroke="${color}" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>`; }
+    else { s += `<path d="M${P[0]}L${P[1]}L${P[2]}" stroke="${color}" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>`; if (cuff) s += `<path d="M${x(pts[2][0] - 14)} ${pts[2][1] - 6}L${x(pts[2][0] + 14)} ${pts[2][1] - 6}" stroke="${cuff}" stroke-width="7" stroke-linecap="round"/>`; }
+    if (mode !== 'pocket') s += `<ellipse cx="${x(pts[2][0])}" cy="${pts[2][1] + 14}" rx="13" ry="16" fill="${sk}"/>`;
+    return s;
+  };
+  const modes = pose === 'glare' ? ['pocket', 'pocket'] : pose === 'tilt' ? ['down', 'pocket'] : ['down', 'down'];
+  const legs = (col, wide, boot) => { const w = wide ? 10 : 0; return `<path d="M${152 - w} 440L198 440L${194 + w * .6} 590L${192 + w} 730L${148 - w} 730L${152 - w * .6} 590Z" fill="${col}"/><path d="M${248 + w} 440L202 440L${206 - w * .6} 590L${208 - w} 730L${252 - w} 730L${248 + w * .6} 590Z" fill="${col}"/>` + (boot ? `<path d="M${142 - w} 726L${196} 726L196 752L${150 - w} 752Q${140 - w} 744 ${142 - w} 726Z" fill="${boot}"/><path d="M${258 + w} 726L204 726L204 752L${250 + w} 752Q${260 + w} 744 ${258 + w} 726Z" fill="${boot}"/>` : ''); };
+  const neck = `<path d="M186 172L186 216Q200 226 214 216L214 172Z" fill="${skd}"/>`;
+  let back = '', body = '', front = '';
+  if (form === 1) {
+    back = legs('#cfd3e0', true, '#f4f6fb');
+    body = `<path d="M152 214Q200 200 248 214L252 300L246 440L154 440L148 300Z" fill="#15161f"/>${side(1, modes[0], light, null, true)}${side(-1, modes[1], light, null, true)}<path d="M150 214L184 206L178 440L152 440L146 300Z" fill="${light}"/><path d="M250 214L216 206L222 440L248 440L254 300Z" fill="${light}"/><path d="M184 206L192 236L176 226ZM216 206L208 236L224 226Z" fill="#fff" stroke="${dark(light, .12)}" stroke-width="2"/><path d="M200 214L200 440" stroke="#15161f" stroke-opacity=".0"/><path d="M158 440L242 440" stroke="${dark(light, .14)}" stroke-width="3"/>`;
+  } else if (form === 2) {
+    back = legs('#10111a', false, '#1b1d2a') + `<path d="M144 520L152 520M248 520L256 520" stroke="${ac}" stroke-width="4"/><path d="M152 440Q138 470 150 500Q140 520 152 540" stroke="#cfd6e6" stroke-width="3" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/>`;
+    front = `<path d="M150 214C160 176 240 176 250 214L240 226C220 204 180 204 160 226Z" fill="${bd}" stroke="${ac}" stroke-opacity=".7" stroke-width="3"/>`;
+    body = `<path d="M152 214Q200 200 248 214L254 300L250 446L150 446L146 300Z" fill="${g1}"/>${side(1, modes[0], base, ac)}${side(-1, modes[1], base, ac)}<path d="M164 366H236L246 414H154Z" fill="${dark(base, .12)}" stroke="${ac}" stroke-opacity=".6" stroke-width="2"/><path d="M200 232V440" stroke="${ac}" stroke-opacity=".5" stroke-width="2"/><path d="M186 232L182 296M214 232L218 296" stroke="${lite(ac, .3)}" stroke-width="3" stroke-linecap="round"/><path d="M150 446H250" stroke="${ac}" stroke-width="6"/>`;
+  } else if (form === 3) {
+    back = legs('#0e0f18', false, '#161826');
+    body = `<path d="M146 214Q200 198 254 214L268 420Q280 520 300 612L100 612Q120 520 132 420Z" fill="${g1}"/><path d="M184 208L200 340L216 208Z" fill="#cfd3e6"/>${side(1, modes[0], base, ac)}${side(-1, modes[1], base, ac)}<path d="M146 214L162 244L186 214ZM254 214L238 244L214 214Z" fill="${dark(base, .1)}" stroke="${ac}" stroke-width="3"/><path d="M200 340L196 612M200 340L204 612" stroke="${ac}" stroke-width="2" opacity=".6"/><rect x="150" y="436" width="100" height="12" rx="3" fill="#0b0c14" stroke="${ac}" stroke-width="2"/><rect x="190" y="432" width="20" height="20" rx="4" fill="${ac}"/><path d="M246 212C296 192 336 220 340 270C304 270 266 252 246 212Z" fill="#12306a" stroke="${ac}" stroke-width="3"/><path d="M262 224C296 218 322 232 332 254M270 236C294 234 312 242 320 256" stroke="#9fe0ff" stroke-width="3" fill="none"/>`;
+  } else {
+    back = `<path d="M128 216L72 716L328 716L272 216Z" fill="${dark(base, .35)}" stroke="${ac}" stroke-opacity=".5" stroke-width="3"/>` + legs('#0b0c14', false, '#12131f');
+    body = `<path d="M142 214Q200 196 258 214L272 420Q288 540 316 690L84 690Q112 540 128 420Z" fill="${g1}"/><path d="M182 208L200 350L218 208Z" fill="#0a0b12"/>${side(1, modes[0], base, ac)}${side(-1, modes[1], base, ac)}<path d="M200 350L198 690M200 350L202 690" stroke="${ac}" stroke-width="2" opacity=".7"/><rect x="146" y="438" width="108" height="12" rx="3" fill="#0b0c14" stroke="${ac}" stroke-width="2"/><circle cx="200" cy="444" r="11" fill="${ac}"/><circle cx="200" cy="444" r="4" fill="#fff"/><path d="M254 450Q276 480 262 520Q280 540 268 570" stroke="#cfd6e6" stroke-width="3" fill="none" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M146 214L132 164L150 176L158 140L170 200ZM254 214L268 164L250 176L242 140L230 200Z" fill="${dark(base, .1)}" stroke="${ac}" stroke-width="3"/>`;
+    front = `<path d="M130 232L90 188L104 214L84 178L134 210ZM270 232L310 188L296 214L316 178L266 210Z" fill="#171325" stroke="${ac}" stroke-width="3"/>`;
+  }
+  return `${defs}${o.bg === false ? '' : sceneSVG(L.bd, form, u, 400, 780)}${sh ? creatures(true) : ''}<g class="auraG">${auraSVG(aura, true)}</g>${form === 3 ? holoSVG(276, 150, 112) + holoSVG(18, 330, 92) : ''}
+<ellipse cx="200" cy="752" rx="${form >= 3 ? 130 : 100}" ry="16" fill="${form === 4 ? '#9a4bff' : form >= 2 ? '#3fa8ff' : '#000'}" opacity=".35" filter="url(#ablur)"/>
+${back}${neck}${body}<g transform="translate(200 134) scale(.62) translate(-200 -190)">${head}</g>${front}`;
 }
 
 let shotThumb = null, tasks = [], reg = null, lastXp = null, lastLv = null, fxBoost = 0, justLoggedIn = false;
@@ -382,7 +460,7 @@ let yawNow = 0;
 function motionOn(){ const m = localStorage.getItem('motion'); return m ? m === 'on' : !matchMedia('(prefers-reduced-motion: reduce)').matches; }
 function applyMotion(){ document.documentElement.classList.toggle('still', !motionOn()); const b = document.getElementById('motionBtn'); if (b) b.textContent = 'Motion: ' + (motionOn() ? 'on' : 'off'); }
 function toggleMotion(){ localStorage.setItem('motion', motionOn() ? 'off' : 'on'); applyMotion(); }
-let drafts = [], profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}, curRank = 'E', totalXp = 0;
+let drafts = [], profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}, curRank = 'E', totalXp = 0, qFilter = 'all';
 $('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
 
 async function signUp(){ justLoggedIn = true; const {data, error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); if (error || !data.session) justLoggedIn = false; $('authMsg').textContent = error ? error.message : (data.session ? '' : 'Account created. Check your email if confirmation is required, then sign in.'); }
@@ -399,7 +477,7 @@ sb.auth.onAuthStateChange((_e, session) => {
     const jl = justLoggedIn; justLoggedIn = false; loadProfile().then(() => { if (jl) welcome(); });
   } else { resetProfile(); applyProfile(); }
 });
-function showView(v){ if (v === 'album') loadAlbum(); if (v === 'hunter') { document.getElementById('v-hunter').classList.add('on'); renderShop(); } document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === 'v-' + v)); document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.v === v; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }); scrollTo({top:0, behavior:'smooth'}); }
+function showView(v){ if (v === 'album') loadAlbum(); if (v === 'hunter') { document.getElementById('v-hunter').classList.add('on'); renderHunter(); } document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === 'v-' + v)); document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.v === v; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }); scrollTo({top:0, behavior:'smooth'}); }
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.v)));
 function welcome(){
   const el = document.createElement('div'); el.className = 'welcome';
@@ -476,7 +554,6 @@ async function loadStats(){
   const cnt = {barangay:0, trivia:0, posting:0}; rows.forEach(t => { if (DONE.includes(t.status) && t.category in cnt) cnt[t.category]++; });
   const ST = [['Strength', 10 + 2 * cnt.barangay, 'Barangay events cleared'], ['Agility', 10 + 2 * cnt.posting, 'Posts cleared'], ['Intelligence', 10 + 2 * cnt.trivia, 'Trivia cleared'], ['Stamina', 10 + 3 * best, 'Best streak in days']];
   $('stats').innerHTML = ST.map(([n, v, d]) => `<div class="stat" title="${d}"><span>${n}</span><b>${v}</b><i><u style="width:${Math.min(100, v)}%"></u></i></div>`).join('') + '<p class="meta">Strength comes from Barangay events, Agility from posts, Intelligence from trivia and Stamina from your best streak.</p>';
-  $('holo').innerHTML = '<b>STATUS</b>' + ST.map(([n, v]) => `<div><span>${n.slice(0, 3).toUpperCase()}</span><em>${v}</em></div>`).join('');
   const SK = [[pub > 0, 'Confirmed Post', 'Confirm your first published post'], [best >= 3, 'Streak Walker', 'Reach a 3-day streak'], [best >= 7, 'Iron Will', 'Reach a 7-day streak'], [perfect > 0, 'Flawless Day', 'Clear 3 or more quests in one day'], [lv >= 5, 'Shadow Hunter', 'Reach level 5'], [lv >= 12, 'System User', 'Reach level 12'], [lv >= 18, 'Class S', 'Reach level 18']];
   $('badges').innerHTML = SK.map(([on, n, d]) => `<div class="skill ${on ? 'on' : ''}"><span class="hex" aria-hidden="true"></span><div><b>${n}</b><small>${d}</small></div><em>${on ? 'Unlocked' : 'Locked'}</em></div>`).join('');
   $('risk').innerHTML = streak > 0 && !done[today()] ? `<div class="warn"><span><b>Streak at risk.</b> Clear one quest today to keep your ${streak}-day streak.</span><button onclick="showView('add')">Add quest</button></div>` : '';
@@ -673,153 +750,168 @@ function linkRow(u){ if (!/^https?:\/\//i.test(u)) return ''; return `<div class
 function fbEmbed(b){ const u = b.dataset.u; if (!/^https:\/\/(www\.|m\.)?(facebook\.com|fb\.com|fb\.watch)\//i.test(u)) { b.textContent = 'Not a Facebook link'; return; } const f = document.createElement('iframe'); f.className = 'fbf'; f.loading = 'lazy'; f.title = 'Facebook post preview'; f.src = 'https://www.facebook.com/plugins/post.php?href=' + encodeURIComponent(u) + '&show_text=true&width=500'; b.parentNode.after(f); b.remove(); }
 
 
-/* ===== Hunter: wallet, shop and look ===== */
-const SHOP = {
-  body:{label:'Body', items:[['boy','Boy',0],['girl','Girl',0]]},
-  skin:{label:'Skin', items:[[0,'Fair',0],[1,'Light',0],[2,'Tan',0],[3,'Bronze',0],[4,'Deep',0]]},
-  hair:{label:'Hair', items:[['spiky','Spiky',0],['bob','Bob',0],['swept','Swept',120],['pomp','Pompadour',160],['long','Long',160],['twin','Twin tails',220],['pony','Ponytail',220]]},
-  hairColor:{label:'Hair color', items:[[0,'Black',0],[1,'Brown',0],[2,'Silver',200],[3,'Blue',150],[4,'Crimson',150],[5,'Blonde',120],[6,'Violet',300]]},
-  eyes:{label:'Eyes', items:[[0,'Brown',0],[1,'Blue',100],[2,'Violet',150],[3,'Red',150],[4,'Gold',200],[5,'Sovereign glow',900,12]]},
-  outfit:{label:'Outfit', items:[['tee','Novice tee',0],['shirt','Open shirt',100],['jacket','Hunter jacket',150],['hoodie','Dark hoodie',200],['armor','Knight armor',600,5],['coat','Shadow coat',900,8],['mantle','Sovereign mantle',2000,12]]},
-  weapon:{label:'Weapon', items:[['none','None',0],['dagger','Iron dagger',100],['sword','Hunter sword',300],['twin','Twin blades',600,5],['staff','Shadow staff',900,8],['demon','Demon blade',2500,12]]},
-  aura:{label:'Aura', items:[['none','None',0],['blue','Azure',120],['emerald','Emerald',250],['violet','Shadow violet',500,5],['flame','Flame',800,8],['gold','Sovereign gold',1800,12]]},
-  acc:{label:'Extras', items:[['none','None',0],['shades','Sunglasses',150],['glasses','Glasses',80],['headband','Headband',100],['earrings','Earrings',120],['scarf','Scarf',200],['mask','Half mask',300],['crown','Crown',1200,12]]},
-  neck:{label:'Necklace', items:[['none','None',0],['chain','Chain',90],['pendant','Pendant',140]]},
-  bd:{label:'Scene', items:[['auto','Sky (auto)',0],['gate','Dungeon gate',300],['roof','City roof',400],['moon','Blood moon',600,5],['throne','Throne room',1500,12]]}
-};
-let curPhase = 1, lastPhase = null, phaseUrls = {}, qFilter = 'all', shopCat = 'hair', userLv = 1, saveT, fxMat = null, fxCol = '#7f9bff', isDay = false, themeMode = localStorage.getItem('theme') || 'auto';
-const lookOf = () => ({...DEFAULT_LOOK, ...profile.look});
-const gold = () => Math.max(0, totalXp - profile.spent);
-function resetProfile(){ profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}; }
-function updateGold(){ document.querySelectorAll('.goldv').forEach(e => e.textContent = gold().toLocaleString()); if ($('v-hunter').classList.contains('on')) renderShop(); }
-let figKey = '';
-function drawFig(){
-  const L = lookOf(), eff = {...L, aura: effAura()}, key = JSON.stringify(eff); if (key === figKey) return; figKey = key;
-  $('fig').innerHTML = charInner(eff, true); $('pvFig').innerHTML = charInner(L, false);
-  $('hero').dataset.bd = L.bd; $('pvBox').dataset.bd = L.bd; applyFxTheme();
-}
-function setRank(r){ curRank = r; $('hero').dataset.rank = r; }
-function applyProfile(){ $('hname').textContent = profile.name || 'Hunter'; applyHero(); renderPhases(); }
-async function loadProfile(){
-  const {data, error} = await sb.from('profiles').select('display_name,look,owned,spent').maybeSingle();
-  $('pmsg').textContent = error ? 'Run the new SQL step so your look can be saved. (' + error.message + ')' : '';
-  profile = {name:data?.display_name || '', look:{...DEFAULT_LOOK, ...(data?.look || {})}, owned:Array.isArray(data?.owned) ? data.owned : [], spent:data?.spent || 0};
-  $('pname').value = profile.name; applyProfile(); updateGold(); loadPhaseUrls();
-}
-function queueSave(){ clearTimeout(saveT); saveT = setTimeout(() => saveProfile(), 600); }
-async function saveProfile(manual){
-  profile.name = $('pname').value.trim();
-  const {error} = await sb.from('profiles').upsert({display_name:profile.name || null, look:profile.look, owned:profile.owned, spent:profile.spent, updated_at:new Date().toISOString()}, {onConflict:'user_id'});
-  $('pmsg').textContent = error ? error.message : (manual ? 'Saved.' : 'Look saved.'); applyProfile();
-}
-/* ===== Phases: your level decides which chapter of the story you are in ===== */
-const PHASES = [
-  {n:1, name:'Human', from:1, quote:'An ordinary day. A different dream.', col:'#b8c4e6', aura:'none'},
-  {n:2, name:'Shadow Hunter', from:5, quote:'The light fades. The shadows answer.', col:'#4b8bff', aura:'blue'},
-  {n:3, name:'System User', from:12, quote:'Not luck. Not talent. Just a system that works.', col:'#35d0ff', aura:'emerald'},
-  {n:4, name:'Class S', from:18, quote:'Not the strongest. The one who kept going.', col:'#a06bff', aura:'violet'}
-];
-const phaseOf = lv => PHASES.filter(p => lv >= p.from).pop().n;
-const effAura = () => lookOf().aura !== 'none' ? lookOf().aura : PHASES[curPhase - 1].aura;
-function setPhase(p){
-  curPhase = p; const P = PHASES[p - 1]; document.documentElement.dataset.phase = p;
-  $('capPhase').textContent = 'PHASE ' + p; $('capName').textContent = P.name.toUpperCase(); $('capQuote').textContent = P.quote; $('holo').classList.toggle('hide', p < 3);
-  figKey = ''; applyHero(); renderPhases();
-}
-function phaseUp(p){
-  const P = PHASES[p - 1], el = document.createElement('div'); el.className = 'welcome'; el.setAttribute('role', 'status');
-  el.innerHTML = `<div><small style="letter-spacing:.35em">PHASE ${p}</small><b style="color:${P.col}">${esc(P.name.toUpperCase())}</b><span>${esc(P.quote)}</span></div>`; document.body.appendChild(el); fxBoost = 1; setTimeout(() => el.remove(), 2200);
-}
-function applyHero(){
-  const url = phaseUrls[curPhase], use = lookOf().mode === 'portrait' && !!url;
-  $('hero').classList.toggle('hasPortrait', use); if (use) $('portraitImg').src = url; drawFig();
-}
-/* Phase portraits: your own pictures (made with any AI image tool), one per phase, shown in the hero. */
-const PROMPTS = [
-  'Using my photo as the reference, draw a full-body anime illustration of me in a bright casual look: open white short-sleeve shirt over a black tee, light trousers, relaxed smile, concrete wall background. Keep my face recognisable.',
-  'Using my photo as the reference, draw a full-body dark-fantasy anime illustration of me in a long black coat and sunglasses, calm confident pose, glowing blue shadow energy swirling around me. Keep my face recognisable.',
-  'Using my photo as the reference, draw me in a black high-collar coat and sunglasses with a hand raised to the frame, glowing blue holographic status windows floating beside me. Anime style. Keep my face recognisable.',
-  'Using my photo as the reference, draw me in a black coat with a chain at the belt, calm downward stare, surrounded by violet lightning and dark purple flames. Anime style, dramatic lighting. Keep my face recognisable.'
-];
-let phSlot = 0;
-function renderPhases(){
-  const pp = lookOf().pp || [];
-  $('phGrid').innerHTML = PHASES.map(P => { const has = pp.includes(P.n) && phaseUrls[P.n], cur = P.n === curPhase;
-    return `<div class="ph4${cur ? ' cur' : ''}" style="--pcol:${P.col}"><div class="pimg">${has ? `<img src="${esc(phaseUrls[P.n])}" alt="Phase ${P.n} picture">` : '<span>No picture yet</span>'}</div><b>Phase ${P.n}</b><span class="meta">${esc(P.name)} · Lv ${P.from}+${cur ? ' · now' : ''}</span><div class="row"><button class="sec" onclick="pickPhase(${P.n})">${pp.includes(P.n) ? 'Replace' : 'Upload'}</button>${pp.includes(P.n) ? `<button class="sec" onclick="removePhase(${P.n})" aria-label="Remove phase ${P.n} picture">Remove</button>` : ''}</div></div>`; }).join('');
-  $('modeBtn').textContent = 'Hero shows: ' + (lookOf().mode === 'portrait' ? 'My pictures' : 'Avatar');
-}
-function pickPhase(n){ phSlot = n; $('phFile').click(); }
-async function uploadPhase(file){
-  if (!file || !file.type.startsWith('image/')) return; const n = phSlot, msg = $('pmsg');
-  try {
-    msg.textContent = 'Saving picture…'; const img = await loadImg(file), blob = await shrink(img, 1080, .82); URL.revokeObjectURL(img.src);
-    const {data:{session}} = await sb.auth.getSession(), path = `${session.user.id}/phases/p${n}.jpg`;
-    await sb.storage.from('album').remove([path]);
-    const up = await sb.storage.from('album').upload(path, blob, {contentType:'image/jpeg'}); if (up.error) throw up.error;
-    const first = !(lookOf().pp || []).length, pp = new Set(lookOf().pp || []); pp.add(n); profile.look.pp = [...pp].sort();
-    if (first) profile.look.mode = 'portrait';
-    await loadPhaseUrls(); queueSave(); msg.textContent = first ? 'Picture saved. The hero now shows your pictures. Use the Hero shows button to switch back.' : 'Picture saved.';
-  } catch (e) { msg.textContent = 'Could not save the picture: ' + e.message; }
-}
-async function removePhase(n){
-  if (!confirm(`Remove your phase ${n} picture?`)) return; const {data:{session}} = await sb.auth.getSession();
-  await sb.storage.from('album').remove([`${session.user.id}/phases/p${n}.jpg`]); profile.look.pp = (lookOf().pp || []).filter(x => x !== n); delete phaseUrls[n]; applyHero(); renderPhases(); queueSave();
-}
-async function loadPhaseUrls(){
-  const pp = lookOf().pp || []; phaseUrls = {};
-  if (pp.length) { const {data:{session}} = await sb.auth.getSession(); if (session) { const {data} = await sb.storage.from('album').createSignedUrls(pp.map(n => `${session.user.id}/phases/p${n}.jpg`), 3600); (data || []).forEach(x => { const m = /p(\d)\.jpg$/.exec(x.path || ''); if (m && x.signedUrl) phaseUrls[+m[1]] = x.signedUrl; }); } }
-  applyHero(); renderPhases();
-}
-setInterval(() => { if (!document.hidden && (lookOf().pp || []).length) loadPhaseUrls(); }, 3000000);
-function toggleMode(){ profile.look.mode = lookOf().mode === 'portrait' ? 'avatar' : 'portrait'; applyHero(); renderPhases(); queueSave(); }
-function showPrompts(){
-  const o = document.createElement('div'); o.className = 'modal'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'Prompts for your pictures');
-  o.innerHTML = `<div class="mbox" style="max-width:520px"><h2>Prompts for your pictures</h2><p class="meta">Open any AI image tool, attach a clear photo of yourself, paste a prompt, and save the result. Then upload it to the matching phase.</p>${PROMPTS.map((t, i) => `<div class="card"><b>Phase ${i + 1}: ${esc(PHASES[i].name)}</b><p class="meta" id="pr${i}">${esc(t)}</p><button class="sec" onclick="navigator.clipboard.writeText(document.getElementById('pr${i}').textContent).then(() => toast('Copied'))">Copy prompt</button></div>`).join('')}<button id="pcl">Close</button></div>`;
-  document.body.appendChild(o); o.querySelector('#pcl').onclick = () => o.remove();
-}
-/* Quest filter */
+
 const qMatch = t => qFilter === 'all' || (qFilter === 'open' && !DONE.includes(t.status) && t.status !== 'scheduled') || (qFilter === 'scheduled' && t.status === 'scheduled') || (qFilter === 'done' && DONE.includes(t.status));
 $('qf').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; qFilter = b.dataset.f; document.querySelectorAll('#qf button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); }); render(); });
-
-function renderShop(){
-  $('cats').innerHTML = Object.entries(SHOP).map(([k, v]) => `<button class="cat ${k === shopCat ? 'on' : ''}" data-c="${k}">${v.label}</button>`).join('');
-  const L = lookOf(), base = {...L, aura:'none', weapon:'none', acc:'none', neck:'none'}, box = {hair:'100 70 200 220', acc:'100 60 200 240', body:'100 70 200 220', outfit:'0 236 400 184', neck:'0 236 400 184', weapon:'0 20 400 400', aura:'0 20 400 400'};
-  $('shopGrid').innerHTML = SHOP[shopCat].items.map(([id, name, price, minLv = 0]) => {
-    const own = price === 0 || profile.owned.includes(shopCat + ':' + id), eq = String(L[shopCat]) === String(id), locked = !own && userLv < minLv;
-    const thumb = shopCat === 'skin' ? `<i class="sw" style="background:${SKIN[id]}"></i>` : shopCat === 'hairColor' ? `<i class="sw" style="background:${HAIRC[id]}"></i>` : shopCat === 'eyes' ? `<i class="sw" style="background:${EYEC[id]}"></i>` : shopCat === 'bd' ? `<div class="bdp" data-bd="${id}"></div>` : `<svg viewBox="${box[shopCat]}" aria-hidden="true">${charInner({...base, [shopCat]:id}, false)}</svg>`;
-    return `<button class="itm${eq ? ' eq' : ''}${locked ? ' lock' : ''}" data-i="${id}">${thumb}<span class="nm">${name}</span><span class="pr">${eq ? 'Equipped' : own ? 'Owned' : locked ? 'Lv ' + minLv : price + ' gold'}</span></button>`;
-  }).join('');
+/* ===== Hunter: wallet, forms, customisation and saving ===== */
+const CUST = {
+  body:{label:'Body type', items:[['boy','Boy',0],['girl','Girl',0]]},
+  skin:{label:'Skin tone', items:[[0,'Fair',0],[1,'Light',0],[2,'Tan',0],[3,'Bronze',0],[4,'Deep',0]]},
+  hair:{label:'Hairstyle', items:[['tousled','Tousled',0],['spiky','Spiky',0],['bob','Bob',0],['swept','Swept',120],['pomp','Pompadour',160],['long','Long',160],['twin','Twin tails',220],['pony','Ponytail',220]]},
+  hairColor:{label:'Hair color', items:[[0,'Black',0],[1,'Brown',0],[2,'Silver',200],[3,'Blue',150],[4,'Crimson',150],[5,'Blonde',120],[6,'Violet',300]]},
+  eyes:{label:'Eye color', items:[[1,'Sky blue',0],[0,'Brown',0],[2,'Violet',120],[3,'Red',120],[4,'Gold',160],[5,'Ice glow',600,12]]},
+  eyeShape:{label:'Eye shape', items:[['sharp','Sharp',0],['soft','Soft',0]]},
+  brows:{label:'Eyebrows', items:[['auto','By form',0],['straight','Straight',0],['angry','Fierce',0],['soft','Soft',0]]},
+  base:{label:'Outfit color', items:[['black','Black',0],['navy','Navy',80],['charcoal','Charcoal',80],['wine','Wine',120]]},
+  accent:{label:'Accent color', items:[['auto','By form',0],['blue','Blue',0],['violet','Violet',0],['silver','Silver',100],['emerald','Emerald',100],['gold','Gold',160],['crimson','Crimson',120]]},
+  acc:{label:'Accessories', items:[['none','None',0],['headphones','Headphones',0],['glasses','Glasses',80],['shades','Sunglasses',150],['earring','Earrings',100],['mask','Half mask',300],['crown','Crown',1200,18]]},
+  neck:{label:'Necklace', items:[['none','None',0],['chain','Chain',90],['pendant','Pendant',140]]},
+  aura:{label:'Aura', items:[['auto','By form',0],['none','None',0],['blue','Azure',120],['emerald','Emerald',250],['violet','Violet',300,12],['flame','Flame',500,12],['gold','Gold',900,18]]},
+  shadows:{label:'Shadow guardians', items:[['auto','By form',0],['off','Off',0],['on','Always',400,12]]},
+  bd:{label:'Background', items:[['auto','By form',0],['sky','Sky',0],['dark','Midnight',0],['gate','Gate',300],['roof','Rooftop',400],['moon','Blood moon',500,12],['throne','Throne',900,18]]},
+  pose:{label:'Pose', items:[['calm','Calm',0],['tilt','Tilt',0],['glare','Glare',0]]}
+};
+const GROUPS = [['Body',['body','skin']], ['Hair',['hair','hairColor']], ['Face',['eyes','eyeShape','brows']], ['Clothing',['base','accent','acc','neck']], ['Effects',['aura','shadows']], ['Scene',['bd','pose']]];
+const SWATCH = {skin:SKIN, hairColor:HAIRC, eyes:EYEC, base:BASEC, accent:ACCC};
+const MIGRATION_SQL = `create table if not exists public.profiles (
+  user_id uuid primary key default auth.uid() references auth.users(id) on delete cascade,
+  display_name text,
+  updated_at timestamptz not null default now()
+);
+alter table public.profiles add column if not exists display_name text;
+alter table public.profiles add column if not exists look jsonb not null default '{}'::jsonb;
+alter table public.profiles add column if not exists owned jsonb not null default '[]'::jsonb;
+alter table public.profiles add column if not exists spent integer not null default 0;
+alter table public.profiles add column if not exists updated_at timestamptz not null default now();
+alter table public.profiles enable row level security;
+drop policy if exists "own profile select" on public.profiles;
+drop policy if exists "own profile insert" on public.profiles;
+drop policy if exists "own profile update" on public.profiles;
+drop policy if exists "own profile delete" on public.profiles;
+create policy "own profile select" on public.profiles for select using (auth.uid() = user_id);
+create policy "own profile insert" on public.profiles for insert with check (auth.uid() = user_id);
+create policy "own profile update" on public.profiles for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own profile delete" on public.profiles for delete using (auth.uid() = user_id);
+alter table public.tasks add column if not exists image_thumb text;
+alter table public.tasks add column if not exists post_id text;
+notify pgrst, 'reload schema';`;
+let curPhase = 1, userLv = 1, viewForm = 1, prevForm = 0, custGroup = 'Body', saveT, themeMode = localStorage.getItem('theme') || 'auto', isDay = false, dbMode = 'cloud', lastPhase = null, avKey = '';
+const lookOf = () => ({...DEFAULT_LOOK, ...profile.look});
+const gold = () => Math.max(0, totalXp - profile.spent);
+const phaseOf = lv => FORMS.filter(f => lv >= f.from).pop().n;
+const activeForm = () => Math.min(lookOf().form || phaseOf(userLv), phaseOf(userLv));
+function resetProfile(){ profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}; }
+function setRank(r){ curRank = r; }
+function drawAvatar(force){
+  const L = lookOf(), f = activeForm(), key = JSON.stringify(L) + '|' + f; if (!force && key === avKey) return; avKey = key;
+  $('avBust').innerHTML = bustSVG(L, f, {ids:true}); $('formName').textContent = FORMS[f - 1].name; $('formNo').textContent = 'PHASE ' + f;
+  document.documentElement.style.setProperty('--fc', FORMS[f - 1].col);
 }
-function pick(cat, raw){
-  const it = SHOP[cat].items.find(x => String(x[0]) === raw); if (!it) return;
+function setPhase(p){ curPhase = p; document.documentElement.dataset.phase = p; drawAvatar(); if ($('v-hunter').classList.contains('on')) renderHunter(); }
+function applyProfile(){ $('hname').textContent = profile.name || 'Hunter'; drawAvatar(); }
+function updateGold(){ document.querySelectorAll('.goldv').forEach(e => e.textContent = gold().toLocaleString()); if ($('v-hunter').classList.contains('on')) renderHunter(); }
+function levelFx(){ const c = $('pcard'); c.classList.remove('levelup'); void c.offsetWidth; c.classList.add('levelup'); setTimeout(() => c.classList.remove('levelup'), 1700); }
+function phaseUp(p){
+  const F = FORMS[p - 1], el = document.createElement('div'); el.className = 'unlock'; el.setAttribute('role', 'status'); el.style.setProperty('--fc', F.col);
+  el.innerHTML = `<div class="ubox"><small>NEW FORM UNLOCKED</small><svg viewBox="0 0 400 780" aria-hidden="true">${fullSVG(lookOf(), p, {})}</svg><b>${esc(F.name)}</b><span>${esc(F.quote)}</span><button>Continue</button></div>`;
+  el.querySelector('button').onclick = () => el.remove(); document.body.appendChild(el); setTimeout(() => el.remove(), 7000);
+}
+
+/* ----- saving: Supabase when the columns exist, this device otherwise ----- */
+const dbMissing = e => e && (e.code === '42703' || e.code === '42P01' || e.code === 'PGRST204' || /does not exist|schema cache|could not find/i.test(e.message || ''));
+function showDb(){ $('dbNote').classList.toggle('hide', dbMode === 'cloud'); }
+function localSave(){ try { localStorage.setItem('cot_look', JSON.stringify({display_name:profile.name, look:profile.look, owned:profile.owned, spent:profile.spent})); } catch (e) {} }
+async function loadProfile(){
+  let {data, error} = await sb.from('profiles').select('display_name,look,owned,spent').maybeSingle(); let loc = null;
+  try { loc = JSON.parse(localStorage.getItem('cot_look') || 'null'); } catch (e) {}
+  if (error && dbMissing(error)) { dbMode = 'local'; const r = await sb.from('profiles').select('display_name').maybeSingle(); data = r.error ? null : r.data; }
+  else if (error) { data = null; $('pmsg').textContent = error.message; } else dbMode = 'cloud';
+  const cloudLook = data && data.look && Object.keys(data.look).length ? data : null, src = cloudLook || (loc ? {...loc, display_name:(data && data.display_name) || loc.display_name} : data) || {};
+  profile = {name:src.display_name || '', look:{...DEFAULT_LOOK, ...(src.look || {})}, owned:Array.isArray(src.owned) ? src.owned : [], spent:src.spent || 0};
+  $('pname').value = profile.name; showDb(); applyProfile(); updateGold();
+  if (dbMode === 'cloud' && !cloudLook && loc) queueSave();
+}
+function queueSave(){ clearTimeout(saveT); saveT = setTimeout(() => saveProfile(), 500); }
+async function saveProfile(manual){
+  profile.name = $('pname').value.trim(); localSave();
+  if (dbMode === 'cloud') {
+    const {error} = await sb.from('profiles').upsert({display_name:profile.name || null, look:profile.look, owned:profile.owned, spent:profile.spent, updated_at:new Date().toISOString()}, {onConflict:'user_id'});
+    if (error && dbMissing(error)) { dbMode = 'local'; showDb(); await sb.from('profiles').upsert({display_name:profile.name || null}, {onConflict:'user_id'}); }
+    else if (error) { $('pmsg').textContent = error.message; return; }
+  } else await sb.from('profiles').upsert({display_name:profile.name || null}, {onConflict:'user_id'});
+  $('pmsg').textContent = manual ? (dbMode === 'cloud' ? 'Saved to your account.' : 'Saved on this device. Run the database update to sync it.') : ''; applyProfile();
+}
+function copySql(){ navigator.clipboard.writeText(MIGRATION_SQL).then(() => toast('SQL copied. Paste it in the Supabase SQL Editor.'), () => toast('Could not copy. Select the text instead.')); }
+
+/* ----- Hunter screen: Profile / Forms / Customize ----- */
+function setSub(name){
+  document.querySelectorAll('#hseg button').forEach(b => { const on = b.dataset.s === name; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  document.querySelectorAll('.sub').forEach(e => e.classList.toggle('on', e.id === 's-' + name)); renderHunter();
+}
+function curSub(){ const b = document.querySelector('#hseg button.on'); return b ? b.dataset.s : 'profile'; }
+function renderHunter(){ const s = curSub(); if (s === 'forms') renderForms(); if (s === 'custom') renderCustom(); }
+function renderForms(){
+  const F = FORMS[viewForm - 1], open = userLv >= F.from, act = activeForm() === viewForm, L = lookOf();
+  $('stageSvg').innerHTML = fullSVG(L, viewForm, {}); $('stage').classList.toggle('locked', !open); $('stage').style.setProperty('--fc', F.col);
+  $('fTitle').textContent = `Phase ${F.n} · ${F.name}`; $('fTag').textContent = F.tag; $('fQuote').textContent = '“' + F.quote + '”';
+  $('fLock').classList.toggle('hide', open); $('fLockTxt').textContent = `Reach level ${F.from} to unlock. You are level ${userLv}.`; $('fLockBar').style.width = Math.min(100, Math.round(userLv / F.from * 100)) + '%';
+  const b = $('fUse'); b.disabled = !open || act; b.textContent = !open ? `Locked until level ${F.from}` : act ? 'Active form' : 'Use this form';
+  $('fPrev').disabled = viewForm <= 1; $('fNext').disabled = viewForm >= FORMS.length;
+  $('fStrip').innerHTML = FORMS.map(f => `<button class="fth${f.n === viewForm ? ' on' : ''}${userLv < f.from ? ' lk' : ''}" data-n="${f.n}" aria-label="Phase ${f.n}, ${f.name}${userLv < f.from ? ', locked' : ''}"><svg viewBox="70 60 260 260" aria-hidden="true">${bustSVG(L, f.n, {})}</svg><span>${f.n}</span></button>`).join('');
+}
+function fNav(d){ viewForm = Math.max(1, Math.min(FORMS.length, viewForm + d)); renderForms(); }
+function useForm(){ if (userLv < FORMS[viewForm - 1].from) return; profile.look.form = viewForm === phaseOf(userLv) ? 0 : viewForm; drawAvatar(); renderForms(); queueSave(); toast(FORMS[viewForm - 1].name + ' is now your active form'); }
+function tile(cat, [id, name, price, minLv = 0], L, f){
+  const own = price === 0 || profile.owned.includes(cat + ':' + id), eq = String(L[cat]) === String(id), locked = !own && userLv < minLv; let th = '';
+  if (SWATCH[cat]) th = id === 'auto' ? '<i class="sw auto"></i>' : `<i class="sw" style="background:${SWATCH[cat][id]}"></i>`;
+  else if (cat === 'hair' || cat === 'acc' || cat === 'body') th = `<svg viewBox="96 76 208 214" aria-hidden="true">${bustSVG({...L, acc:cat === 'acc' ? id : 'none', [cat]:id}, f, {bg:false})}</svg>`;
+  else if (cat === 'bd') th = `<svg viewBox="0 0 80 60" preserveAspectRatio="none" aria-hidden="true">${sceneSVG(id, f, 'q' + (++UID), 80, 60)}</svg>`;
+  return `<button class="ct${eq ? ' eq' : ''}${locked ? ' lk' : ''}${th ? '' : ' txt'}" data-c="${cat}" data-i="${id}" aria-pressed="${eq}">${th}<span class="nm">${name}</span><span class="pr">${eq ? 'Equipped' : own ? (price === 0 ? 'Free' : 'Owned') : locked ? 'Lv ' + minLv : price + ' gold'}</span></button>`;
+}
+function renderCustom(){
+  const L = lookOf(), f = Math.min(prevForm || activeForm(), phaseOf(userLv));
+  $('cvSvg').innerHTML = bustSVG(L, f, {}); $('cvGold').textContent = gold().toLocaleString();
+  $('cvForms').innerHTML = FORMS.map(F => `<button class="fch${F.n === f ? ' on' : ''}" data-n="${F.n}" ${userLv < F.from ? 'disabled' : ''} aria-label="Preview phase ${F.n}, ${F.name}">${F.n}</button>`).join('');
+  $('cgroups').innerHTML = GROUPS.map(([g]) => `<button class="cat ${g === custGroup ? 'on' : ''}" data-g="${g}">${g}</button>`).join('');
+  $('crows').innerHTML = GROUPS.find(x => x[0] === custGroup)[1].map(cat => `<div class="crow"><h3>${CUST[cat].label}</h3><div class="ctiles">${CUST[cat].items.map(it => tile(cat, it, L, f)).join('')}</div></div>`).join('');
+}
+function pickCust(cat, raw){
+  const it = CUST[cat].items.find(x => String(x[0]) === raw); if (!it) return;
   const [id, name, price, minLv = 0] = it, own = price === 0 || profile.owned.includes(cat + ':' + id);
   if (!own) {
     if (userLv < minLv) { toast(`Reach level ${minLv} to unlock ${name}`); return; }
     if (gold() < price) { toast(`Need ${price - gold()} more gold`); return; }
     if (!confirm(`Buy ${name} for ${price} gold?`)) return;
-    profile.owned.push(cat + ':' + id); profile.spent += price; fxBoost = 1; toast(`Bought ${name}`);
+    profile.owned.push(cat + ':' + id); profile.spent += price; toast(`Bought ${name}`);
   }
-  profile.look[cat] = id; drawFig(); updateGold(); renderShop(); queueSave();
+  profile.look[cat] = id; drawAvatar(); updateGold(); renderCustom(); queueSave();
 }
-$('cats').addEventListener('click', e => { const b = e.target.closest('.cat'); if (b) { shopCat = b.dataset.c; renderShop(); } });
-$('shopGrid').addEventListener('click', e => { const b = e.target.closest('.itm'); if (b) pick(shopCat, b.dataset.i); });
-
-/* ===== Day and night follow the Philippines (Asia/Manila): day is 6:00 AM to 6:00 PM ===== */
+/* ----- day and night follow the Philippines (Asia/Manila): day is 6:00 AM to 6:00 PM ----- */
 const phHour = () => parseInt(new Date().toLocaleString('en-GB', {timeZone:TZ, hour:'2-digit', hourCycle:'h23'}), 10);
 function applyTheme(){
   isDay = themeMode === 'day' || (themeMode === 'auto' && phHour() >= 6 && phHour() < 18);
   document.documentElement.dataset.theme = isDay ? 'day' : 'night';
-  document.querySelector('meta[name=theme-color]').content = isDay ? '#e9f0ff' : '#05060f';
+  document.querySelector('meta[name=theme-color]').content = isDay ? '#dbe7ff' : '#05071a';
   const b = $('themeBtn'); if (b) b.textContent = themeMode === 'auto' ? `Theme: Auto (${isDay ? 'day' : 'night'})` : `Theme: ${isDay ? 'Day' : 'Night'}`;
-  applyFxTheme();
 }
 function cycleTheme(){ themeMode = {auto:'day', day:'night', night:'auto'}[themeMode]; localStorage.setItem('theme', themeMode); applyTheme(); }
 setInterval(applyTheme, 60000);
-function applyFxTheme(){
-  const a = effAura(); fxCol = isDay ? dark(a !== 'none' ? AURAC[a] : '#3a55ff', .2) : (a !== 'none' ? lite(AURAC[a], .3) : '#9bb4ff');
-  if (!fxMat || !window.THREE) return;
-  fxMat.blending = isDay ? THREE.NormalBlending : THREE.AdditiveBlending; fxMat.color.set(isDay ? fxCol : (a !== 'none' ? fxCol : '#ffffff')); fxMat.opacity = isDay ? .75 : .9; fxMat.needsUpdate = true;
+/* ----- idle animation: the avatar breathes, sways and blinks ----- */
+function initAnim(){
+  (function loop(t){
+    requestAnimationFrame(loop); if (document.hidden) return;
+    const gS = $('gSway'), gB = $('gBody'), gK = $('gBack'), gE = $('gEyes'); if (!gS) return;
+    const mo = motionOn(), sw = mo ? Math.sin(t / 2600) * 3 : 0, br = mo ? Math.sin(t / 950) * 1.6 : 0, bl = mo && (t % 4300) > 4130 ? .1 : 1;
+    gS.setAttribute('transform', `rotate(${sw.toFixed(2)} 200 290) translate(0 ${br.toFixed(2)})`); gK.setAttribute('transform', `rotate(${sw.toFixed(2)} 200 290) translate(0 ${br.toFixed(2)})`);
+    gB.setAttribute('transform', `translate(0 ${(br * .6).toFixed(2)})`); if (gE) gE.setAttribute('transform', `translate(0 196) scale(1 ${bl}) translate(0 -196)`);
+  })(0);
 }
+$('hseg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setSub(b.dataset.s); });
+$('cgroups').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { custGroup = b.dataset.g; renderCustom(); } });
+$('cvForms').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.disabled) { prevForm = +b.dataset.n; renderCustom(); } });
+$('crows').addEventListener('click', e => { const b = e.target.closest('.ct'); if (b) pickCust(b.dataset.c, b.dataset.i); });
+$('fStrip').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { viewForm = +b.dataset.n; renderForms(); } });
+let sx0 = null; $('stage').addEventListener('pointerdown', e => { sx0 = e.clientX; }); $('stage').addEventListener('pointerup', e => { if (sx0 !== null && Math.abs(e.clientX - sx0) > 50) fNav(e.clientX < sx0 ? 1 : -1); sx0 = null; });
 
 /* ===== Album (Supabase Storage). Photos are shrunk in your browser first so the free 1 GB lasts. ===== */
 const CAP_MB = 1024; let albumRows = [], albumTask = new Map();
@@ -869,68 +961,9 @@ async function openPhoto(id){
   o.querySelector('#pd').onclick = async () => { if (!confirm('Delete this photo?')) return; await sb.storage.from('album').remove([r.path, r.thumb_path]); await sb.from('album_photos').delete().eq('id', id); o.remove(); await loadAlbum(); showAlbum(); };
 }
 
-function levelFx(){ const h = $('hero'); h.classList.remove('levelup'); void h.offsetWidth; h.classList.add('levelup'); fxBoost = 1; setTimeout(() => h.classList.remove('levelup'), 1500); }
-
-
-/* 3D hero: rising particles tinted by your aura. */
-function initFx(){
-  if (!window.THREE) { fx2d(); return; }
-  const c = $('fx'), hero = $('hero');
-  const R = new THREE.WebGLRenderer({canvas:c, alpha:true, antialias:true}); R.setPixelRatio(Math.min(devicePixelRatio, 2));
-  const S = new THREE.Scene(), C = new THREE.PerspectiveCamera(55, 1, .1, 100); C.position.z = 14;
-  const N = 1500, pos = new Float32Array(N * 3), seed = [];
-  for (let i = 0; i < N; i++) seed.push({a:Math.random()*6.283, r:2.5+Math.random()*5.5, y:Math.random()*16-8, v:.012+Math.random()*.035, w:(Math.random()-.5)*.01+.006});
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const sp = document.createElement('canvas'); sp.width = sp.height = 64; const sg = sp.getContext('2d'), gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(.35, 'rgba(255,255,255,.7)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
-  fxMat = new THREE.PointsMaterial({map:new THREE.CanvasTexture(sp), size:innerWidth < 600 ? .32 : .22, transparent:true, depthWrite:false});
-  const P = new THREE.Points(g, fxMat); S.add(P); applyFxTheme();
-  const size = () => { const w = hero.clientWidth, h = hero.clientHeight; R.setSize(w, h, false); C.aspect = w / h; C.updateProjectionMatrix(); };
-  size(); addEventListener('resize', size);
-  let mx = 0, my = 0;
-  hero.addEventListener('pointermove', e => { const b = hero.getBoundingClientRect(); mx = (e.clientX - b.left) / b.width - .5; my = (e.clientY - b.top) / b.height - .5; hero.style.setProperty('--px', mx); hero.style.setProperty('--py', my); });
-  const frame = () => { fxBoost *= .965;
-    seed.forEach((s, i) => { s.a += s.w; s.y += s.v * (1 + fxBoost * 8); if (s.y > 8) s.y = -8; const r = s.r * (.6 + .4 * (1 - Math.abs(s.y) / 9)); pos[i*3] = Math.cos(s.a) * r; pos[i*3+1] = s.y; pos[i*3+2] = Math.sin(s.a) * r * .6; });
-    g.attributes.position.needsUpdate = true;
-    P.rotation.y += (mx * .6 + yawNow * .03 - P.rotation.y) * .05; P.rotation.x += (my * .3 - P.rotation.x) * .05;
-    R.render(S, C);
-  };
-  frame();
-  (function loop(){ if (!document.hidden && motionOn()) frame(); requestAnimationFrame(loop); })();
-}
-function fx2d(){
-  const c = $('fx'), g = c.getContext('2d'), hero = $('hero'); if (!g) return; let w = 0, h = 0;
-  const size = () => { w = c.width = hero.clientWidth; h = c.height = hero.clientHeight; }; size(); addEventListener('resize', size);
-  const ps = Array.from({length:110}, () => ({a:Math.random() * 6.28, r:30 + Math.random() * 140, y:Math.random(), v:.0009 + Math.random() * .002}));
-  (function loop(){ requestAnimationFrame(loop); if (document.hidden || !motionOn()) return; g.clearRect(0, 0, w, h); g.globalCompositeOperation = isDay ? 'source-over' : 'lighter'; g.fillStyle = fxCol;
-    ps.forEach(p => { p.a += .01; p.y -= p.v * (1 + fxBoost * 8); if (p.y < 0) p.y = 1; fxBoost *= .9995; const x = w / 2 + Math.cos(p.a + yawNow * .02) * p.r * (.6 + .4 * p.y), y = p.y * h; g.globalAlpha = isDay ? .7 : .85; g.beginPath(); g.arc(x, y, 2.2, 0, 6.3); g.fill(); }); })();
-}
-/* Idle animation: head turns left and right, body breathes, eyes blink. Drag or hover to look around. */
-function initTurn(){
-  const hero = $('hero');
-  let drag = 0, dragging = false, sx = 0, hover = null;
-  hero.addEventListener('pointerdown', e => { dragging = true; sx = e.clientX; drag = 0; });
-  addEventListener('pointerup', () => { dragging = false; }); hero.addEventListener('pointercancel', () => { dragging = false; });
-  hero.addEventListener('pointermove', e => { if (dragging) drag = Math.max(-34, Math.min(34, (e.clientX - sx) / hero.clientWidth * 120)); else if (e.pointerType === 'mouse') { const b = hero.getBoundingClientRect(); hover = ((e.clientX - b.left) / b.width - .5) * 56; } });
-  hero.addEventListener('pointerleave', () => { hover = null; });
-  (function loop(t){
-    requestAnimationFrame(loop); if (document.hidden) return;
-    const gH = $('gHead'), gHr = $('gHair'), gF = $('gFace'), gB = $('gBody'), gK = $('gBack'), gE = $('gEyes'); if (!gH) return;
-    const mo = motionOn(), target = dragging ? drag : (hover !== null ? hover : (mo ? Math.sin(t / 2300) * 24 : 0)), br = mo ? Math.sin(t / 900) * 1.8 : 0, bl = mo && (t % 4300) > 4120 ? .12 : 1;
-    yawNow += (target - yawNow) * .09;
-    const s = Math.sin(yawNow * Math.PI / 180), c = Math.cos(yawNow * Math.PI / 180);
-    gH.setAttribute('transform', `translate(${(s * 10).toFixed(2)} ${br.toFixed(2)}) translate(200 190) scale(${c.toFixed(3)} 1) translate(-200 -190)`);
-    gHr.setAttribute('transform', `translate(${(s * 5).toFixed(2)} 0)`);
-    gF.setAttribute('transform', `translate(${(s * 22).toFixed(2)} 0) translate(200 200) scale(${(.9 + .1 * c).toFixed(3)} 1) translate(-200 -200)`);
-    gE.setAttribute('transform', `translate(0 196) scale(1 ${bl}) translate(0 -196)`);
-    gB.setAttribute('transform', `translate(${(-s * 8).toFixed(2)} ${(br * .6).toFixed(2)})`);
-    gK.setAttribute('transform', `translate(${(s * -6).toFixed(2)} ${br.toFixed(2)})`);
-    hero.style.setProperty('--yaw', yawNow.toFixed(2));
-  })(0);
-}
 
 /* Install tip for iPhone (alerts need the Home Screen app) */
-applyTheme(); applyMotion(); setPhase(1); renderShop(); initTurn();
-try { initFx(); } catch (e) { console.warn('3D hero fallback', e); fx2d(); }
+applyTheme(); applyMotion(); setPhase(1); initAnim();
 
 if (/iphone|ipad/i.test(navigator.userAgent) && !(navigator.standalone || matchMedia('(display-mode: standalone)').matches) && localStorage.getItem('tipx') !== '1')
   $('tip').innerHTML = '<div class="warn"><span><b>Install on iPhone.</b> In Safari tap Share, then Add to Home Screen, and open the app from there. Alerts only work that way.</span><button class="sec" onclick="localStorage.setItem(\'tipx\',\'1\'); this.closest(\'.warn\').remove()">Got it</button></div>';
