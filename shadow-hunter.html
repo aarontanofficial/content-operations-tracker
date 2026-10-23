@@ -90,7 +90,8 @@
     import * as THREE from "three";
     import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-
+    import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+    
     const container = document.getElementById("viewer");
     const status = document.getElementById("status");
 
@@ -130,6 +131,7 @@
     controls.maxPolarAngle = Math.PI * 0.85;
 
     const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
 
     // The GLB file is in the repository's root folder.
     loader.load(
