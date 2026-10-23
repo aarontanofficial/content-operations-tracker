@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow Hunter | Character</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #050914;
+      color: #e8f7ff;
+      font-family: Arial, sans-serif;
+    }
+
+    #viewer {
+      position: fixed;
+      inset: 0;
+    }
+
+    .panel {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 2;
+      padding: 16px 20px;
+      border: 1px solid #1a8fff66;
+      border-radius: 14px;
+      background: #071323cc;
+      backdrop-filter: blur(10px);
+      max-width: calc(100vw - 40px);
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      color: #5ddcff;
+      font-size: 20px;
+      letter-spacing: 2px;
+    }
+
+    p {
+      margin: 0;
+      color: #a9c9df;
+      font-size: 13px;
+    }
+
+    #status {
+      margin-top: 10px;
+      color: #69e7ff;
+    }
+
+    .hint {
+      position: fixed;
+      bottom: 18px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: #b8d9f0;
+      font-size: 13px;
+      pointer-events: none;
+    }
+  </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <div id="viewer"></div>
+
+  <div class="panel">
+    <h1>SHADOW HUNTER</h1>
+    <p>Awaken your true form.</p>
+    <p id="status">Loading character...</p>
+  </div>
+
+  <div class="hint">Drag to rotate · Pinch to zoom</div>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    const container = document.getElementById("viewer");
+    const status = document.getElementById("status");
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color("#050914");
+
+    const camera = new THREE.PerspectiveCamera(
+      40, window.innerWidth / window.innerHeight, 0.1, 1000
+    );
+    camera.position.set(0, 1.5, 5);
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "low-power"
+    });
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    container.appendChild(renderer.domElement);
+
+    scene.add(new THREE.HemisphereLight(0xa8dfff, 0x101020, 2));
+
+    const blueLight = new THREE.PointLight(0x168cff, 35, 20);
+    blueLight.position.set(2, 2, 3);
+    scene.add(blueLight);
+
+    const rimLight = new THREE.PointLight(0x00eaff, 25, 20);
+    rimLight.position.set(-3, 1, -2);
+    scene.add(rimLight);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.target.set(0, 1, 0);
+    controls.minDistance = 1;
+    controls.maxDistance = 10;
+    controls.maxPolarAngle = Math.PI * 0.85;
+
+    const loader = new GLTFLoader();
+
+    // The GLB file is in the repository's root folder.
+    loader.load(
+      "./shadow-hunter.glb",
+      (gltf) => {
+        const model = gltf.scene;
+        scene.add(model);
+
+        // Center the model and fit it to the viewer.
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+
+        model.position.sub(center);
+
+        const maxSize = Math.max(size.x, size.y, size.z);
+        if (maxSize > 0) {
+          model.scale.multiplyScalar(2.5 / maxSize);
+        }
+
+        controls.target.set(0, 0, 0);
+        camera.position.set(0, 0.7, 4.5);
+        controls.update();
+
+        status.textContent = "Character loaded";
+      },
+      undefined,
+      (error) => {
+        console.error(error);
+        status.textContent =
+          "Could not load model. Check the GLB filename and path.";
+      }
+    );
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    renderer.setAnimationLoop(() => {
+      controls.update();
+      renderer.render(scene, camera);
+    });
+  </script>
+</body>
+</html>
