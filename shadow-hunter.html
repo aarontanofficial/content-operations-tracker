@@ -7,7 +7,9 @@
 <title>Shadow Hunter | Character</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -20,73 +22,105 @@ body {
 #viewer {
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 50% 45%, #102747 0%, #07101f 45%, #030711 80%);
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    #102747 0%,
+    #07101f 45%,
+    #030711 80%
+  );
 }
 
-canvas { display: block; touch-action: none; }
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
 
 .panel {
   position: fixed;
   z-index: 2;
   top: 20px;
   left: 16px;
-  padding: 15px 18px;
-  width: min(290px, calc(100vw - 32px));
+  padding: 18px;
+  width: min(500px, calc(100vw - 32px));
+  max-height: 45vh;
+  overflow-y: auto;
   border: 1px solid #53cfff45;
-  border-radius: 16px;
-  background: #071323c9;
+  border-radius: 20px;
+  background: #071323d9;
   backdrop-filter: blur(12px);
   box-shadow: 0 0 30px #008cff12;
 }
 
 h1 {
-  margin: 0 0 5px;
+  margin: 0 0 8px;
   color: #73e4ff;
-  font-size: 19px;
-  letter-spacing: 2px;
+  font-size: 25px;
+  letter-spacing: 3px;
 }
 
 .subtitle {
   color: #9db9d2;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 #status {
-  margin-top: 12px;
-  font-size: 12px;
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.6;
   color: #68e5ff;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .controls {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 button {
   flex: 1;
-  padding: 10px 8px;
-  border: 1px solid #43bfff55;
-  border-radius: 9px;
+  min-height: 48px;
+  padding: 12px 8px;
+  border: 1px solid #43bfff66;
+  border-radius: 12px;
   background: #102944;
   color: #eaf8ff;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
 }
 
-button:active { background: #17446a; }
+button:active {
+  background: #17446a;
+}
 
 .hint {
   position: fixed;
-  bottom: 20px;
+  z-index: 2;
+  bottom: 24px;
   left: 0;
   right: 0;
+  padding: 0 12px;
   text-align: center;
   color: #b8d9ed;
-  font-size: 12px;
+  font-size: 14px;
   pointer-events: none;
   text-shadow: 0 1px 8px #000;
+}
+
+@media (max-width: 480px) {
+  .panel {
+    top: 16px;
+    left: 14px;
+    width: calc(100vw - 28px);
+    padding: 18px;
+  }
+
+  h1 {
+    font-size: 23px;
+  }
 }
 </style>
 
@@ -101,11 +135,13 @@ button:active { background: #17446a; }
 </head>
 
 <body>
+
 <div id="viewer"></div>
 
 <div class="panel">
   <h1>SHADOW HUNTER</h1>
   <div class="subtitle">AWAKEN YOUR TRUE FORM</div>
+
   <div id="status">Loading character...</div>
 
   <div class="controls">
@@ -127,14 +163,21 @@ const status = document.getElementById("status");
 const spinButton = document.getElementById("spin");
 const resetButton = document.getElementById("reset");
 
+// Scene
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#030711");
 
+// Camera
 const camera = new THREE.PerspectiveCamera(
-  38, window.innerWidth / window.innerHeight, 0.1, 100
+  38,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  100
 );
-camera.position.set(0, 0.5, 4.5);
 
+camera.position.set(0, 0.4, 4.5);
+
+// Renderer
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
   alpha: false,
@@ -146,10 +189,13 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.15;
+
 viewer.appendChild(renderer.domElement);
 
-// Lightweight atmospheric lighting
-scene.add(new THREE.HemisphereLight(0xbdeaff, 0x101020, 2.0));
+// Lighting
+scene.add(
+  new THREE.HemisphereLight(0xbdeaff, 0x101020, 2.0)
+);
 
 const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
 keyLight.position.set(3, 5, 4);
@@ -163,7 +209,9 @@ const rimLight = new THREE.PointLight(0x00eaff, 35, 15);
 rimLight.position.set(-3, 2, -2);
 scene.add(rimLight);
 
+// Camera controls
 const controls = new OrbitControls(camera, renderer.domElement);
+
 controls.enableDamping = true;
 controls.dampingFactor = 0.07;
 controls.enablePan = false;
@@ -190,96 +238,121 @@ controls.addEventListener("start", () => {
 
 controls.addEventListener("end", () => {
   clearTimeout(idleTimer);
+
   idleTimer = setTimeout(() => {
-    if (!userPaused) controls.autoRotate = true;
+    if (!userPaused) {
+      controls.autoRotate = true;
+    }
   }, 2500);
 });
 
 spinButton.addEventListener("click", () => {
   userPaused = !userPaused;
+
   clearTimeout(idleTimer);
   controls.autoRotate = !userPaused;
+
   updateSpinButton();
 });
 
+// Reset camera
+resetButton.addEventListener("click", () => {
+  controls.reset();
+  clearTimeout(idleTimer);
+
+  if (!userPaused) {
+    controls.autoRotate = true;
+  }
+});
+
+// Load character
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 
 loader.load(
   "./shadow-hunter.glb",
+
   (gltf) => {
     const model = gltf.scene;
-     const meshNames = [];
 
-       model.traverse((obj) => {
-         if (obj.isMesh) {
-         meshNames.push(obj.name || "(unnamed mesh)");
-       }
-     });
+    // Inspect character meshes once
+    const meshNames = [];
 
-        console.log("Character meshes:", meshNames);
+    model.traverse((obj) => {
+      if (obj.isMesh) {
+        meshNames.push(obj.name || "(unnamed mesh)");
+      }
+    });
 
-        status.textContent =
-         "Found " + meshNames.length + " mesh(es): " +
-        meshNames.slice(0, 8).join(", ");
-    // Center and fit the character
+    console.log("Character meshes:", meshNames);
+
+    // Center the model
     const bounds = new THREE.Box3().setFromObject(model);
     const size = bounds.getSize(new THREE.Vector3());
     const center = bounds.getCenter(new THREE.Vector3());
 
     model.position.sub(center);
 
+    // Fit character in viewer
     const largest = Math.max(size.x, size.y, size.z);
-    if (largest > 0) model.scale.multiplyScalar(2.5 / largest);
+
+    if (largest > 0) {
+      model.scale.multiplyScalar(2.5 / largest);
+    }
 
     scene.add(model);
 
+    // Set initial camera view
     controls.target.set(0, 0, 0);
     camera.position.set(0, 0.4, 4.5);
+
     controls.update();
     controls.saveState();
 
+    // Show mesh information on screen
+    status.style.whiteSpace = "pre-wrap";
+    status.style.overflowWrap = "anywhere";
 
-const meshNames = [];
-
-model.traverse((obj) => {
-  if (obj.isMesh) {
-    meshNames.push(obj.name || "(unnamed mesh)");
-  }
-});
-
-status.style.whiteSpace = "pre-wrap";
-status.style.overflowWrap = "anywhere";
-status.textContent =
-  "CHARACTER ONLINE\n" +
-  "Meshes: " + meshNames.length + "\n" +
-  meshNames.slice(0, 12).join("\n");
-
+    status.textContent =
+      "CHARACTER ONLINE\n" +
+      "Meshes: " + meshNames.length + "\n" +
+      (meshNames.length > 0
+        ? meshNames.slice(0, 12).join("\n")
+        : "No mesh objects found");
   },
+
   (event) => {
     if (event.total > 0) {
-      const percent = Math.round(event.loaded / event.total * 100);
-      status.textContent = "Loading character... " + percent + "%";
+      const percent = Math.round(
+        (event.loaded / event.total) * 100
+      );
+
+      status.textContent =
+        "Loading character... " + percent + "%";
     }
   },
+
   (error) => {
     console.error("GLB loading error:", error);
-    status.textContent = "Model failed to load. Refresh to retry.";
+
+    status.textContent =
+      "MODEL FAILED TO LOAD\n" +
+      "Check that shadow-hunter.glb exists in the repository, then refresh.";
   }
 );
 
-resetButton.addEventListener("click", () => {
-  controls.reset();
-  clearTimeout(idleTimer);
-  if (!userPaused) controls.autoRotate = true;
-});
-
+// Resize viewer
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
 });
 
+// Animation loop
 renderer.setAnimationLoop(() => {
   controls.update();
   renderer.render(scene, camera);
@@ -287,5 +360,6 @@ renderer.setAnimationLoop(() => {
 
 updateSpinButton();
 </script>
+
 </body>
 </html>
