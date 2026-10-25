@@ -209,7 +209,19 @@ loader.load(
   "./shadow-hunter.glb",
   (gltf) => {
     const model = gltf.scene;
+     const meshNames = [];
 
+       model.traverse((obj) => {
+         if (obj.isMesh) {
+         meshNames.push(obj.name || "(unnamed mesh)");
+       }
+     });
+
+        console.log("Character meshes:", meshNames);
+
+        status.textContent =
+         "Found " + meshNames.length + " mesh(es): " +
+        meshNames.slice(0, 8).join(", ");
     // Center and fit the character
     const bounds = new THREE.Box3().setFromObject(model);
     const size = bounds.getSize(new THREE.Vector3());
