@@ -239,7 +239,22 @@ loader.load(
     controls.update();
     controls.saveState();
 
-    status.textContent = "◆ CHARACTER ONLINE";
+
+const meshNames = [];
+
+model.traverse((obj) => {
+  if (obj.isMesh) {
+    meshNames.push(obj.name || "(unnamed mesh)");
+  }
+});
+
+status.style.whiteSpace = "pre-wrap";
+status.style.overflowWrap = "anywhere";
+status.textContent =
+  "CHARACTER ONLINE\n" +
+  "Meshes: " + meshNames.length + "\n" +
+  meshNames.slice(0, 12).join("\n");
+
   },
   (event) => {
     if (event.total > 0) {
