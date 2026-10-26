@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Content Tracker</title>
+<title>Shadow Hunter · Content Tracker</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -145,6 +145,29 @@ button.sec{background:var(--glass2);color:var(--txt);border:1px solid var(--glas
 @media(min-width:700px){.pcard{grid-template-columns:200px 1fr}.avframe{width:200px}.pcard.levelup::after{left:100px}}
 @media(max-width:600px){.draft{flex-direction:column}.draft>img{width:100%;max-height:200px}.row>*{min-width:100px}}
 @media(prefers-reduced-motion:reduce){.welcome,.slits i{animation-duration:.01s;animation-delay:1.2s}.bar i,.bgfx i{animation:none}.toast{animation-duration:.01s;animation-delay:2.6s}.view.on,.view.on>.card{animation:none}}
+
+/* Shadow Hunter v10 — Home dashboard enhancement */
+.sh-home{position:relative;overflow:hidden;margin-bottom:14px;padding:20px;border:1px solid rgba(95,220,255,.28);border-radius:22px;background:radial-gradient(ellipse at 90% 0%,rgba(100,65,255,.24),transparent 44%),linear-gradient(135deg,rgba(9,23,55,.96),rgba(12,10,38,.96));box-shadow:0 14px 36px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.06)}
+.sh-home:after{content:"";position:absolute;right:-65px;top:-95px;width:230px;height:230px;border:1px solid rgba(84,218,255,.14);border-radius:50%;box-shadow:0 0 0 24px rgba(84,218,255,.025),0 0 0 48px rgba(84,218,255,.02);pointer-events:none}
+.sh-eyebrow{display:flex;align-items:center;gap:8px;color:#70e5ff;font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.sh-live{width:7px;height:7px;border-radius:50%;background:#65f2bd;box-shadow:0 0 12px #65f2bd}
+.sh-home h1{position:relative;z-index:1;margin:10px 0 5px;font-size:clamp(1.45rem,4vw,2.2rem);line-height:1.12;letter-spacing:-.035em}
+.sh-subtitle{color:var(--mut);font-size:.9rem;line-height:1.5;max-width:520px}
+.sh-homegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:18px;position:relative;z-index:1}
+.sh-home-stat{min-width:0;padding:12px;border:1px solid rgba(143,171,255,.15);border-radius:14px;background:rgba(4,10,30,.42)}
+.sh-home-stat span{display:block;color:var(--mut);font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.sh-home-stat b{display:block;margin-top:5px;color:var(--txt);font-size:1.35rem;line-height:1.1;overflow-wrap:anywhere}
+.sh-home-stat small{display:block;margin-top:5px;color:var(--mut);font-size:.72rem}
+.sh-home-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;position:relative;z-index:1}
+.sh-home-progress{flex:1;min-width:0}
+.sh-home-progresshead{display:flex;justify-content:space-between;gap:8px;margin-bottom:7px;color:var(--mut);font-size:.76rem}
+.sh-home-progresshead b{color:var(--txt)}
+.sh-home-track{height:7px;overflow:hidden;border-radius:99px;background:rgba(135,157,207,.2)}
+.sh-home-track i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#49d9ff,#8c72ff);box-shadow:0 0 12px rgba(73,217,255,.4);transition:width .5s ease}
+.sh-home-action{flex-shrink:0;min-height:40px;padding:10px 13px;border:1px solid rgba(104,224,255,.32);border-radius:12px;background:rgba(42,111,164,.2);color:#8deaff;font-weight:800;font-size:.78rem}
+.sh-home-action:active{transform:scale(.98)}
+@media(max-width:520px){.sh-home{padding:16px;border-radius:18px}.sh-homegrid{gap:7px}.sh-home-stat{padding:10px 8px}.sh-home-stat b{font-size:1.15rem}.sh-home-stat span{font-size:.61rem}.sh-home-bottom{align-items:stretch;flex-direction:column}.sh-home-action{width:100%}}
+
 </style>
 </head>
 <body>
@@ -178,6 +201,23 @@ button.sec{background:var(--glass2);color:var(--txt);border:1px solid var(--glas
   <nav class="tabs" id="tabs"><button class="tab on" data-v="overview" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg><span class="lbl">Home</span></button><button class="tab" data-v="quests" aria-label="Quests" title="Quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.6 1.6L7 5M3 12l1.6 1.6L7 11M3 18l1.6 1.6L7 17"/></svg><span class="lbl">Quests</span></button><button class="tab" data-v="add" aria-label="Add quest" title="Add quest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lbl">Add</span></button><button class="tab" data-v="album" aria-label="Album" title="Album"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg><span class="lbl">Album</span></button><button class="tab" data-v="reports" aria-label="Reports" title="Reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-7M2 20h20"/></svg><span class="lbl">Reports</span></button><button class="tab" data-v="hunter" aria-label="Hunter and shop" title="Hunter and shop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.6-3.2 7.8-8 9-4.8-1.2-8-4.4-8-9V6z"/><circle cx="12" cy="10" r="2.6"/><path d="M7.6 17c1-2.4 2.8-3.4 4.4-3.4s3.4 1 4.4 3.4"/></svg><span class="lbl">Hunter</span></button></nav>
 
   <section class="view on" id="v-overview">
+    <div class="sh-home">
+      <div class="sh-eyebrow"><i class="sh-live"></i> SHADOW HUNTER · SYSTEM ONLINE</div>
+      <h1 id="shGreeting">Welcome back, Hunter.</h1>
+      <div class="sh-subtitle" id="shDate">Your real-world missions build your Hunter progression. One quest at a time.</div>
+      <div class="sh-homegrid">
+        <div class="sh-home-stat"><span>Daily quests</span><b id="shQuestCount">—</b><small id="shQuestHint">Loading missions</small></div>
+        <div class="sh-home-stat"><span>Cleared today</span><b id="shDoneCount">—</b><small id="shDoneHint">Completed or published</small></div>
+        <div class="sh-home-stat"><span>Still open</span><b id="shOpenCount">—</b><small id="shOpenHint">Missions remaining</small></div>
+      </div>
+      <div class="sh-home-bottom">
+        <div class="sh-home-progress">
+          <div class="sh-home-progresshead"><span>DAILY MISSION PROGRESS</span><b id="shProgressText">0%</b></div>
+          <div class="sh-home-track" role="progressbar" aria-label="Daily mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="shProgressBar"><i id="shProgressFill"></i></div>
+        </div>
+        <button class="sh-home-action" onclick="showView('quests')">OPEN QUEST LOG →</button>
+      </div>
+    </div>
     <div class="card pcard" id="pcard">
     <div class="avframe" id="avframe"><div class="pframe hide" id="pframe"><img id="pimg" alt="Your uploaded portrait"></div><svg id="avBust" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Your hunter avatar"></svg></div>
     <div class="pinfo">
@@ -607,6 +647,18 @@ async function loadStats(){
   $('badges').innerHTML = SK.map(([on, n, d]) => `<div class="skill ${on ? 'on' : ''}"><span class="hex" aria-hidden="true"></span><div><b>${n}</b><small>${d}</small></div><em>${on ? 'Unlocked' : 'Locked'}</em></div>`).join('');
   $('risk').innerHTML = streak > 0 && !done[today()] ? `<div class="warn"><span><b>Streak at risk.</b> Clear one quest today to keep your ${streak}-day streak.</span><button onclick="showView('add')">Add quest</button></div>` : '';
   const tdy = rows.filter(t => t.task_date === today()), cleared = tdy.filter(t => DONE.includes(t.status)).length;
+  const openCount = tdy.length - cleared, pct = tdy.length ? Math.round(cleared / tdy.length * 100) : 0;
+  $('shGreeting').textContent = `Welcome back, ${profile.name || 'Hunter'}.`;
+  $('shDate').textContent = new Date().toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'}) + ' · Your real-world missions build your Hunter progression.';
+  $('shQuestCount').textContent = tdy.length;
+  $('shQuestHint').textContent = tdy.length ? 'Missions scheduled today' : 'No missions added yet';
+  $('shDoneCount').textContent = cleared;
+  $('shDoneHint').textContent = cleared ? 'Progress is being made' : 'Your first clear awaits';
+  $('shOpenCount').textContent = openCount;
+  $('shOpenHint').textContent = openCount ? 'Missions remaining' : (tdy.length ? 'Daily missions cleared' : 'Ready when you are');
+  $('shProgressText').textContent = pct + '%';
+  $('shProgressFill').style.width = pct + '%';
+  $('shProgressBar').setAttribute('aria-valuenow', String(pct));
   $('tiles').innerHTML = [[tdy.length, 'Quests today'], [cleared, 'Cleared'], [tdy.filter(t => t.status === 'scheduled').length, 'Scheduled, not yet confirmed'], [tdy.length - cleared, 'Still open']].map(([n, l]) => `<div class="tile"><b>${n}</b>${l}</div>`).join('');
   const nowM = mins(nowHM()), openQ = tdy.filter(t => !DONE.includes(t.status)).sort((a, b) => (a.scheduled_time || '99:99').localeCompare(b.scheduled_time || '99:99'));
   const nq = openQ.find(t => t.scheduled_time && mins(t.scheduled_time.slice(0, 5)) >= nowM) || openQ[0];
