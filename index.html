@@ -79,7 +79,7 @@ button.sec{background:var(--glass2);color:var(--txt);border:1px solid var(--glas
 .drop{border:1.5px dashed var(--glassb);border-radius:18px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}
 .pvq{border:1px solid var(--glassb);border-left:4px solid var(--aura);border-radius:16px;padding:12px;background:var(--glass2)}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:12px;margin-top:8px}
 .qimg{display:block;max-width:100%;max-height:200px;border-radius:12px;margin-top:6px;cursor:zoom-in}.pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
-.draft{display:flex;gap:10px;border:1px solid var(--glassb);border-radius:18px;padding:10px;margin-top:8px;background:var(--glass2);animation:rise .35s both}.draft>img{width:92px;max-height:130px;object-fit:cover;border-radius:12px;flex:none;align-self:flex-start;cursor:zoom-in}
+.draft{display:flex;gap:10px;border:1px solid var(--glassb);border-radius:18px;padding:10px;margin-top:8px;background:var(--glass2);animation:rise .35s both}.draft>img{width:112px;max-height:130px;object-fit:cover;border-radius:12px;flex:none;align-self:flex-start;cursor:zoom-in}
 .draft .f{flex:1;min-width:0}.draft input,.draft select{padding:8px 10px;margin:2px 0;font-size:15px}.draft .row>*{min-width:90px}.draft label{flex:none}.draft input[type=checkbox]{width:20px;height:20px;margin:6px 0 0}
 .lnkrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:14px}.lnkrow button{padding:5px 12px;margin:0;min-height:36px}.fbf{display:block;width:100%;height:520px;border:0;border-radius:14px;margin-top:8px;background:#fff}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}@media(min-width:700px){.grid{grid-template-columns:repeat(5,1fr)}}.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;cursor:zoom-in;background:var(--inp)}
@@ -790,13 +790,35 @@ function findMarkers(words){
     p.hm === m.hm && Math.abs(p.x0 - m.x0) < 35 && Math.abs(p.y0 - m.y0) < 14
   ));
 }
+function findDayHeaders(words, sc){
+  const names = {sun:'sunday',mon:'monday',tue:'tuesday',wed:'wednesday',thu:'thursday',fri:'friday',sat:'saturday'};
+  const headers = [];
+  words.forEach((w, i) => {
+    const label = (w.text || '').toLowerCase().replace(/[^a-z]/g, '');
+    const wd = Object.keys(names).find(d => label === d || label === names[d]);
+    if (!wd || !w.bbox) return;
+    const candidates = words.map((n, j) => {
+      if (j === i || !n.bbox || !/^\d{1,2}$/.test((n.text || '').trim())) return null;
+      const dx = n.bbox.x0 - w.bbox.x1;
+      const dy = Math.abs((n.bbox.y0+n.bbox.y1)/2 - (w.bbox.y0+w.bbox.y1)/2);
+      const dn = +n.text;
+      return dx >= -8 && dx < 150 && dy < 45 && dn >= 1 && dn <= 31
+        ? {dn, score:Math.abs(dx) + dy*2, x:(w.bbox.x0+n.bbox.x1)/2/sc} : null;
+    }).filter(Boolean).sort((a,b)=>a.score-b.score);
+    if (!candidates.length) return;
+    const hit = candidates[0], date = wdDate(wd, hit.dn);
+    if (date) headers.push({x:hit.x, date});
+  });
+  return headers.filter((h,i,a)=>!a.slice(0,i).some(p=>p.date===h.date && Math.abs(p.x-h.x)<30));
+}
 function loadImg(file){ return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('Could not open the image')); im.src = URL.createObjectURL(file); }); }
 function crop(img, sx, sy, sw, sh, maxW){ const k = Math.min(1, maxW / sw), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(sw * k)); c.height = Math.max(1, Math.round(sh * k)); c.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', .7); }
 async function readOne(file, prog){
   const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight, sc = W < 700 ? 3 : 1;
   const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
   const r = await Tesseract.recognize(c, 'eng', {logger: m => { if (m.status === 'recognizing text') prog(Math.round(m.progress * 100)); }});
-  const text = r.data.text || '', mk = findMarkers(r.data.words || []), base = {on:true, status:'scheduled', cat:'posting'};
+  const text = r.data.text || '', words = r.data.words || [], mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting'};
+  const headers = findDayHeaders(words, sc);
   const dm = text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s*(\d{1,2})\b/i), day = (dm && wdDate(dm[1], +dm[2])) || $('day').value || today();
   if (mk.length >= 2) { // one image crop per detected calendar post
     const pts = mk.map(m => ({...m, x:m.x0 / sc, y:m.y0 / sc}));
@@ -815,14 +837,15 @@ async function readOne(file, prog){
     const median = a => a.length ? a[Math.floor(a.length/2)] : null;
     const colStep = median(colGaps), rowStep = median(rowGaps);
     return pts.map(m => {
-      const colIndex = cols.reduce((best,v,i) => Math.abs(v-m.x) < Math.abs(cols[best]-m.x) ? i : best, 0);
+      const nearestHeader = headers.length ? headers.reduce((best,h) => Math.abs(h.x-m.x) < Math.abs(best.x-m.x) ? h : best, headers[0]) : null;
+      const questDay = nearestHeader ? nearestHeader.date : day;
       const left = colStep ? Math.max(0, m.x - 8) : 0;
       const width = Math.min(W-left, colStep ? colStep * .90 : W * .92);
       // The time label sits above the post preview. Crop the preview itself,
       // rather than a full-width strip containing neighboring calendar cards.
       const top = Math.max(0, m.y + 22);
       const thumbH = Math.min(rowStep ? rowStep * .58 : width * .56, width * .62, H-top);
-      return {...base, title:'Scheduled post ' + fmt12(m.hm), date:day, time:m.hm,
+      return {...base, title:'Scheduled post ' + fmt12(m.hm), date:questDay, time:m.hm,
         thumb:crop(img, left, top, Math.max(1,width), Math.max(1,thumbH), 640)};
     });
   }
