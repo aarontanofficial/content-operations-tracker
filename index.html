@@ -774,16 +774,21 @@ function parseText(text){
   return out;
 }
 function findMarkers(words){
-  let out = [];
+  const out = [];
   words.forEach((w, i) => {
-    const tx = (w.text || '').trim(); if (!/^\d{1,2}[:.]\d{2}([AaPp][Mm]?)?$/.test(tx)) return;
-    const nx = (words[i + 1]?.text || '').trim(), s = /[AaPp]/.test(tx) ? tx : (/^[AaPp][Mm]?$/.test(nx) ? tx + nx : null); if (!s) return;
-    const hm = timeOf(s); if (hm && w.bbox) out.push({hm, x0:w.bbox.x0, y0:w.bbox.y0});
+    const tx = (w.text || '').trim();
+    if (!/^\d{1,2}[:.]\d{2}([AaPp][Mm]?)?$/.test(tx)) return;
+    const nx = (words[i + 1]?.text || '').trim();
+    const stamp = /[AaPp]/.test(tx) ? tx : (/^[AaPp][Mm]?$/.test(nx) ? tx + nx : null);
+    if (!stamp) return;
+    const hm = timeOf(stamp);
+    if (hm && w.bbox) out.push({hm, x0:w.bbox.x0, y0:w.bbox.y0});
   });
-  out.sort((a, b) => a.y0 - b.y0); out = out.filter((m, i) => !i || m.y0 - out[i - 1].y0 > 12);
-  if (out.length < 2) return out;
-  const xs = out.map(m => m.x0).sort((a, b) => a - b), med = xs[xs.length >> 1];
-  return out.filter(m => Math.abs(m.x0 - med) < 60);
+  // Keep markers from every calendar column, not just the middle column.
+  out.sort((a, b) => a.y0 - b.y0 || a.x0 - b.x0);
+  return out.filter((m, i) => !out.slice(0, i).some(p =>
+    p.hm === m.hm && Math.abs(p.x0 - m.x0) < 35 && Math.abs(p.y0 - m.y0) < 14
+  ));
 }
 function loadImg(file){ return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('Could not open the image')); im.src = URL.createObjectURL(file); }); }
 function crop(img, sx, sy, sw, sh, maxW){ const k = Math.min(1, maxW / sw), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(sw * k)); c.height = Math.max(1, Math.round(sh * k)); c.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', .7); }
@@ -793,10 +798,33 @@ async function readOne(file, prog){
   const r = await Tesseract.recognize(c, 'eng', {logger: m => { if (m.status === 'recognizing text') prog(Math.round(m.progress * 100)); }});
   const text = r.data.text || '', mk = findMarkers(r.data.words || []), base = {on:true, status:'scheduled', cat:'posting'};
   const dm = text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s*(\d{1,2})\b/i), day = (dm && wdDate(dm[1], +dm[2])) || $('day').value || today();
-  if (mk.length >= 2) { // calendar column: one quest per time label
-    const gap = (mk[mk.length - 1].y0 - mk[0].y0) / (mk.length - 1) / sc;
-    return mk.map((m, i) => { const top = Math.max(0, m.y0 / sc - 3), bot = Math.min(H, i < mk.length - 1 ? mk[i + 1].y0 / sc - 3 : top + gap);
-      return {...base, title:'Scheduled post ' + fmt12(m.hm), date:day, time:m.hm, thumb:crop(img, 0, top, W, Math.max(12, bot - top), 480)}; });
+  if (mk.length >= 2) { // one image crop per detected calendar post
+    const pts = mk.map(m => ({...m, x:m.x0 / sc, y:m.y0 / sc}));
+    const cluster = (values, tolerance) => {
+      const sorted = [...values].sort((a,b) => a-b), groups = [];
+      sorted.forEach(v => {
+        const g = groups[groups.length - 1];
+        if (!g || v - g[g.length - 1] > tolerance) groups.push([v]); else g.push(v);
+      });
+      return groups.map(g => g.reduce((a,b) => a+b,0) / g.length);
+    };
+    const cols = cluster(pts.map(p => p.x), Math.max(45, W * .035));
+    const rows = cluster(pts.map(p => p.y), Math.max(35, H * .045));
+    const colGaps = cols.slice(1).map((v,i) => v - cols[i]).filter(v => v > 60).sort((a,b)=>a-b);
+    const rowGaps = rows.slice(1).map((v,i) => v - rows[i]).filter(v => v > 45).sort((a,b)=>a-b);
+    const median = a => a.length ? a[Math.floor(a.length/2)] : null;
+    const colStep = median(colGaps), rowStep = median(rowGaps);
+    return pts.map(m => {
+      const colIndex = cols.reduce((best,v,i) => Math.abs(v-m.x) < Math.abs(cols[best]-m.x) ? i : best, 0);
+      const left = colStep ? Math.max(0, m.x - 8) : 0;
+      const width = Math.min(W-left, colStep ? colStep * .90 : W * .92);
+      // The time label sits above the post preview. Crop the preview itself,
+      // rather than a full-width strip containing neighboring calendar cards.
+      const top = Math.max(0, m.y + 22);
+      const thumbH = Math.min(rowStep ? rowStep * .58 : width * .56, width * .62, H-top);
+      return {...base, title:'Scheduled post ' + fmt12(m.hm), date:day, time:m.hm,
+        thumb:crop(img, left, top, Math.max(1,width), Math.max(1,thumbH), 640)};
+    });
   }
   const p = parseText(text);
   return [{...base, title:p.title || '', date:p.date || day, time:p.time || '', cat:p.cat, status:p.status, url:p.url || '', postId:p.postId || '', notes:p.notes || '', est:p.est || '', thumb:crop(img, 0, 0, W, H, 640)}];
