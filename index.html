@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Shadow Hunter · Content Tracker</title>
+<title>Content Operations Manager · Shadow Hunter</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -237,8 +237,21 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
   <nav class="tabs" id="tabs"><button class="tab on" data-v="overview" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg><span class="lbl">Home</span></button><button class="tab" data-v="quests" aria-label="Quests" title="Quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.6 1.6L7 5M3 12l1.6 1.6L7 11M3 18l1.6 1.6L7 17"/></svg><span class="lbl">Quests</span></button><button class="tab" data-v="add" aria-label="Add quest" title="Add quest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lbl">Add</span></button><button class="tab" data-v="album" aria-label="Album" title="Album"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg><span class="lbl">Album</span></button><button class="tab" data-v="reports" aria-label="Reports" title="Reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-7M2 20h20"/></svg><span class="lbl">Reports</span></button><button class="tab" data-v="hunter" aria-label="Hunter and shop" title="Hunter and shop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.6-3.2 7.8-8 9-4.8-1.2-8-4.4-8-9V6z"/><circle cx="12" cy="10" r="2.6"/><path d="M7.6 17c1-2.4 2.8-3.4 4.4-3.4s3.4 1 4.4 3.4"/></svg><span class="lbl">Hunter</span></button></nav>
 
   <section class="view on" id="v-overview">
+    <section class="ops-cockpit" id="opsCockpit">
+      <div class="ops-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS · COMMAND CENTER</div><h2>Operations overview</h2><p class="meta">A manager-first view of the publishing pipeline and workload.</p></div><button class="sec" onclick="showView('reports')">Open reports →</button></div>
+      <div class="ops-kpis">
+        <div class="ops-kpi"><span>In pipeline</span><b id="opsPipeline">—</b><small>Prepared + scheduled</small></div>
+        <div class="ops-kpi"><span>Published</span><b id="opsPublished">—</b><small>Confirmed posts</small></div>
+        <div class="ops-kpi"><span>Needs attention</span><b id="opsAttention">—</b><small>Overdue + pending</small></div>
+        <div class="ops-kpi"><span>Completion rate</span><b id="opsRate">—</b><small>All tracked tasks</small></div>
+      </div>
+      <div class="ops-panels">
+        <div class="card"><h3>Publishing pipeline</h3><div id="opsPipelineBars" class="ops-bars"><p class="meta">Loading workflow data…</p></div></div>
+        <div class="card"><h3>Manager's attention list</h3><div id="opsAlerts" class="ops-alerts"><p class="meta">Loading priorities…</p></div></div>
+      </div>
+    </section>
     <div class="sh-home">
-      <div class="sh-eyebrow"><i class="sh-live"></i> SHADOW HUNTER · SYSTEM ONLINE</div>
+      <div class="sh-eyebrow"><i class="sh-live"></i> CONTENT OPERATIONS · COMMAND CENTER ONLINE</div>
       <h1 id="shGreeting">Welcome back, Hunter.</h1>
       <div class="sh-subtitle" id="shDate">Your real-world missions build your Hunter progression. One quest at a time.</div>
       <div class="sh-homegrid">
@@ -254,19 +267,6 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
         <button class="sh-home-action" onclick="showView('quests')">OPEN QUEST LOG →</button>
       </div>
     </div>
-    <section class="ops-cockpit" id="opsCockpit">
-      <div class="ops-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS · COMMAND CENTER</div><h2>Operations overview</h2><p class="meta">A manager-first view of the publishing pipeline and workload.</p></div><button class="sec" onclick="showView('reports')">Open reports →</button></div>
-      <div class="ops-kpis">
-        <div class="ops-kpi"><span>In pipeline</span><b id="opsPipeline">—</b><small>Prepared + scheduled</small></div>
-        <div class="ops-kpi"><span>Published</span><b id="opsPublished">—</b><small>Confirmed posts</small></div>
-        <div class="ops-kpi"><span>Needs attention</span><b id="opsAttention">—</b><small>Overdue + pending</small></div>
-        <div class="ops-kpi"><span>Completion rate</span><b id="opsRate">—</b><small>All tracked tasks</small></div>
-      </div>
-      <div class="ops-panels">
-        <div class="card"><h3>Publishing pipeline</h3><div id="opsPipelineBars" class="ops-bars"><p class="meta">Loading workflow data…</p></div></div>
-        <div class="card"><h3>Manager's attention list</h3><div id="opsAlerts" class="ops-alerts"><p class="meta">Loading priorities…</p></div></div>
-      </div>
-    </section>
     <div class="card pcard" id="pcard">
     <div class="avframe" id="avframe"><div class="pframe hide" id="pframe"><img id="pimg" alt="Your uploaded portrait"></div><svg id="avBust" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Your hunter avatar"></svg></div>
     <div class="pinfo">
