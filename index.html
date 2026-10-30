@@ -201,6 +201,9 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
 
 /* Hunter RPG armory */
 .armory-hero{display:flex;justify-content:space-between;align-items:center;gap:14px;background:radial-gradient(circle at 90% 20%,rgba(70,130,255,.22),transparent 42%),var(--glass)}.armory-hero h2{font-size:22px;margin:5px 0}.armory-gold{min-width:104px;text-align:center;padding:12px;border:1px solid var(--glassb);border-radius:18px;background:var(--glass2)}.armory-gold b{display:block;font-size:25px}.armory-gold small{display:block;font-size:10px;letter-spacing:.12em;color:var(--mut)}.armory-slots{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gear-slot{margin-bottom:14px}.gear-icon{font-size:30px;margin-bottom:6px}.gear-slot b,.gear-slot small{display:block}.gear-slot small{color:var(--mut);margin-top:4px}.arm-attributes{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.arm-attr{padding:10px;border:1px solid var(--glassb);border-radius:14px;background:var(--glass2)}.arm-attr span{display:block;color:var(--mut);font-size:12px}.arm-attr b{font-size:22px}.arm-skills{display:grid;gap:8px}.arm-skill{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--glassb);border-radius:14px;background:var(--glass2)}.arm-skill .si{font-size:23px}.arm-skill small{display:block;color:var(--mut)}.arm-skill .locked{color:var(--mut)}.gear-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.gear-item{padding:12px;border:1px solid var(--glassb);border-radius:16px;background:var(--glass2);min-width:0}.gear-item .gi{font-size:27px}.gear-item b{display:block;margin:4px 0}.gear-item small{display:block;color:var(--mut);min-height:34px}.gear-item button{width:100%;margin-top:8px;padding:8px;font-size:13px;min-height:38px}.gear-item.equipped{border-color:var(--aura);box-shadow:0 0 0 1px var(--aura),0 0 20px rgba(90,130,255,.15)}.gear-rarity{font-size:10px!important;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)!important;min-height:0!important}@media(max-width:420px){.armory-hero{align-items:flex-start}.gear-grid{grid-template-columns:1fr 1fr}.gear-item{padding:9px}.gear-item button{font-size:12px}}
+
+/* Manager-first content operations cockpit */
+.ops-cockpit{margin:0 0 16px}.ops-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 2px 12px}.ops-head h2{margin:4px 0;font-size:23px}.ops-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}.ops-kpi{padding:14px;border:1px solid var(--glassb);border-radius:16px;background:linear-gradient(145deg,var(--glass),var(--glass2));box-shadow:var(--sh)}.ops-kpi span,.ops-kpi small{display:block;color:var(--mut);font-size:12px}.ops-kpi b{display:block;font-size:27px;margin:5px 0}.ops-panels{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ops-panels .card{margin:0}.ops-panels h3{margin:0 0 14px}.ops-bars{display:grid;gap:12px}.ops-bar-row{display:grid;grid-template-columns:82px 1fr 26px;align-items:center;gap:8px;font-size:12px}.ops-bar-track{height:9px;border-radius:99px;background:var(--glass2);overflow:hidden}.ops-bar-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--o1),var(--o3))}.ops-alerts{display:grid;gap:8px}.ops-alert{display:grid;grid-template-columns:80px 1fr;gap:4px 8px;padding:10px;border:1px solid var(--glassb);border-radius:12px;background:var(--glass2)}.ops-alert b{font-size:11px;text-transform:uppercase;letter-spacing:.06em}.ops-alert span{font-size:13px}.ops-alert small{grid-column:2;color:var(--mut)}.ops-alert.danger b{color:#ff7c8d}.ops-alert.warn b{color:#ffc76b}.ops-alert.good b{color:#61dfb0}.ops-alert.info b{color:#69caff}.model-frame-wrap{height:min(72vh,720px);min-height:480px;overflow:hidden;border:1px solid var(--glassb);border-radius:16px;background:#030711}.model-frame-wrap iframe{width:100%;height:100%;border:0;display:block}@media(max-width:760px){.ops-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ops-panels{grid-template-columns:1fr}.ops-head{align-items:flex-start;flex-direction:column}.model-frame-wrap{height:68vh;min-height:430px}}
 </style>
 </head>
 <body>
@@ -251,6 +254,19 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
         <button class="sh-home-action" onclick="showView('quests')">OPEN QUEST LOG →</button>
       </div>
     </div>
+    <section class="ops-cockpit" id="opsCockpit">
+      <div class="ops-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS · COMMAND CENTER</div><h2>Operations overview</h2><p class="meta">A manager-first view of the publishing pipeline and workload.</p></div><button class="sec" onclick="showView('reports')">Open reports →</button></div>
+      <div class="ops-kpis">
+        <div class="ops-kpi"><span>In pipeline</span><b id="opsPipeline">—</b><small>Prepared + scheduled</small></div>
+        <div class="ops-kpi"><span>Published</span><b id="opsPublished">—</b><small>Confirmed posts</small></div>
+        <div class="ops-kpi"><span>Needs attention</span><b id="opsAttention">—</b><small>Overdue + pending</small></div>
+        <div class="ops-kpi"><span>Completion rate</span><b id="opsRate">—</b><small>All tracked tasks</small></div>
+      </div>
+      <div class="ops-panels">
+        <div class="card"><h3>Publishing pipeline</h3><div id="opsPipelineBars" class="ops-bars"><p class="meta">Loading workflow data…</p></div></div>
+        <div class="card"><h3>Manager's attention list</h3><div id="opsAlerts" class="ops-alerts"><p class="meta">Loading priorities…</p></div></div>
+      </div>
+    </section>
     <div class="card pcard" id="pcard">
     <div class="avframe" id="avframe"><div class="pframe hide" id="pframe"><img id="pimg" alt="Your uploaded portrait"></div><svg id="avBust" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Your hunter avatar"></svg></div>
     <div class="pinfo">
@@ -334,7 +350,7 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
   </section>
 
   <section class="view" id="v-hunter">
-    <div class="seg" id="hseg" role="tablist" aria-label="Hunter sections"><button class="on" data-s="profile" role="tab" aria-selected="true">Profile</button><button data-s="forms" role="tab" aria-selected="false">Forms</button><button data-s="custom" role="tab" aria-selected="false">Customize</button><button data-s="armory" role="tab" aria-selected="false">Armory</button></div>
+    <div class="seg" id="hseg" role="tablist" aria-label="Hunter sections"><button class="on" data-s="profile" role="tab" aria-selected="true">Profile</button><button data-s="forms" role="tab" aria-selected="false">Forms</button><button data-s="custom" role="tab" aria-selected="false">Customize</button><button data-s="armory" role="tab" aria-selected="false">Armory</button><button data-s="model" role="tab" aria-selected="false">3D Model</button></div>
 
     <div class="sub on" id="s-profile">
       <div class="warn hide" id="dbNote"><span><b>Saved on this device only.</b> Your database has no avatar columns yet. Run the one-time update to sync across devices.</span><button onclick="copySql()">Copy SQL</button></div>
@@ -372,6 +388,13 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
       <p class="meta">Free items are marked Free. Others cost gold, earned by clearing quests. Items marked Lv unlock at that level. Changes save automatically.</p>
     </div>
 
+    <div class="sub" id="s-model">
+      <div class="card"><div class="hn">3D hunter viewer</div><h2>Your character, in three dimensions</h2><p class="meta">Rotate, zoom and inspect your uploaded GLB model. This viewer runs separately from the task manager so the operations dashboard stays fast.</p>
+        <div class="model-frame-wrap"><iframe id="hunter3dFrame" src="shadow-hunter.html" title="Interactive 3D Shadow Hunter character" loading="lazy" allow="fullscreen" referrerpolicy="no-referrer"></iframe></div>
+        <div class="row"><button class="sec" onclick="window.open('shadow-hunter.html','_blank','noopener')">Open full 3D viewer ↗</button><button class="sec" onclick="document.getElementById('hunter3dFrame').src='shadow-hunter.html'">Reload model</button></div>
+      </div>
+      <div class="card"><h3>Equipment sync status</h3><p class="meta">Your Armory loadout and 3D model are currently separate systems. This update improves the 3D viewer and manager workflow without pretending to attach gear to model bones that have not been verified. A later model-specific pass can connect armor and weapons once the GLB mesh and rig names are inspected.</p><button class="sec" onclick="setSub('armory')">Manage equipment →</button></div>
+    </div>
     <div class="sub" id="s-armory">
       <div class="card armory-hero">
         <div><div class="hn">Hunter equipment · loadout</div><h2>Prepare for the next gate</h2><p class="meta">Earn gold from real-world quests. Buy gear, equip your build, and grow your combat rating.</p></div>
@@ -674,9 +697,23 @@ async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('
 /* Game layer: XP, level, streak and gold are computed from your recorded tasks. */
 const rankOf = l => l >= 18 ? 'S' : l >= 12 ? 'A' : l >= 8 ? 'B' : l >= 5 ? 'C' : l >= 3 ? 'D' : 'E';
 function toast(msg){ const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 2500); }
+function renderOpsCockpit(rows){
+ const total=rows.length, count=k=>rows.filter(t=>t.status===k).length, published=count('published'), completed=count('completed'), prepared=count('prepared'), scheduled=count('scheduled'), pending=count('pending'), done=published+completed;
+ const overdue=rows.filter(t=>t.task_date<today()&&!DONE.includes(t.status)), dueSoon=rows.filter(t=>t.task_date>=today()&&t.task_date<=addDays(today(),7)&&['pending','prepared','scheduled'].includes(t.status));
+ const attention=overdue.length+pending;
+ $('opsPipeline').textContent=prepared+scheduled; $('opsPublished').textContent=published; $('opsAttention').textContent=attention; $('opsRate').textContent=(total?Math.round(done/total*100):0)+'%';
+ const stages=[['Pending',pending],['Prepared',prepared],['Scheduled',scheduled],['Published',published],['Completed',completed]], max=Math.max(1,...stages.map(x=>x[1]));
+ $('opsPipelineBars').innerHTML=stages.map(([n,v])=>'<div class="ops-bar-row"><span>'+n+'</span><div class="ops-bar-track"><i style="width:'+Math.round(v/max*100)+'%"></i></div><b>'+v+'</b></div>').join('')+'<p class="meta">'+total+' total tasks tracked</p>';
+ const items=[];
+ overdue.sort((a,b)=>a.task_date.localeCompare(b.task_date)).slice(0,3).forEach(t=>items.push({kind:'Overdue',tone:'danger',title:t.title,date:t.task_date}));
+ if(pending) items.push({kind:'Pending',tone:'warn',title:pending+' task(s) still need preparation',date:'Action required'});
+ if(!items.length&&dueSoon.length) items.push({kind:'Upcoming',tone:'info',title:dueSoon.length+' task(s) scheduled or open in the next 7 days',date:'Plan ahead'});
+ if(!items.length) items.push({kind:'On track',tone:'good',title:'No overdue or pending tasks detected',date:'Keep the pipeline moving'});
+ $('opsAlerts').innerHTML=items.slice(0,5).map(x=>'<div class="ops-alert '+x.tone+'"><b>'+x.kind+'</b><span>'+esc(x.title)+'</span><small>'+esc(x.date)+'</small></div>').join('');
+}
 async function loadStats(){
   const {data} = await sb.from('tasks').select('id,title,task_date,status,scheduled_time,category').limit(5000);
-  const rows = data || []; let xp = 0, pub = 0, perfect = 0; const done = {}, tot = {};
+  const rows = data || []; renderOpsCockpit(rows); let xp = 0, pub = 0, perfect = 0; const done = {}, tot = {};
   rows.forEach(t => { xp += XP[t.status] || 0; tot[t.task_date] = (tot[t.task_date] || 0) + 1; if (DONE.includes(t.status)) done[t.task_date] = (done[t.task_date] || 0) + 1; if (t.status === 'published') pub++; });
   Object.keys(tot).forEach(d => { if (tot[d] >= 3 && done[d] === tot[d]) { perfect++; xp += 25; } });
   let streak = 0, d = done[today()] ? today() : addDays(today(), -1);
@@ -1107,7 +1144,7 @@ function setSub(name){
   document.querySelectorAll('.sub').forEach(e => e.classList.toggle('on', e.id === 's-' + name)); renderHunter();
 }
 function curSub(){ const b = document.querySelector('#hseg button.on'); return b ? b.dataset.s : 'profile'; }
-function renderHunter(){ const s = curSub(); if (s === 'forms') renderForms(); if (s === 'custom') renderCustom(); if (s === 'armory') renderArmory(); }
+function renderHunter(){ const s = curSub(); if (s === 'forms') renderForms(); if (s === 'custom') renderCustom(); if (s === 'armory') renderArmory(); if (s === 'model') { const fr=$('hunter3dFrame'); if(fr && !fr.src) fr.src='shadow-hunter.html'; } }
 function renderForms(){
   const F = FORMS[viewForm - 1], open = userLv >= F.from, act = activeForm() === viewForm, L = lookOf();
   $('stageSvg').innerHTML = fullSVG(L, viewForm, {}); $('stage').classList.toggle('locked', !open); $('stage').style.setProperty('--fc', F.col);
