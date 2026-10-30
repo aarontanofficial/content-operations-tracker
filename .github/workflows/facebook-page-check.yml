@@ -1,0 +1,33 @@
+name: Facebook Page access check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *" # Hourly; GitHub schedules use UTC.
+
+permissions:
+  contents: read
+
+concurrency:
+  group: facebook-page-access-check
+  cancel-in-progress: true
+
+jobs:
+  check-public-page:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check public Page response (read-only)
+        run: python .github/scripts/check_facebook_page.py
+
+      - name: Save diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: facebook-page-check
+          path: facebook-page-check.json
+          if-no-files-found: warn
+          retention-days: 7
