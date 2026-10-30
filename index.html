@@ -816,7 +816,7 @@ async function readOne(file, prog){
     const colStep = median(colGaps), rowStep = median(rowGaps);
     return pts.map(m => {
       const colIndex = cols.reduce((best,v,i) => Math.abs(v-m.x) < Math.abs(cols[best]-m.x) ? i : best, 0);
-      const left = colStep ? Math.max(0, cols[colIndex] - colStep * .46) : 0;
+      const left = colStep ? Math.max(0, m.x - 8) : 0;
       const width = Math.min(W-left, colStep ? colStep * .90 : W * .92);
       // The time label sits above the post preview. Crop the preview itself,
       // rather than a full-width strip containing neighboring calendar cards.
