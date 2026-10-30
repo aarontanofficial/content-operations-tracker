@@ -79,7 +79,7 @@ button.sec{background:var(--glass2);color:var(--txt);border:1px solid var(--glas
 .drop{border:1.5px dashed var(--glassb);border-radius:18px;padding:14px;text-align:center;color:var(--mut)}.drop.on{border-color:var(--aura);color:var(--txt)}
 .pvq{border:1px solid var(--glassb);border-left:4px solid var(--aura);border-radius:16px;padding:12px;background:var(--glass2)}.pvq.c-trivia{border-left-color:var(--gold)}.pvq.c-barangay{border-left-color:#3fd18a}.pvq img{max-width:100%;max-height:220px;border-radius:12px;margin-top:8px}
 .qimg{display:block;max-width:100%;max-height:200px;border-radius:12px;margin-top:6px;cursor:zoom-in}.pvtag{font-size:13px;color:var(--gold);margin-bottom:6px}
-.draft{display:flex;gap:10px;border:1px solid var(--glassb);border-radius:18px;padding:10px;margin-top:8px;background:var(--glass2);animation:rise .35s both}.draft>img{width:min(34%,190px);min-width:112px;max-height:220px;object-fit:contain;object-position:top;border-radius:12px;flex:none;align-self:flex-start;cursor:zoom-in;background:rgba(0,0,0,.18);border:1px solid var(--glassb)}.draft details{margin-top:8px;border-top:1px solid var(--glassb);padding-top:7px}.draft summary{cursor:pointer;color:var(--link);font-weight:700;font-size:13px}.draft .ocrtext{white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;padding:9px;margin-top:6px;border-radius:10px;background:var(--inp);font-size:13px;line-height:1.5;color:var(--txt)}
+.draft{display:flex;gap:10px;border:1px solid var(--glassb);border-radius:18px;padding:10px;margin-top:8px;background:var(--glass2);animation:rise .35s both}.draft>img{width:min(34%,190px);min-width:112px;max-height:220px;object-fit:contain;object-position:top;border-radius:12px;flex:none;align-self:flex-start;cursor:zoom-in;background:rgba(0,0,0,.18);border:1px solid var(--glassb)}.draft .draft-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:5px}.draft .draft-actions button{min-height:34px;padding:6px 12px;font-size:13px}.draft .draft-actions .on{background:var(--btn);color:#fff}.draft-image-preview{width:100%;display:block;max-height:68vh;object-fit:contain;object-position:center;border-radius:14px;background:rgba(0,0,0,.2);border:1px solid var(--glassb);cursor:zoom-in}.draft-preview-empty{min-height:300px;display:grid;place-items:center;text-align:center;color:var(--mut);padding:24px;border:1px dashed var(--glassb);border-radius:14px}.draft-preview-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:10px 0}.draft-preview-copy{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;padding:12px;border-radius:12px;background:var(--glass2);max-height:220px;overflow:auto}.draft details{margin-top:8px;border-top:1px solid var(--glassb);padding-top:7px}.draft summary{cursor:pointer;color:var(--link);font-weight:700;font-size:13px}.draft .ocrtext{white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;padding:9px;margin-top:6px;border-radius:10px;background:var(--inp);font-size:13px;line-height:1.5;color:var(--txt)}
 .draft .f{flex:1;min-width:0}.draft input,.draft select{padding:8px 10px;margin:2px 0;font-size:15px}.draft .row>*{min-width:90px}.draft label{flex:none}.draft input[type=checkbox]{width:20px;height:20px;margin:6px 0 0}
 .lnkrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;font-size:14px}.lnkrow button{padding:5px 12px;margin:0;min-height:36px}.fbf{display:block;width:100%;height:520px;border:0;border-radius:14px;margin-top:8px;background:#fff}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}@media(min-width:700px){.grid{grid-template-columns:repeat(5,1fr)}}.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;cursor:zoom-in;background:var(--inp)}
@@ -325,7 +325,7 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
           <p id="formMsg" class="err"></p>
         </div>
       </div>
-      <div class="card" style="align-self:start"><h2>Preview</h2><div id="pv"></div></div>
+      <div class="card draft-preview-panel" style="align-self:start;position:sticky;top:16px"><h2 id="pvTitle">Content preview</h2><div id="pv"><div class="draft-preview-empty">Attach a screenshot to view it here in a larger preview.</div></div></div>
     </div>
   </section>
 
@@ -620,7 +620,7 @@ let yawNow = 0;
 function motionOn(){ const m = localStorage.getItem('motion'); return m ? m === 'on' : !matchMedia('(prefers-reduced-motion: reduce)').matches; }
 function applyMotion(){ document.documentElement.classList.toggle('still', !motionOn()); const b = document.getElementById('motionBtn'); if (b) b.textContent = 'Motion: ' + (motionOn() ? 'on' : 'off'); }
 function toggleMotion(){ localStorage.setItem('motion', motionOn() ? 'off' : 'on'); applyMotion(); }
-let drafts = [], profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}, curRank = 'E', totalXp = 0, qFilter = 'all';
+let drafts = [], activeDraftPreview = 0, profile = {name:'', look:{...DEFAULT_LOOK}, owned:[], spent:0}, curRank = 'E', totalXp = 0, qFilter = 'all';
 $('status').innerHTML = Object.entries(STATUS).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
 
 async function signUp(){ justLoggedIn = true; const {data, error} = await sb.auth.signUp({email:$('email').value, password:$('pass').value}); if (error || !data.session) justLoggedIn = false; $('authMsg').textContent = error ? error.message : (data.session ? '' : 'Account created. Check your email if confirmation is required, then sign in.'); }
@@ -1010,16 +1010,28 @@ async function readShots(list){
   if (added && !drafts.some(d=>d.duplicate)) st.textContent = `Found ${added} quest draft(s). No likely duplicates found. Review and save selected.`;
 }
 const opts = (o, sel) => Object.entries(o).map(([k, v]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${v}</option>`).join('');
+function showDraftPreview(index){
+  if (!drafts.length) return;
+  activeDraftPreview = Math.max(0, Math.min(index, drafts.length-1));
+  const d = drafts[activeDraftPreview], panel = $('pv');
+  $('pvTitle').textContent = 'Attachment preview · ' + (activeDraftPreview+1) + ' of ' + drafts.length;
+  panel.innerHTML = d.thumb
+    ? `<img class="draft-image-preview" src="${esc(d.thumb)}" alt="Full screenshot preview" onclick="zoomImg(this.src)"><div class="draft-preview-meta"><span class="badge">${esc(d.title || 'Untitled post')}</span><span class="meta">${esc(d.date || 'Date not detected')}${d.time ? ' · '+esc(fmt12(d.time)) : ''}</span></div>${d.notes ? `<details open><summary>Detected text · read content</summary><div class="draft-preview-copy">${esc(d.notes.replace(/^From screenshot:\\s*/,''))}</div></details>` : '<p class="meta">No readable text was extracted from this image.</p>'}`
+    : '<div class="draft-preview-empty">No image is attached to this detected item.</div>';
+}
 function renderDrafts(){
   $('draftCard').classList.toggle('hide', !drafts.length);
-  $('drafts').innerHTML = drafts.map((d, i) => `<div class="draft"><label><input type="checkbox" data-i="${i}" data-k="on" ${d.on ? 'checked' : ''} aria-label="Include"></label>${d.thumb ? `<img src="${esc(d.thumb)}" alt="Screenshot" onclick="zoomImg(this.src)">` : ''}<div class="f">${d.duplicate ? `<div class="meta" style="color:var(--gold);font-weight:700">Possible duplicate — ${esc(d.duplicateReason)}</div>` : ''}
+  $('drafts').innerHTML = drafts.map((d, i) => `<div class="draft"><label><input type="checkbox" data-i="${i}" data-k="on" ${d.on ? 'checked' : ''} aria-label="Include"></label><div class="f">${d.duplicate ? `<div class="meta" style="color:var(--gold);font-weight:700">Possible duplicate — ${esc(d.duplicateReason)}</div>` : ''}
+    <div class="draft-actions"><button type="button" class="sec ${i===activeDraftPreview?'on':''}" data-preview="${i}">${d.thumb?'View attachment':'View details'}</button><span class="meta">Post ${i+1}</span></div>
     <input data-i="${i}" data-k="title" value="${esc(d.title)}" placeholder="Quest title">
     <div class="row"><input type="date" data-i="${i}" data-k="date" value="${esc(d.date)}"><input type="time" data-i="${i}" data-k="time" value="${esc(d.time || '')}"></div>
     <div class="row"><select data-i="${i}" data-k="cat">${opts(CAT, d.cat)}</select><select data-i="${i}" data-k="status">${opts(STATUS, d.status)}</select></div>
     <input data-i="${i}" data-k="postId" value="${esc(d.postId || '')}" placeholder="Post ID (optional)"><input data-i="${i}" data-k="url" value="${esc(d.url || '')}" placeholder="Facebook link (optional)">
-    ${d.est ? `<div class="meta">Time estimated from "in ${esc(d.est)}". Confirm it in Business Suite.</div>` : ''}${d.notes ? `<details><summary>Read extracted screenshot text</summary><div class="ocrtext">${esc(d.notes.replace(/^From screenshot:\s*/,''))}</div></details>` : ''}</div></div>`).join('');
+    ${d.est ? `<div class="meta">Time estimated from "in ${esc(d.est)}". Confirm it in Business Suite.</div>` : ''}${d.notes ? `<details><summary>Read extracted screenshot text</summary><div class="ocrtext">${esc(d.notes.replace(/^From screenshot:\\s*/,''))}</div></details>` : ''}</div></div>`).join('');
+  showDraftPreview(activeDraftPreview);
 }
 ['input', 'change'].forEach(ev => $('drafts').addEventListener(ev, e => { const i = e.target.dataset.i, k = e.target.dataset.k; if (i === undefined || !k) return; drafts[+i][k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }));
+$('drafts').addEventListener('click', e => { const b=e.target.closest('[data-preview]'); if(!b)return; showDraftPreview(+b.dataset.preview); renderDrafts(); });
 function clearDrafts(){ drafts = []; renderDrafts(); $('shotMsg').textContent = ''; $('dmsg').textContent = ''; }
 async function saveDrafts(){
   const sel = drafts.filter(d => d.on), msg = $('dmsg'); msg.textContent = '';
