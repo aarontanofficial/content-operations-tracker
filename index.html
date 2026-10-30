@@ -786,7 +786,7 @@ function notify(title, body){
   const el = document.createElement('div'); el.className = 'alert'; el.innerHTML = `<span><b>${esc(title)}</b><br>${esc(body)}</span><button class="sec" onclick="this.parentNode.remove()">OK</button>`; $('banner').appendChild(el);
 }
 function b64ToU8(s){ const p = '='.repeat((4 - s.length % 4) % 4); const b = atob((s + p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
-async async function enableNotif(){
+async function enableNotif(){
   if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) { alert('Push is not available here. On iPhone, add the app to the Home Screen first, then open it from there.'); return; }
   const p = await Notification.requestPermission();
   if (p !== 'granted') { alert('Notification permission: ' + p); return; }
