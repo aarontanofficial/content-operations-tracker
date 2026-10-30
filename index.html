@@ -852,6 +852,62 @@ async function readOne(file, prog){
   const p = parseText(text);
   return [{...base, title:p.title || '', date:p.date || day, time:p.time || '', cat:p.cat, status:p.status, url:p.url || '', postId:p.postId || '', notes:p.notes || '', est:p.est || '', thumb:crop(img, 0, 0, W, H, 640)}];
 }
+async function imageDHash(src){
+  if (!src) return '';
+  const im = new Image();
+  await new Promise((resolve,reject)=>{ im.onload=resolve; im.onerror=reject; im.src=src; });
+  const c=document.createElement('canvas'); c.width=9; c.height=8;
+  const g=c.getContext('2d',{willReadFrequently:true}); g.drawImage(im,0,0,9,8);
+  const px=g.getImageData(0,0,9,8).data; let bits='';
+  for(let y=0;y<8;y++) for(let x=0;x<8;x++){
+    const a=(y*9+x)*4, b=(y*9+x+1)*4;
+    const la=px[a]*.299+px[a+1]*.587+px[a+2]*.114;
+    const lb=px[b]*.299+px[b+1]*.587+px[b+2]*.114;
+    bits += la>lb ? '1':'0';
+  }
+  return bits;
+}
+function hashDistance(a,b){
+  if(!a || !b || a.length!==b.length) return 999;
+  let n=0; for(let i=0;i<a.length;i++) if(a[i]!==b[i]) n++; return n;
+}
+async function markDuplicateDrafts(){
+  const msg=$('shotMsg');
+  let saved=[];
+  try {
+    const {data,error}=await sb.from('tasks').select('id,title,task_date,scheduled_time,image_thumb,post_id').limit(1500);
+    if(error) throw error;
+    saved=data||[];
+  } catch(e) {
+    msg.textContent='Screenshot scan finished, but saved-quest duplicate checking was unavailable. Review drafts carefully before saving.';
+  }
+  const savedHashes=[];
+  for(const row of saved){
+    if(row.image_thumb) try { savedHashes.push({...row, hash:await imageDHash(row.image_thumb)}); } catch(e){}
+  }
+  const seen=[];
+  for(const d of drafts){
+    d.duplicate=false; d.duplicateReason='';
+    const pid=(d.postId||'').trim();
+    if(pid && saved.some(x=>(x.post_id||'').trim()===pid)){
+      d.duplicate=true; d.duplicateReason='Same Facebook Post ID already saved';
+      d.on=false; continue;
+    }
+    let hash='';
+    if(d.thumb) try { hash=await imageDHash(d.thumb); } catch(e){}
+    if(!hash) { seen.push({d,hash}); continue; }
+    const sameSaved=savedHashes.find(x=>x.task_date===d.date && (x.scheduled_time||'')===(d.time||'') && hashDistance(x.hash,hash)<=7);
+    const sameDraft=seen.find(x=>x.d.date===d.date && (x.d.time||'')===(d.time||'') && x.hash && hashDistance(x.hash,hash)<=7);
+    if(sameSaved || sameDraft){
+      d.duplicate=true;
+      d.duplicateReason=sameSaved?'Looks like an already saved quest (matching image, date and time)':'Repeated post detected in these screenshots';
+      d.on=false;
+    }
+    seen.push({d,hash});
+  }
+  const count=drafts.filter(d=>d.duplicate).length;
+  if(count) msg.textContent += (msg.textContent ? ' ' : '') + count+' likely duplicate(s) were unchecked automatically. You can review them before saving.';
+}
 async function readShots(list){
   const files = [...(list || [])].filter(f => f.type.startsWith('image/')), st = $('shotMsg'); if (!files.length) return;
   if (!window.Tesseract) { st.textContent = 'The text reader did not load. Check your connection and reload the page.'; return; }
@@ -860,13 +916,15 @@ async function readShots(list){
     const tag = `Reading image ${i + 1} of ${files.length}`; st.textContent = tag + '… (the first one takes longer)';
     try { const ds = await readOne(files[i], p => st.textContent = `${tag}… ${p}%`); drafts.push(...ds); added += ds.length; } catch (e) { st.textContent = 'Could not read an image: ' + e.message; }
   }
-  if (added) st.textContent = `Found ${added} quest draft(s). Check each one, fix anything wrong, then click Save selected.`;
+  if (added) st.textContent = `Found ${added} quest draft(s). Checking for duplicates…`;
+  await markDuplicateDrafts();
   drafts.sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || ''))); renderDrafts();
+  if (added && !drafts.some(d=>d.duplicate)) st.textContent = `Found ${added} quest draft(s). No likely duplicates found. Review and save selected.`;
 }
 const opts = (o, sel) => Object.entries(o).map(([k, v]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${v}</option>`).join('');
 function renderDrafts(){
   $('draftCard').classList.toggle('hide', !drafts.length);
-  $('drafts').innerHTML = drafts.map((d, i) => `<div class="draft"><label><input type="checkbox" data-i="${i}" data-k="on" ${d.on ? 'checked' : ''} aria-label="Include"></label>${d.thumb ? `<img src="${esc(d.thumb)}" alt="Screenshot" onclick="zoomImg(this.src)">` : ''}<div class="f">
+  $('drafts').innerHTML = drafts.map((d, i) => `<div class="draft"><label><input type="checkbox" data-i="${i}" data-k="on" ${d.on ? 'checked' : ''} aria-label="Include"></label>${d.thumb ? `<img src="${esc(d.thumb)}" alt="Screenshot" onclick="zoomImg(this.src)">` : ''}<div class="f">${d.duplicate ? `<div class="meta" style="color:var(--gold);font-weight:700">Possible duplicate — ${esc(d.duplicateReason)}</div>` : ''}
     <input data-i="${i}" data-k="title" value="${esc(d.title)}" placeholder="Quest title">
     <div class="row"><input type="date" data-i="${i}" data-k="date" value="${esc(d.date)}"><input type="time" data-i="${i}" data-k="time" value="${esc(d.time || '')}"></div>
     <div class="row"><select data-i="${i}" data-k="cat">${opts(CAT, d.cat)}</select><select data-i="${i}" data-k="status">${opts(STATUS, d.status)}</select></div>
