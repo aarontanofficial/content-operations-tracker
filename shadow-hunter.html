@@ -115,9 +115,11 @@ button:active {
     top: 16px;
     left: 14px;
     width: calc(100vw - 28px);
-    padding: 18px;
+    padding: 14px;
+    max-height:48vh;
   }
-
+  .camera-controls{gap:6px}
+  .camera-controls button{font-size:11px}
   h1 {
     font-size: 23px;
   }
@@ -148,6 +150,10 @@ button:active {
     <button id="spin">Pause rotation</button>
     <button id="reset">Reset view</button>
   </div>
+  <div class="controls camera-controls">
+    <button data-camera="front">Front</button><button data-camera="side">Side</button><button data-camera="back">Back</button><button id="full">Fullscreen</button>
+  </div>
+  <div class="model-meta" id="modelMeta">Preparing 3D scene…</div>
 </div>
 
 <div class="hint">DRAG TO ROTATE · PINCH TO ZOOM</div>
@@ -162,6 +168,8 @@ const viewer = document.getElementById("viewer");
 const status = document.getElementById("status");
 const spinButton = document.getElementById("spin");
 const resetButton = document.getElementById("reset");
+const modelMeta = document.getElementById("modelMeta");
+const fullButton = document.getElementById("full");
 
 // Scene
 const scene = new THREE.Scene();
@@ -181,8 +189,10 @@ camera.position.set(0, 0.4, 4.5);
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
   alpha: false,
-  powerPreference: "low-power"
+  powerPreference: "high-performance"
 });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -197,7 +207,9 @@ scene.add(
   new THREE.HemisphereLight(0xbdeaff, 0x101020, 2.0)
 );
 
-const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024, 1024);
 keyLight.position.set(3, 5, 4);
 scene.add(keyLight);
 
@@ -208,6 +220,16 @@ scene.add(blueLight);
 const rimLight = new THREE.PointLight(0x00eaff, 35, 15);
 rimLight.position.set(-3, 2, -2);
 scene.add(rimLight);
+
+// Cinematic hunter platform and subtle gate ring
+const platform = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.18, 0.12, 64), new THREE.MeshStandardMaterial({color:0x0b1b32,metalness:0.72,roughness:0.3,emissive:0x06213c,emissiveIntensity:0.7}));
+platform.position.y = -1.32; platform.receiveShadow = true; scene.add(platform);
+const platformRing = new THREE.Mesh(new THREE.TorusGeometry(1.08,0.018,8,96), new THREE.MeshBasicMaterial({color:0x24cfff}));
+platformRing.rotation.x = Math.PI/2; platformRing.position.y = -1.245; scene.add(platformRing);
+const gateRing = new THREE.Mesh(new THREE.TorusGeometry(1.75,0.012,8,96), new THREE.MeshBasicMaterial({color:0x1766a5,transparent:true,opacity:0.42}));
+gateRing.position.set(0,0.1,-1.1); scene.add(gateRing);
+const floorGrid = new THREE.GridHelper(18,36,0x16446a,0x10243b); floorGrid.position.y=-1.4; scene.add(floorGrid);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.MeshStandardMaterial({color:0x030914,metalness:0.35,roughness:0.8})); floor.rotation.x=-Math.PI/2; floor.position.y=-1.43; floor.receiveShadow=true; scene.add(floor);
 
 // Camera controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -224,6 +246,7 @@ controls.maxPolarAngle = Math.PI * 0.85;
 
 let userPaused = false;
 let idleTimer;
+let hunterModel = null, mixer = null, clock = new THREE.Clock();
 
 function updateSpinButton() {
   spinButton.textContent = userPaused
@@ -254,6 +277,16 @@ spinButton.addEventListener("click", () => {
 
   updateSpinButton();
 });
+
+// Camera presets
+function cameraPreset(which){
+  const presets={front:[0,0.35,4.5],side:[4.5,0.25,0],back:[0,0.35,-4.5]};
+  const p=presets[which]; if(!p)return;
+  camera.position.set(...p); controls.target.set(0,0,0); controls.update();
+  controls.autoRotate=false; clearTimeout(idleTimer); if(!userPaused) idleTimer=setTimeout(()=>controls.autoRotate=true,2200);
+}
+document.querySelectorAll("[data-camera]").forEach(b=>b.addEventListener("click",()=>cameraPreset(b.dataset.camera)));
+fullButton.addEventListener("click",()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.();});
 
 // Reset camera
 resetButton.addEventListener("click", () => {
@@ -300,7 +333,12 @@ loader.load(
       model.scale.multiplyScalar(2.5 / largest);
     }
 
+    model.traverse((obj)=>{if(obj.isMesh){obj.castShadow=true;obj.receiveShadow=true;if(obj.material){obj.material.needsUpdate=true;}}});
     scene.add(model);
+    hunterModel = model;
+    if(gltf.animations && gltf.animations.length){mixer=new THREE.AnimationMixer(model);gltf.animations.forEach(clip=>mixer.clipAction(clip).play());}
+    modelMeta.textContent = "MODEL READY · "+meshNames.length+" mesh parts · "+(gltf.animations?.length||0)+" animations";
+    platform.position.y = -1.32;
 
     // Set initial camera view
     controls.target.set(0, 0, 0);
@@ -316,6 +354,7 @@ loader.load(
     status.textContent =
       "CHARACTER ONLINE\n" +
       "Meshes: " + meshNames.length + "\n" +
+      "Animations: " + (gltf.animations?.length || 0) + "\n" +
       (meshNames.length > 0
         ? meshNames.slice(0, 12).join("\n")
         : "No mesh objects found");
@@ -334,6 +373,7 @@ loader.load(
 
   (error) => {
     console.error("GLB loading error:", error);
+    modelMeta.textContent = "MODEL ERROR · Verify shadow-hunter.glb is present and publicly accessible.";
 
     status.textContent =
       "MODEL FAILED TO LOAD\n" +
@@ -354,6 +394,8 @@ window.addEventListener("resize", () => {
 
 // Animation loop
 renderer.setAnimationLoop(() => {
+  const dt=clock.getDelta(); if(mixer)mixer.update(dt);
+  if(hunterModel && !userPaused){gateRing.rotation.z += dt*0.08; platformRing.rotation.z += dt*0.18;}
   controls.update();
   renderer.render(scene, camera);
 });
