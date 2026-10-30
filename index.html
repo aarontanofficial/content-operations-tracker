@@ -198,6 +198,9 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
 }
 @media(prefers-reduced-motion:reduce){.card,button,.tab{transition:none!important}}
 
+
+/* Hunter RPG armory */
+.armory-hero{display:flex;justify-content:space-between;align-items:center;gap:14px;background:radial-gradient(circle at 90% 20%,rgba(70,130,255,.22),transparent 42%),var(--glass)}.armory-hero h2{font-size:22px;margin:5px 0}.armory-gold{min-width:104px;text-align:center;padding:12px;border:1px solid var(--glassb);border-radius:18px;background:var(--glass2)}.armory-gold b{display:block;font-size:25px}.armory-gold small{display:block;font-size:10px;letter-spacing:.12em;color:var(--mut)}.armory-slots{display:grid;grid-template-columns:1fr 1fr;gap:12px}.gear-slot{margin-bottom:14px}.gear-icon{font-size:30px;margin-bottom:6px}.gear-slot b,.gear-slot small{display:block}.gear-slot small{color:var(--mut);margin-top:4px}.arm-attributes{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.arm-attr{padding:10px;border:1px solid var(--glassb);border-radius:14px;background:var(--glass2)}.arm-attr span{display:block;color:var(--mut);font-size:12px}.arm-attr b{font-size:22px}.arm-skills{display:grid;gap:8px}.arm-skill{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid var(--glassb);border-radius:14px;background:var(--glass2)}.arm-skill .si{font-size:23px}.arm-skill small{display:block;color:var(--mut)}.arm-skill .locked{color:var(--mut)}.gear-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.gear-item{padding:12px;border:1px solid var(--glassb);border-radius:16px;background:var(--glass2);min-width:0}.gear-item .gi{font-size:27px}.gear-item b{display:block;margin:4px 0}.gear-item small{display:block;color:var(--mut);min-height:34px}.gear-item button{width:100%;margin-top:8px;padding:8px;font-size:13px;min-height:38px}.gear-item.equipped{border-color:var(--aura);box-shadow:0 0 0 1px var(--aura),0 0 20px rgba(90,130,255,.15)}.gear-rarity{font-size:10px!important;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)!important;min-height:0!important}@media(max-width:420px){.armory-hero{align-items:flex-start}.gear-grid{grid-template-columns:1fr 1fr}.gear-item{padding:9px}.gear-item button{font-size:12px}}
 </style>
 </head>
 <body>
@@ -331,7 +334,7 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
   </section>
 
   <section class="view" id="v-hunter">
-    <div class="seg" id="hseg" role="tablist" aria-label="Hunter sections"><button class="on" data-s="profile" role="tab" aria-selected="true">Profile</button><button data-s="forms" role="tab" aria-selected="false">Forms</button><button data-s="custom" role="tab" aria-selected="false">Customize</button></div>
+    <div class="seg" id="hseg" role="tablist" aria-label="Hunter sections"><button class="on" data-s="profile" role="tab" aria-selected="true">Profile</button><button data-s="forms" role="tab" aria-selected="false">Forms</button><button data-s="custom" role="tab" aria-selected="false">Customize</button><button data-s="armory" role="tab" aria-selected="false">Armory</button></div>
 
     <div class="sub on" id="s-profile">
       <div class="warn hide" id="dbNote"><span><b>Saved on this device only.</b> Your database has no avatar columns yet. Run the one-time update to sync across devices.</span><button onclick="copySql()">Copy SQL</button></div>
@@ -367,6 +370,21 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
       <div class="cats" id="cgroups" role="group" aria-label="Customization groups"></div>
       <div class="card" id="crows"></div>
       <p class="meta">Free items are marked Free. Others cost gold, earned by clearing quests. Items marked Lv unlock at that level. Changes save automatically.</p>
+    </div>
+
+    <div class="sub" id="s-armory">
+      <div class="card armory-hero">
+        <div><div class="hn">Hunter equipment · loadout</div><h2>Prepare for the next gate</h2><p class="meta">Earn gold from real-world quests. Buy gear, equip your build, and grow your combat rating.</p></div>
+        <div class="armory-gold"><span class="coin"></span><b id="armGold">0</b><small>AVAILABLE GOLD</small></div>
+      </div>
+      <div class="armory-slots">
+        <div class="card gear-slot"><div class="gear-icon">⚔️</div><div class="hn">Weapon equipped</div><b id="eqWeapon">Training Blade</b><small id="eqWeaponStats">ATK +2</small></div>
+        <div class="card gear-slot"><div class="gear-icon">🛡️</div><div class="hn">Armor equipped</div><b id="eqArmor">Hunter Coat</b><small id="eqArmorStats">DEF +2</small></div>
+      </div>
+      <div class="card"><h2>Hunter attributes</h2><div class="arm-attributes" id="armAttributes"></div><p class="meta" id="combatRating"></p></div>
+      <div class="card"><h2>Skill tree</h2><p class="meta">Passive traits unlock as your Hunter level increases.</p><div id="armSkills" class="arm-skills"></div></div>
+      <div class="card"><h2>Weapon collection</h2><div class="gear-grid" id="weaponShop"></div></div>
+      <div class="card"><h2>Armor collection</h2><div class="gear-grid" id="armorShop"></div></div>
     </div>
   </section>
 </div>
@@ -1089,7 +1107,7 @@ function setSub(name){
   document.querySelectorAll('.sub').forEach(e => e.classList.toggle('on', e.id === 's-' + name)); renderHunter();
 }
 function curSub(){ const b = document.querySelector('#hseg button.on'); return b ? b.dataset.s : 'profile'; }
-function renderHunter(){ const s = curSub(); if (s === 'forms') renderForms(); if (s === 'custom') renderCustom(); }
+function renderHunter(){ const s = curSub(); if (s === 'forms') renderForms(); if (s === 'custom') renderCustom(); if (s === 'armory') renderArmory(); }
 function renderForms(){
   const F = FORMS[viewForm - 1], open = userLv >= F.from, act = activeForm() === viewForm, L = lookOf();
   $('stageSvg').innerHTML = fullSVG(L, viewForm, {}); $('stage').classList.toggle('locked', !open); $('stage').style.setProperty('--fc', F.col);
@@ -1114,6 +1132,47 @@ function renderCustom(){
   $('cvForms').innerHTML = FORMS.map(F => `<button class="fch${F.n === f ? ' on' : ''}" data-n="${F.n}" ${userLv < F.from ? 'disabled' : ''} aria-label="Preview phase ${F.n}, ${F.name}">${F.n}</button>`).join('');
   $('cgroups').innerHTML = GROUPS.map(([g]) => `<button class="cat ${g === custGroup ? 'on' : ''}" data-g="${g}">${g}</button>`).join('');
   $('crows').innerHTML = GROUPS.find(x => x[0] === custGroup)[1].map(cat => `<div class="crow"><h3>${CUST[cat].label}</h3><div class="ctiles">${CUST[cat].items.map(it => tile(cat, it, L, f)).join('')}</div></div>`).join('');
+}
+
+/* ===== RPG armory: gear is stored inside the existing profile look JSON ===== */
+const GEAR = {
+ weapon:[
+  {id:'training-blade',name:'Training Blade',icon:'⚔️',price:0,level:1,atk:2,def:0,rarity:'Common'},
+  {id:'iron-edge',name:'Iron Edge',icon:'🗡️',price:120,level:3,atk:5,def:0,rarity:'Uncommon'},
+  {id:'frostfang',name:'Frostfang',icon:'❄️',price:280,level:7,atk:9,def:1,rarity:'Rare'},
+  {id:'shadow-reaper',name:'Shadow Reaper',icon:'🌑',price:600,level:12,atk:15,def:2,rarity:'Epic'},
+  {id:'monarch-blade',name:'Monarch Blade',icon:'👑',price:1100,level:18,atk:24,def:3,rarity:'Legendary'}
+ ],
+ armor:[
+  {id:'hunter-coat',name:'Hunter Coat',icon:'🧥',price:0,level:1,atk:0,def:2,rarity:'Common'},
+  {id:'reinforced',name:'Reinforced Gear',icon:'🥋',price:140,level:3,atk:1,def:5,rarity:'Uncommon'},
+  {id:'night-guard',name:'Night Guard',icon:'🛡️',price:300,level:7,atk:2,def:9,rarity:'Rare'},
+  {id:'shadow-mail',name:'Shadow Mail',icon:'🌘',price:650,level:12,atk:4,def:15,rarity:'Epic'},
+  {id:'monarch-armor',name:'Monarch Armor',icon:'♛',price:1200,level:18,atk:6,def:24,rarity:'Legendary'}
+ ]
+};
+function gearState(){
+ const g=profile.look.gear || (profile.look.gear={weapon:'training-blade',armor:'hunter-coat',owned:['weapon:training-blade','armor:hunter-coat']});
+ if(!Array.isArray(g.owned))g.owned=['weapon:training-blade','armor:hunter-coat'];
+ if(!g.weapon)g.weapon='training-blade'; if(!g.armor)g.armor='hunter-coat'; return g;
+}
+function renderArmory(){
+ const g=gearState(), w=GEAR.weapon.find(x=>x.id===g.weapon)||GEAR.weapon[0], a=GEAR.armor.find(x=>x.id===g.armor)||GEAR.armor[0];
+ $('armGold').textContent=gold().toLocaleString(); $('eqWeapon').textContent=w.name; $('eqWeaponStats').textContent='ATK +'+w.atk+' · DEF +'+w.def;
+ $('eqArmor').textContent=a.name; $('eqArmorStats').textContent='ATK +'+a.atk+' · DEF +'+a.def;
+ const lv=userLv, stats={STR:10+lv*2+w.atk+a.atk, VIT:10+lv*2+w.def+a.def, AGI:8+lv+Math.floor(w.atk/2), INT:8+lv+Math.floor(a.def/3)};
+ $('armAttributes').innerHTML=Object.entries(stats).map(([k,v])=>'<div class="arm-attr"><span>'+k+'</span><b>'+v+'</b></div>').join('');
+ $('combatRating').textContent='Combat Power · '+Object.values(stats).reduce((x,y)=>x+y,0)+' CP · Level '+lv;
+ const skills=[['⚡','Quick Learner','Level 3','Gain +2 AGI',lv>=3],['🛡️','Iron Will','Level 5','Gain +3 VIT',lv>=5],['🔥','Awakening','Level 10','Gain +5 STR',lv>=10],['🌌','Shadow Monarch','Level 18','Gain +8 INT',lv>=18]];
+ $('armSkills').innerHTML=skills.map(x=>'<div class="arm-skill"><span class="si">'+x[0]+'</span><div><b>'+x[1]+'</b><small>'+x[3]+'</small></div><span class="'+(x[4]?'':'locked')+'">'+(x[4]?'UNLOCKED':x[2])+'</span></div>').join('');
+ const draw=(type,id)=>{const list=GEAR[type],owned=g.owned.includes(type+':'+id),item=list.find(x=>x.id===id),equipped=g[type]===id,locked=lv<item.level;return '<div class="gear-item '+(equipped?'equipped':'')+'"><div class="gi">'+item.icon+'</div><div class="gear-rarity">'+item.rarity+'</div><b>'+item.name+'</b><small>ATK +'+item.atk+' · DEF +'+item.def+'<br>Required Lv '+item.level+'</small><button class="'+(equipped?'sec':'')+'" onclick="useGear(\''+type+'\',\''+id+'\')" '+(locked||(!owned&&gold()<item.price)?'disabled':'')+'>'+(equipped?'Equipped':owned?'Equip':locked?'Locked · Lv '+item.level:'Buy · '+item.price+' gold')+'</button></div>';};
+ $('weaponShop').innerHTML=GEAR.weapon.map(x=>draw('weapon',x.id)).join(''); $('armorShop').innerHTML=GEAR.armor.map(x=>draw('armor',x.id)).join('');
+}
+function useGear(type,id){
+ const item=GEAR[type].find(x=>x.id===id); if(!item)return; const g=gearState(),key=type+':'+id,owned=g.owned.includes(key);
+ if(userLv<item.level){toast('Reach level '+item.level+' to unlock '+item.name);return;}
+ if(!owned){if(gold()<item.price){toast('Not enough gold');return;}if(!confirm('Purchase '+item.name+' for '+item.price+' gold?'))return;g.owned.push(key);profile.spent+=item.price;}
+ g[type]=id; localSave(); queueSave(); renderArmory(); updateGold(); toast(item.name+(owned?' equipped':' purchased and equipped'));
 }
 function pickCust(cat, raw){
   const it = CUST[cat].items.find(x => String(x[0]) === raw); if (!it) return;
