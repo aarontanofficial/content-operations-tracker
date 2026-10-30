@@ -367,7 +367,7 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
         <p class="meta">Auto theme switches to day at 6:00 AM and night at 6:00 PM, Philippine time.</p>
         <p class="meta" id="who" style="margin-top:12px"></p>
         <div class="row"><button class="sec" onclick="enableNotif()">Enable alerts</button><button class="sec" onclick="signOut()">Sign out</button></div>
-        <p class="meta">Alerts while the app is closed come from a server schedule that has to be switched on separately.</p></div>
+        <p class="meta">Daily batch reminder: 4:00 PM Philippine time. Enable alerts separately on your laptop and phone. This local reminder needs the app open; closed-app delivery requires a configured push sender.</p><p class="meta" id="notifStatus" aria-live="polite">4:00 PM reminder is not enabled on this device yet.</p></div>
     </div>
 
     <div class="sub" id="s-forms">
@@ -786,10 +786,11 @@ function notify(title, body){
   const el = document.createElement('div'); el.className = 'alert'; el.innerHTML = `<span><b>${esc(title)}</b><br>${esc(body)}</span><button class="sec" onclick="this.parentNode.remove()">OK</button>`; $('banner').appendChild(el);
 }
 function b64ToU8(s){ const p = '='.repeat((4 - s.length % 4) % 4); const b = atob((s + p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
-async function enableNotif(){
+async async function enableNotif(){
   if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) { alert('Push is not available here. On iPhone, add the app to the Home Screen first, then open it from there.'); return; }
   const p = await Notification.requestPermission();
   if (p !== 'granted') { alert('Notification permission: ' + p); return; }
+    localStorage.setItem('cot_batch_reminder','1'); scheduleBatchReminder(); if ($('notifStatus')) $('notifStatus').textContent='4:00 PM batch reminder enabled on this device.';
   try {
     const r = await navigator.serviceWorker.ready;
     let s = await r.pushManager.getSubscription();
@@ -802,7 +803,7 @@ async function enableNotif(){
 async function checkReminders(){
   const {data:{session}} = await sb.auth.getSession(); if (!session) return;
   const {data} = await sb.from('tasks').select('id,title,status,scheduled_time').eq('task_date', today()); const t = data || []; const now = mins(nowHM());
-  if (now >= 480 && !fired('morning')) notify('Morning planning', `${t.length} quest(s) today. Plan your posts.`);
+  if (now >= 960 && !fired('batch_1600')) { notify('Content batch time', 'PAGASA has its updated weather post. Prepare tomorrow’s weather poster, trivia, and optional promotions, then schedule them together.'); markFired('batch_1600'); }
   t.filter(x => x.scheduled_time && ['pending','prepared','scheduled'].includes(x.status)).forEach(x => {
     const m = mins(x.scheduled_time.slice(0,5));
     if (now >= m - 30 && now < m && !fired('pre_' + x.id)) notify('Coming up', `${x.title} at ${x.scheduled_time.slice(0,5)}`);
@@ -814,6 +815,8 @@ async function checkReminders(){
   if (now >= 1050 && open && !fired('eod')) notify('End-of-day review', `${open} quest(s) still unfinished today.`);
 }
 setInterval(checkReminders, 60000); setTimeout(checkReminders, 4000);
+function markFired(k){ try { localStorage.setItem('cot_fired_'+today()+'_'+k,'1'); } catch(e) {} }
+function scheduleBatchReminder(){ const el=$('notifStatus'); if (!localStorage.getItem('cot_batch_reminder')) { if(el)el.textContent='4:00 PM reminder is not enabled on this device yet.'; return; } if (!('Notification' in window) || Notification.permission!=='granted') { if(el)el.textContent='Allow notifications in this browser to receive the reminder.'; return; } if(el)el.textContent='4:00 PM reminder enabled here. Keep the app open for this local reminder.'; }
 
 /* Live preview of the quest being drafted (screenshot thumbnail is for checking only; it is not saved). */
 function updatePreview(){
