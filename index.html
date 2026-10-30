@@ -168,6 +168,36 @@ button.sec{background:var(--glass2);color:var(--txt);border:1px solid var(--glas
 .sh-home-action:active{transform:scale(.98)}
 @media(max-width:520px){.sh-home{padding:16px;border-radius:18px}.sh-homegrid{gap:7px}.sh-home-stat{padding:10px 8px}.sh-home-stat b{font-size:1.15rem}.sh-home-stat span{font-size:.61rem}.sh-home-bottom{align-items:stretch;flex-direction:column}.sh-home-action{width:100%}}
 
+
+/* SHADOW HUNTER UI POLISH — responsive game-style navigation */
+:root{--panel-glow:rgba(83,112,255,.16)}
+.card,.glass{border:1px solid var(--glassb);box-shadow:var(--sh)}
+.card{transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.card h2{letter-spacing:.02em}
+button,.tab{transition:transform .16s ease,filter .18s ease,background .2s ease,box-shadow .2s ease}
+button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offset:3px}
+.sh-home{border:1px solid var(--glassb);box-shadow:0 18px 55px rgba(20,30,100,.2),inset 0 1px 0 rgba(255,255,255,.08)}
+.tab .lbl{white-space:nowrap}
+@media(min-width:900px){
+  #app{padding-left:258px;padding-right:24px;max-width:1600px;margin:0 auto}
+  #tabs.tabs{position:fixed;left:18px;top:18px;bottom:18px;transform:none;width:220px;max-width:none;height:auto;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;padding:18px 12px;border-radius:26px;z-index:40}
+  #tabs.tabs:before{content:"SHADOW HUNTER";display:block;color:var(--txt);font-weight:900;font-size:15px;letter-spacing:.16em;padding:14px 12px 22px;border-bottom:1px solid var(--glassb);margin-bottom:8px}
+  #tabs .tab{flex:0 0 52px;width:100%;min-height:52px;justify-content:flex-start;gap:14px;padding:0 16px;border-radius:16px;color:var(--mut);background:transparent}
+  #tabs .tab svg{width:22px;height:22px;flex:none}
+  #tabs .tab .lbl{display:inline;font-size:14px;margin:0;font-weight:750}
+  #tabs .tab.on{flex:0 0 54px;background:linear-gradient(110deg,rgba(79,116,255,.95),rgba(138,91,255,.9));color:#fff;box-shadow:0 8px 24px rgba(90,100,255,.28)}
+  #tabs .tab:not(.on):hover{background:var(--glass2);color:var(--txt);transform:translateX(3px)}
+  .view{max-width:1320px;margin:0 auto;padding-top:18px}
+  .view.on{animation:viewIn .28s ease both}
+  .card{border-radius:22px}
+  .sh-home{border-radius:26px}
+}
+@media(max-width:899px){
+  #app{padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+  #tabs.tabs{box-shadow:0 12px 40px rgba(0,0,20,.42),0 0 0 1px rgba(150,170,255,.08)}
+}
+@media(prefers-reduced-motion:reduce){.card,button,.tab{transition:none!important}}
+
 </style>
 </head>
 <body>
