@@ -280,7 +280,7 @@ input,select,textarea{border-color:rgba(75,185,231,.22);background:rgba(3,16,36,
         <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia3"><span>Internet trivia #3 <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="trivia3" aria-label="Trivia three post time"><textarea data-batch-note="trivia3" rows="2" placeholder="Optional topic or caption"></textarea></div>
         <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="promo"><span>Subscription promotion / meme <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="promo" aria-label="Promotion post time"><textarea data-batch-note="promo" rows="2" placeholder="Offer, plan or meme idea"></textarea></div>
       </div>
-      <div class="row" style="margin-top:12px;align-items:center;flex-wrap:wrap"><span class="meta" id="batchHint">Core missions: weather + 2 trivia posts.</span><button class="sec" type="button" onclick="resetBatchChecklist()">Reset this batch</button><button type="button" onclick="saveBatchPlan(true)">Save batch plan</button></div>
+      <div class="row" style="margin-top:12px;align-items:center;flex-wrap:wrap"><span class="meta" id="batchHint">Core missions: weather + 2 trivia posts.</span><button class="sec" type="button" onclick="resetBatchChecklist()">Reset this batch</button><button class="sec" type="button" onclick="generateBatchQuests()">Generate quests</button><button type="button" onclick="saveBatchPlan(true)">Save batch plan</button></div>
     </section>
     <section class="ops-cockpit" id="opsCockpit">
       <div class="ops-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS · COMMAND CENTER</div><h2>Operations overview</h2><p class="meta">A manager-first view of the publishing pipeline and workload.</p></div><button class="sec" onclick="showView('reports')">Open reports →</button></div>
@@ -882,6 +882,35 @@ function paintBatchPlan(data={}){BATCH_ITEMS.forEach(k=>{const item=data[k]||{};
 function batchSyncLabel(message){const el=$('batchHint');if(el)el.textContent=message;}
 async function saveBatchPlan(showToast=false){const data=readBatchForm(),date=batchTargetDate(),key='sh_batch_'+date;try{localStorage.setItem(key,JSON.stringify(data));}catch(e){if(showToast)toast('Could not save locally. Check device storage.');return;}updateBatchProgress();const {data:auth}=await sb.auth.getUser();if(auth?.user){const {error}=await sb.from('batch_plans').upsert({user_id:auth.user.id,plan_date:date,plan_data:data,updated_at:new Date().toISOString()},{onConflict:'user_id,plan_date'});if(error){batchSyncLabel('Saved on this device · cloud sync setup needed');if(showToast)toast('Saved locally. Cloud sync needs the database setup.');return;}batchSyncLabel('Cloud synced · available on your signed-in devices');if(showToast)toast('Batch plan synced to your account.');}else{batchSyncLabel('Saved on this device · sign in to sync');if(showToast)toast('Batch plan saved on this device.');}}
 async function loadBatchPlan(){const date=batchTargetDate(),key='sh_batch_'+date;let local={};try{local=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){}paintBatchPlan(local);const {data:auth}=await sb.auth.getUser();if(!auth?.user){batchSyncLabel('Saved on this device · sign in to sync');return;}batchSyncLabel('Checking cloud batch plan…');const {data,error}=await sb.from('batch_plans').select('plan_data').eq('user_id',auth.user.id).eq('plan_date',date).maybeSingle();if(error){batchSyncLabel('Local copy active · cloud sync setup needed');return;}if(data?.plan_data){paintBatchPlan(data.plan_data);try{localStorage.setItem(key,JSON.stringify(data.plan_data));}catch(e){}batchSyncLabel('Cloud synced · available on your signed-in devices');}else if(Object.keys(local).length){await saveBatchPlan(false);}else batchSyncLabel('Cloud sync ready · no plan saved for this date yet');}
+async function generateBatchQuests(){
+  const date=batchTargetDate();
+  if(!date){toast('Choose a target posting date first.');return;}
+  const plan=readBatchForm();
+  const definitions=[
+    {key:'weather',title:'Prepare and publish weather update',category:'posting',required:true},
+    {key:'trivia1',title:'Prepare and publish internet trivia #1',category:'trivia',required:true},
+    {key:'trivia2',title:'Prepare and publish internet trivia #2',category:'trivia',required:true},
+    {key:'trivia3',title:'Prepare and publish internet trivia #3',category:'trivia'},
+    {key:'promo',title:'Prepare and publish subscription promotion / meme',category:'posting'}
+  ];
+  const chosen=definitions.filter(x=>x.required||plan[x.key]?.done||plan[x.key]?.time||plan[x.key]?.note?.trim());
+  const {data:existing,error:readError}=await sb.from('tasks').select('title').eq('task_date',date);
+  if(readError){toast('Could not check existing quests: '+readError.message);return;}
+  const existingTitles=new Set((existing||[]).map(x=>x.title));
+  const rows=chosen.filter(x=>!existingTitles.has(x.title)).map(x=>({
+    title:x.title,category:x.category,status:plan[x.key]?.done?'prepared':'pending',
+    task_date:date,scheduled_time:plan[x.key]?.time||null,
+    notes:plan[x.key]?.note?.trim()||'Created from Batch Production Room. Add final content details and Facebook post link after scheduling.',
+    updated_at:new Date().toISOString()
+  }));
+  if(!rows.length){toast('These batch quests already exist for that date.');return;}
+  const {error}=await sb.from('tasks').insert(rows);
+  if(error){toast('Quest generation failed: '+error.message);return;}
+  $('day').value=date;
+  await load();
+  showView('quests');
+  toast(rows.length+' batch quest(s) added to your quest tracker.');
+}
 function updateBatchProgress(){const all=BATCH_ITEMS.map(k=>document.querySelector('[data-batch="'+k+'"]')).filter(Boolean);const core=['weather','trivia1','trivia2'];const done=all.filter(x=>x.checked).length;const coreDone=core.filter(k=>document.querySelector('[data-batch="'+k+'"]')?.checked).length;const count=$('batchCount');if(count)count.textContent=done+' / '+all.length;const bar=$('batchProgress');if(bar)bar.style.width=(done/all.length*100)+'%';const hint=$('batchHint');if(hint)hint.textContent=coreDone===3?'Core batch ready. Optional content can be added if time allows.':(3-coreDone)+' core item(s) still to prepare.';}
 function resetBatchChecklist(){if(!confirm('Reset this batch plan, including times and notes?'))return;localStorage.removeItem(batchStorageKey());loadBatchPlan();}
 $('batchDate')?.addEventListener('change',loadBatchPlan);
