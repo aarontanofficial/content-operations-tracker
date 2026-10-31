@@ -236,7 +236,7 @@ input,select,textarea{border-color:rgba(75,185,231,.22);background:rgba(3,16,36,
 .batch-progress i{display:block;height:100%;background:linear-gradient(90deg,#26d7f2,#7163ff);box-shadow:0 0 14px #28c9ef;transition:width .25s}
 @media(max-width:600px){.batch-list{grid-template-columns:1fr}}
 
-</style>
+.batch-date-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.batch-date-row input{max-width:190px}.batch-work-list{grid-template-columns:repeat(2,minmax(0,1fr))}.batch-work{display:grid;gap:8px;padding:11px;border:1px solid rgba(79,192,235,.2);border-radius:14px;background:rgba(4,17,39,.62)}.batch-work .batch-item{border:0;padding:0;background:transparent}.batch-work textarea{width:100%;resize:vertical;min-height:54px;font-size:12px}@media(max-width:700px){.batch-work-list{grid-template-columns:1fr}}</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -270,16 +270,17 @@ input,select,textarea{border-color:rgba(75,185,231,.22);background:rgba(3,16,36,
 
   <section class="view on" id="v-overview">
     <section class="batch-planner" id="batchPlanner">
-      <div class="batch-head"><div><div class="batch-kicker">Daily mission · 16:00 Philippine time</div><h2 style="margin:6px 0">Tomorrow's Batch</h2><p class="meta" style="margin:0">Prepare tomorrow's posts in one sitting after the updated PAGASA weather bulletin.</p></div><div><div class="hn">Batch readiness</div><strong id="batchCount" style="font-size:26px">0 / 5</strong></div></div>
+      <div class="batch-head"><div><div class="batch-kicker">Daily mission · 16:00 Philippine time</div><h2 style="margin:6px 0">Batch Production Room</h2><p class="meta" style="margin:0">Prepare and schedule the next day's content in one sitting.</p></div><div><div class="hn">Batch readiness</div><strong id="batchCount" style="font-size:26px">0 / 5</strong></div></div>
+      <div class="batch-date-row"><label class="meta" for="batchDate">Target posting date</label><input id="batchDate" type="date" aria-label="Target posting date"><button class="sec" type="button" onclick="setBatchTomorrow()">Tomorrow</button></div>
       <div class="batch-progress"><i id="batchProgress" style="width:0%"></i></div>
-      <div class="batch-list" id="batchChecklist">
-        <label class="batch-item"><input type="checkbox" data-batch="weather"><span>Weather update poster <b>· Core</b></span></label>
-        <label class="batch-item"><input type="checkbox" data-batch="trivia1"><span>Internet trivia #1 <b>· Core</b></span></label>
-        <label class="batch-item"><input type="checkbox" data-batch="trivia2"><span>Internet trivia #2 <b>· Core</b></span></label>
-        <label class="batch-item"><input type="checkbox" data-batch="trivia3"><span>Internet trivia #3 <small class="meta">· Optional</small></span></label>
-        <label class="batch-item"><input type="checkbox" data-batch="promo"><span>Subscription promo / meme <small class="meta">· Optional</small></span></label>
+      <div class="batch-list batch-work-list" id="batchChecklist">
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="weather"><span>Weather update poster <b>· Core</b></span></label><input type="time" data-batch-time="weather" aria-label="Weather post time"><textarea data-batch-note="weather" rows="2" placeholder="Weather poster notes / source"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia1"><span>Internet trivia #1 <b>· Core</b></span></label><input type="time" data-batch-time="trivia1" aria-label="Trivia one post time"><textarea data-batch-note="trivia1" rows="2" placeholder="Topic or caption notes"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia2"><span>Internet trivia #2 <b>· Core</b></span></label><input type="time" data-batch-time="trivia2" aria-label="Trivia two post time"><textarea data-batch-note="trivia2" rows="2" placeholder="Topic or caption notes"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia3"><span>Internet trivia #3 <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="trivia3" aria-label="Trivia three post time"><textarea data-batch-note="trivia3" rows="2" placeholder="Optional topic or caption"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="promo"><span>Subscription promotion / meme <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="promo" aria-label="Promotion post time"><textarea data-batch-note="promo" rows="2" placeholder="Offer, plan or meme idea"></textarea></div>
       </div>
-      <div class="row" style="margin-top:12px;align-items:center"><span class="meta" id="batchHint">Core missions: weather + 2 trivia posts.</span><button class="sec" type="button" onclick="resetBatchChecklist()">Reset checklist</button></div>
+      <div class="row" style="margin-top:12px;align-items:center;flex-wrap:wrap"><span class="meta" id="batchHint">Core missions: weather + 2 trivia posts.</span><button class="sec" type="button" onclick="resetBatchChecklist()">Reset this batch</button><button type="button" onclick="saveBatchPlan()">Save batch plan</button></div>
     </section>
     <section class="ops-cockpit" id="opsCockpit">
       <div class="ops-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS · COMMAND CENTER</div><h2>Operations overview</h2><p class="meta">A manager-first view of the publishing pipeline and workload.</p></div><button class="sec" onclick="showView('reports')">Open reports →</button></div>
@@ -862,14 +863,20 @@ setInterval(checkReminders, 60000); setTimeout(checkReminders, 4000);
 function markFired(k){ try { localStorage.setItem('cot_fired_'+today()+'_'+k,'1'); } catch(e) {} }
 function scheduleBatchReminder(){ const el=$('notifStatus'); if (!localStorage.getItem('cot_batch_reminder')) { if(el)el.textContent='4:00 PM reminder is not enabled on this device yet.'; return; } if (!('Notification' in window) || Notification.permission!=='granted') { if(el)el.textContent='Allow notifications in this browser to receive the reminder.'; return; } if(el)el.textContent='4:00 PM reminder enabled here. Keep the app open for this local reminder.'; }
 
-// Personal one-person-team batch checklist, saved locally per planned posting date.
-function batchTargetDate(){const d=new Date();d.setDate(d.getDate()+1);return d.toLocaleDateString('en-CA',{timeZone:'Asia/Manila'});}
+// One-person-team batch planner. Plans are stored locally on this device.
+const BATCH_ITEMS=['weather','trivia1','trivia2','trivia3','promo'];
+function batchTomorrowISO(){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Manila',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));const d=new Date(Date.UTC(+p.year,+p.month-1,+p.day+1));return d.toISOString().slice(0,10);}
+function batchTargetDate(){return $('batchDate')?.value||batchTomorrowISO();}
 function batchStorageKey(){return 'sh_batch_'+batchTargetDate();}
-function renderBatchChecklist(){const key=batchStorageKey();let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){}document.querySelectorAll('[data-batch]').forEach(el=>{el.checked=!!saved[el.dataset.batch]});updateBatchProgress();}
-function updateBatchProgress(){const all=[...document.querySelectorAll('[data-batch]')];const core=['weather','trivia1','trivia2'];const done=all.filter(x=>x.checked).length;const coreDone=core.filter(k=>document.querySelector('[data-batch="'+k+'"]')?.checked).length;const count=$('batchCount');if(count)count.textContent=done+' / '+all.length;const bar=$('batchProgress');if(bar)bar.style.width=(done/all.length*100)+'%';const hint=$('batchHint');if(hint)hint.textContent=coreDone===3?'Core batch ready. Optional content can be added if time allows.':(3-coreDone)+' core item(s) still to prepare.';}
-function resetBatchChecklist(){if(!confirm('Reset tomorrow’s batch checklist?'))return;localStorage.removeItem(batchStorageKey());renderBatchChecklist();}
-document.addEventListener('change',e=>{if(!e.target.matches('[data-batch]'))return;const key=batchStorageKey();let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch(err){}saved[e.target.dataset.batch]=e.target.checked;localStorage.setItem(key,JSON.stringify(saved));updateBatchProgress();});
-renderBatchChecklist();
+function setBatchTomorrow(){const el=$('batchDate');if(el){el.value=batchTomorrowISO();loadBatchPlan();}}
+function saveBatchPlan(){const data={};BATCH_ITEMS.forEach(k=>{data[k]={done:!!document.querySelector('[data-batch="'+k+'"]')?.checked,time:document.querySelector('[data-batch-time="'+k+'"]')?.value||'',note:document.querySelector('[data-batch-note="'+k+'"]')?.value||''};});try{localStorage.setItem(batchStorageKey(),JSON.stringify(data));toast('Batch plan saved on this device.');}catch(e){toast('Could not save batch plan. Check device storage.');}updateBatchProgress();}
+function loadBatchPlan(){let data={};try{data=JSON.parse(localStorage.getItem(batchStorageKey())||'{}')}catch(e){}BATCH_ITEMS.forEach(k=>{const item=data[k]||{};const check=document.querySelector('[data-batch="'+k+'"]');const time=document.querySelector('[data-batch-time="'+k+'"]');const note=document.querySelector('[data-batch-note="'+k+'"]');if(check)check.checked=!!item.done;if(time)time.value=item.time||'';if(note)note.value=item.note||'';});updateBatchProgress();}
+function updateBatchProgress(){const all=BATCH_ITEMS.map(k=>document.querySelector('[data-batch="'+k+'"]')).filter(Boolean);const core=['weather','trivia1','trivia2'];const done=all.filter(x=>x.checked).length;const coreDone=core.filter(k=>document.querySelector('[data-batch="'+k+'"]')?.checked).length;const count=$('batchCount');if(count)count.textContent=done+' / '+all.length;const bar=$('batchProgress');if(bar)bar.style.width=(done/all.length*100)+'%';const hint=$('batchHint');if(hint)hint.textContent=coreDone===3?'Core batch ready. Optional content can be added if time allows.':(3-coreDone)+' core item(s) still to prepare.';}
+function resetBatchChecklist(){if(!confirm('Reset this batch plan, including times and notes?'))return;localStorage.removeItem(batchStorageKey());loadBatchPlan();}
+$('batchDate')?.addEventListener('change',loadBatchPlan);
+document.addEventListener('change',e=>{if(e.target.matches('[data-batch],[data-batch-time],[data-batch-note]')){saveBatchPlan();}});
+document.addEventListener('input',e=>{if(e.target.matches('[data-batch-time],[data-batch-note]')){saveBatchPlan();}});
+$('batchDate').value=batchTomorrowISO();loadBatchPlan();
 /* Live preview of the quest being drafted (screenshot thumbnail is for checking only; it is not saved). */
 function updatePreview(){
   const t = $('title').value.trim(), d = $('tdate').value, tm = $('ttime').value, u = $('url').value.trim(), n = $('notes').value.trim(), st = $('status').value, c = $('cat').value, im = $('shotImg');
