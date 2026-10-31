@@ -300,7 +300,30 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
 @media(prefers-reduced-motion:reduce){.view.on,.card,.task{animation:none!important}}
 
 #v-quests{max-width:1120px;margin:0 auto}.quest-command{position:relative;overflow:hidden;padding:clamp(20px,4vw,38px);margin-bottom:16px;border:1px solid rgba(75,222,255,.38);border-radius:24px;background:radial-gradient(ellipse at 90% 0,rgba(34,164,224,.24),transparent 42%),radial-gradient(ellipse at 0 100%,rgba(108,71,210,.18),transparent 45%),linear-gradient(135deg,#07172f,#0c1231 62%,#171035);box-shadow:0 22px 55px rgba(0,0,0,.3)}.quest-command:after{content:"";position:absolute;width:230px;height:230px;right:-75px;bottom:-125px;border:1px solid rgba(83,225,255,.2);border-radius:50%;box-shadow:0 0 0 22px rgba(83,225,255,.035),0 0 0 45px rgba(83,225,255,.025);pointer-events:none}.quest-eyebrow{font-size:10px;font-weight:900;letter-spacing:.22em;color:#65eaff}.quest-title-row{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:10px 0 22px}.quest-title-row h1{font-size:clamp(30px,5vw,46px);line-height:1;margin:7px 0;color:#f2f8ff;letter-spacing:-.04em}.quest-title-row p{margin:8px 0 0;color:#a9bddc;font-size:14px}.quest-tools{display:flex;align-items:end;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid rgba(112,195,255,.16);border-bottom:1px solid rgba(112,195,255,.16)}.quest-tools label{display:grid;gap:5px;color:#74dff8;font-size:9px;font-weight:900;letter-spacing:.14em;max-width:210px;width:100%}.quest-tools input{margin:0;background:rgba(1,8,23,.65)}.quest-tools #progress{font-size:12px;color:#b7cae5;text-align:right}.quest-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.qmetric{padding:13px 15px;border:1px solid rgba(116,178,236,.2);border-radius:14px;background:rgba(3,13,34,.64)}.qmetric b,.qmetric span{display:block}.qmetric b{font-size:28px;line-height:1.1;color:#f3f8ff}.qmetric span{margin-top:5px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9bb1d3}.qmetric.pending{border-color:rgba(255,190,90,.3)}.qmetric.prepared{border-color:rgba(87,192,255,.3)}.qmetric.scheduled{border-color:rgba(185,144,255,.35)}.qmetric.cleared{border-color:rgba(69,227,176,.35)}.quest-search{display:flex;align-items:center;gap:10px;padding:0 14px;border:1px solid rgba(110,185,242,.25);border-radius:13px;background:rgba(1,8,23,.55)}.quest-search span{font-size:24px;color:#63e5ff}.quest-search input{border:0!important;box-shadow:none!important;background:transparent!important;margin:0;padding:14px 0}.quest-board-panel{padding:clamp(15px,3vw,26px);border:1px solid rgba(110,171,237,.22);border-radius:22px;background:linear-gradient(145deg,rgba(10,22,49,.94),rgba(9,12,34,.96));box-shadow:0 16px 40px rgba(0,0,0,.23)}.quest-board-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin-bottom:14px}.quest-board-head h2{font-size:23px;margin:5px 0 0;color:#f0f6ff}.quest-board-note{font-size:11px;color:#8ea8cf}#v-quests .cats{margin:12px 0 6px;flex-wrap:wrap}#v-quests .task{position:relative;margin:9px 0 0;padding:19px 15px 17px 19px;border:1px solid rgba(108,169,230,.16);border-radius:15px;background:linear-gradient(110deg,rgba(20,39,75,.58),rgba(8,17,42,.42))}#v-quests .task:before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;border-radius:4px;background:#5acfff}#v-quests .task.done:before{background:#42d8a4}#v-quests .task .t{font-size:16px;font-weight:800;color:#f2f7ff}#v-quests .task .row{margin-top:12px!important;gap:8px}.quest-empty{display:grid;justify-items:center;gap:8px;padding:38px 12px;text-align:center;color:#9eb2d2}.quest-empty b{font-size:18px;color:#edf6ff}.quest-empty span{font-size:12px}@media(max-width:650px){.quest-title-row,.quest-tools,.quest-board-head{align-items:stretch;flex-direction:column}.quest-title-row button{width:100%}.quest-tools label{max-width:none}.quest-tools #progress{text-align:left}.quest-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.quest-board-note{display:none}#v-quests .task .row>*{flex:1 1 42%}}
-</style>
+/* Hunter Command Center redesign */
+.sh-home{position:relative;overflow:hidden;padding:clamp(22px,4vw,38px);border:1px solid rgba(115,151,255,.42);border-radius:28px;background:radial-gradient(ellipse at 85% 0%,rgba(43,119,255,.28),transparent 42%),linear-gradient(135deg,rgba(8,17,54,.97),rgba(20,12,52,.94) 58%,rgba(5,28,48,.96));box-shadow:0 22px 65px rgba(0,0,30,.34),inset 0 1px rgba(255,255,255,.12);margin:8px 0 16px}
+.sh-home:after{content:"";position:absolute;width:260px;height:260px;border:1px solid rgba(91,183,255,.16);border-radius:50%;right:-90px;bottom:-160px;box-shadow:0 0 0 22px rgba(91,183,255,.035),0 0 0 48px rgba(91,183,255,.025);pointer-events:none}
+.sh-home .sh-eyebrow{color:#80caff;font-size:11px;font-weight:800;letter-spacing:.17em}
+.sh-home h1{font-size:clamp(30px,5vw,48px);line-height:1.04;letter-spacing:-.04em;margin:16px 0 10px;color:#f5f8ff}
+.sh-home .sh-subtitle{max-width:650px;color:#bac9ed;font-size:15px}
+.sh-homegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:26px 0 20px}
+.sh-home-stat{padding:16px;border-radius:18px;background:rgba(255,255,255,.065);border:1px solid rgba(160,190,255,.18);min-width:0}
+.sh-home-stat span{display:block;color:#9fb6df;font-size:12px;text-transform:uppercase;letter-spacing:.09em}
+.sh-home-stat b{display:block;color:#fff;font-size:clamp(27px,4vw,36px);line-height:1.15;margin:7px 0 3px}
+.sh-home-stat small{color:#aebfe1;font-size:12px}
+.sh-home-bottom{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sh-home-progress{flex:1;min-width:190px}
+.sh-home-progresshead{display:flex;justify-content:space-between;gap:12px;color:#b9c9e9;font-size:11px;font-weight:800;letter-spacing:.1em;margin-bottom:9px}
+.sh-home-track{height:10px;border-radius:20px;background:rgba(255,255,255,.13);overflow:hidden}
+.sh-home-track i{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#35c6ff,#7b8cff,#bd82ff);box-shadow:0 0 18px rgba(64,172,255,.6)}
+.sh-home-actions{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:1}
+.sh-home-action{width:auto;min-height:42px;padding:10px 15px;border-radius:13px;background:linear-gradient(135deg,#267eff,#7655ef);color:white;border:1px solid rgba(255,255,255,.2);font-size:12px;letter-spacing:.04em}
+.sh-home-action.secondary{background:rgba(255,255,255,.08);border:1px solid rgba(170,194,255,.28);box-shadow:none}
+#pcard{margin-bottom:16px}
+#opsCockpit{margin:0 0 16px;padding:20px;border-radius:24px;background:var(--glass);border:1px solid var(--glassb)}
+#opsCockpit .ops-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+#opsCockpit .ops-head h2{font-size:21px;margin:5px 0}
+@media(max-width:560px){.sh-homegrid{gap:7px}.sh-home-stat{padding:12px 10px}.sh-home-stat span,.sh-home-stat small{font-size:10px}.sh-home-actions{width:100%}.sh-home-action{flex:1;min-width:110px;font-size:11px;padding:9px 10px}.sh-home{border-radius:22px;padding:21px 17px}}</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -333,36 +356,10 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
   <nav class="tabs" id="tabs"><button class="tab on" data-v="overview" aria-label="Home" title="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg><span class="lbl">Home</span></button><button class="tab" data-v="quests" aria-label="Quests" title="Quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M3 6l1.6 1.6L7 5M3 12l1.6 1.6L7 11M3 18l1.6 1.6L7 17"/></svg><span class="lbl">Quests</span></button><button class="tab" data-v="add" aria-label="Add quest" title="Add quest"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lbl">Add</span></button><button class="tab" data-v="album" aria-label="Album" title="Album"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg><span class="lbl">Album</span></button><button class="tab" data-v="reports" aria-label="Reports" title="Reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V4M16 20v-7M2 20h20"/></svg><span class="lbl">Reports</span></button><button class="tab" data-v="hunter" aria-label="Hunter and shop" title="Hunter and shop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.6-3.2 7.8-8 9-4.8-1.2-8-4.4-8-9V6z"/><circle cx="12" cy="10" r="2.6"/><path d="M7.6 17c1-2.4 2.8-3.4 4.4-3.4s3.4 1 4.4 3.4"/></svg><span class="lbl">Hunter</span></button></nav>
 
   <section class="view on" id="v-overview">
-    <section class="batch-planner" id="batchPlanner">
-      <div class="batch-head"><div><div class="batch-kicker">Daily mission · 16:00 Philippine time</div><h2 style="margin:6px 0">Batch Production Room</h2><p class="meta" style="margin:0">Prepare and schedule the next day's content in one sitting.</p></div><div><div class="hn">Batch readiness</div><strong id="batchCount" style="font-size:26px">0 / 5</strong></div></div>
-      <div class="batch-date-row"><label class="meta" for="batchDate">Target posting date</label><input id="batchDate" type="date" aria-label="Target posting date"><button class="sec" type="button" onclick="setBatchTomorrow()">Tomorrow</button></div>
-      <div class="batch-progress"><i id="batchProgress" style="width:0%"></i></div>
-      <div class="batch-list batch-work-list" id="batchChecklist">
-        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="weather"><span>Weather update poster <b>· Core</b></span></label><input type="time" data-batch-time="weather" aria-label="Weather post time"><textarea data-batch-note="weather" rows="2" placeholder="Weather poster notes / source"></textarea></div>
-        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia1"><span>Internet trivia #1 <b>· Core</b></span></label><input type="time" data-batch-time="trivia1" aria-label="Trivia one post time"><textarea data-batch-note="trivia1" rows="2" placeholder="Topic or caption notes"></textarea></div>
-        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia2"><span>Internet trivia #2 <b>· Core</b></span></label><input type="time" data-batch-time="trivia2" aria-label="Trivia two post time"><textarea data-batch-note="trivia2" rows="2" placeholder="Topic or caption notes"></textarea></div>
-        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia3"><span>Internet trivia #3 <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="trivia3" aria-label="Trivia three post time"><textarea data-batch-note="trivia3" rows="2" placeholder="Optional topic or caption"></textarea></div>
-        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="promo"><span>Subscription promotion / meme <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="promo" aria-label="Promotion post time"><textarea data-batch-note="promo" rows="2" placeholder="Offer, plan or meme idea"></textarea></div>
-      </div>
-      <div class="row" style="margin-top:12px;align-items:center;flex-wrap:wrap"><span class="meta" id="batchHint">Core missions: weather + 2 trivia posts.</span><button class="sec" type="button" onclick="resetBatchChecklist()">Reset this batch</button><button class="sec" type="button" onclick="generateBatchQuests()">Generate quests</button><button type="button" onclick="saveBatchPlan(true)">Save batch plan</button></div>
-    </section>
-    <section class="ops-cockpit" id="opsCockpit">
-      <div class="ops-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS · COMMAND CENTER</div><h2>Operations overview</h2><p class="meta">A manager-first view of the publishing pipeline and workload.</p></div><button class="sec" onclick="showView('reports')">Open reports →</button></div>
-      <div class="ops-kpis">
-        <div class="ops-kpi"><span>In pipeline</span><b id="opsPipeline">—</b><small>Prepared + scheduled</small></div>
-        <div class="ops-kpi"><span>Published</span><b id="opsPublished">—</b><small>Confirmed posts</small></div>
-        <div class="ops-kpi"><span>Needs attention</span><b id="opsAttention">—</b><small>Overdue + pending</small></div>
-        <div class="ops-kpi"><span>Completion rate</span><b id="opsRate">—</b><small>All tracked tasks</small></div>
-      </div>
-      <div class="ops-panels">
-        <div class="card"><h3>Publishing pipeline</h3><div id="opsPipelineBars" class="ops-bars"><p class="meta">Loading workflow data…</p></div></div>
-        <div class="card"><h3>Manager's attention list</h3><div id="opsAlerts" class="ops-alerts"><p class="meta">Loading priorities…</p></div></div>
-      </div>
-    </section>
     <div class="sh-home">
-      <div class="sh-eyebrow"><i class="sh-live"></i> CONTENT OPERATIONS · COMMAND CENTER ONLINE</div>
+      <div class="sh-eyebrow"><i class="sh-live"></i> SHADOW HUNTER · DAILY COMMAND CENTER</div>
       <h1 id="shGreeting">Welcome back, Hunter.</h1>
-      <div class="sh-subtitle" id="shDate">Your real-world missions build your Hunter progression. One quest at a time.</div>
+      <div class="sh-subtitle" id="shDate">Your content workflow is your real-world dungeon. Prepare, schedule, publish, and earn your next rank.</div>
       <div class="sh-homegrid">
         <div class="sh-home-stat"><span>Daily quests</span><b id="shQuestCount">—</b><small id="shQuestHint">Loading missions</small></div>
         <div class="sh-home-stat"><span>Cleared today</span><b id="shDoneCount">—</b><small id="shDoneHint">Completed or published</small></div>
@@ -373,7 +370,7 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
           <div class="sh-home-progresshead"><span>DAILY MISSION PROGRESS</span><b id="shProgressText">0%</b></div>
           <div class="sh-home-track" role="progressbar" aria-label="Daily mission progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="shProgressBar"><i id="shProgressFill"></i></div>
         </div>
-        <button class="sh-home-action" onclick="showView('quests')">OPEN QUEST LOG →</button>
+        <div class="sh-home-actions"><button class="sh-home-action" onclick="showView('quests')">OPEN QUEST LOG →</button><button class="sh-home-action secondary" onclick="showView('add')">＋ NEW QUEST</button><button class="sh-home-action secondary" onclick="showView('hunter');setSub('model')">VIEW 3D HUNTER</button></div>
       </div>
     </div>
     <div class="card pcard" id="pcard">
@@ -389,7 +386,33 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
     </div>
     <button class="go" onclick="showView('hunter'); setSub('custom')">Customize avatar</button>
   </div>
-  <div id="tip"></div><div id="risk"></div>
+  <section class="ops-cockpit" id="opsCockpit">
+      <div class="ops-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS · COMMAND CENTER</div><h2>Operations overview</h2><p class="meta">Your publishing pipeline at a glance. Focus on what needs action next.</p></div><button class="sec" onclick="showView('reports')">Open reports →</button></div>
+      <div class="ops-kpis">
+        <div class="ops-kpi"><span>In pipeline</span><b id="opsPipeline">—</b><small>Prepared + scheduled</small></div>
+        <div class="ops-kpi"><span>Published</span><b id="opsPublished">—</b><small>Confirmed posts</small></div>
+        <div class="ops-kpi"><span>Needs attention</span><b id="opsAttention">—</b><small>Overdue + pending</small></div>
+        <div class="ops-kpi"><span>Completion rate</span><b id="opsRate">—</b><small>All tracked tasks</small></div>
+      </div>
+      <div class="ops-panels">
+        <div class="card"><h3>Publishing pipeline</h3><div id="opsPipelineBars" class="ops-bars"><p class="meta">Loading workflow data…</p></div></div>
+        <div class="card"><h3>Needs your attention</h3><div id="opsAlerts" class="ops-alerts"><p class="meta">Loading priorities…</p></div></div>
+      </div>
+    </section>
+    <section class="batch-planner" id="batchPlanner">
+      <div class="batch-head"><div><div class="batch-kicker">Daily mission · 16:00 Philippine time</div><h2 style="margin:6px 0">Batch Production Room</h2><p class="meta" style="margin:0">Prepare and schedule the next day's content in one sitting.</p></div><div><div class="hn">Batch readiness</div><strong id="batchCount" style="font-size:26px">0 / 5</strong></div></div>
+      <div class="batch-date-row"><label class="meta" for="batchDate">Target posting date</label><input id="batchDate" type="date" aria-label="Target posting date"><button class="sec" type="button" onclick="setBatchTomorrow()">Tomorrow</button></div>
+      <div class="batch-progress"><i id="batchProgress" style="width:0%"></i></div>
+      <div class="batch-list batch-work-list" id="batchChecklist">
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="weather"><span>Weather update poster <b>· Core</b></span></label><input type="time" data-batch-time="weather" aria-label="Weather post time"><textarea data-batch-note="weather" rows="2" placeholder="Weather poster notes / source"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia1"><span>Internet trivia #1 <b>· Core</b></span></label><input type="time" data-batch-time="trivia1" aria-label="Trivia one post time"><textarea data-batch-note="trivia1" rows="2" placeholder="Topic or caption notes"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia2"><span>Internet trivia #2 <b>· Core</b></span></label><input type="time" data-batch-time="trivia2" aria-label="Trivia two post time"><textarea data-batch-note="trivia2" rows="2" placeholder="Topic or caption notes"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="trivia3"><span>Internet trivia #3 <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="trivia3" aria-label="Trivia three post time"><textarea data-batch-note="trivia3" rows="2" placeholder="Optional topic or caption"></textarea></div>
+        <div class="batch-work"><label class="batch-item"><input type="checkbox" data-batch="promo"><span>Subscription promotion / meme <small class="meta">· Optional</small></span></label><input type="time" data-batch-time="promo" aria-label="Promotion post time"><textarea data-batch-note="promo" rows="2" placeholder="Offer, plan or meme idea"></textarea></div>
+      </div>
+      <div class="row" style="margin-top:12px;align-items:center;flex-wrap:wrap"><span class="meta" id="batchHint">Core missions: weather + 2 trivia posts.</span><button class="sec" type="button" onclick="resetBatchChecklist()">Reset this batch</button><button class="sec" type="button" onclick="generateBatchQuests()">Generate quests</button><button type="button" onclick="saveBatchPlan(true)">Save batch plan</button></div>
+    </section>
+    <div id="tip"></div><div id="risk"></div>
     <div class="card"><h2>Today</h2><div class="tiles" id="tiles"></div></div>
     <div class="two">
       <div class="card"><h2>Next up</h2><div id="next"></div></div>
