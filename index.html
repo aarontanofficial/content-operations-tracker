@@ -829,6 +829,12 @@ async function exportCsv(){
 function fired(k){ const key = 'fired_' + today(); const s = JSON.parse(localStorage.getItem(key) || '[]'); if (s.includes(k)) return true; s.push(k); localStorage.setItem(key, JSON.stringify(s)); return false; }
 function notify(title, body){
   const el = document.createElement('div'); el.className = 'alert'; el.innerHTML = `<span><b>${esc(title)}</b><br>${esc(body)}</span><button class="sec" onclick="this.parentNode.remove()">OK</button>`; $('banner').appendChild(el);
+  // Native device notification while the app is active. Closed-app delivery uses server push.
+  if ('Notification' in window && Notification.permission === 'granted') {
+    const show = reg => reg.showNotification(title,{body,icon:'icon.svg',badge:'icon.svg',tag:'sh-'+title.toLowerCase().replace(/[^a-z0-9]+/g,'-'),renotify:false,data:{url:'./'}});
+    if ('serviceWorker' in navigator) navigator.serviceWorker.ready.then(show).catch(()=>{});
+    else { try { new Notification(title,{body,icon:'icon.svg'}); } catch(e) {} }
+  }
 }
 function b64ToU8(s){ const p = '='.repeat((4 - s.length % 4) % 4); const b = atob((s + p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(b, c => c.charCodeAt(0)); }
 async function enableNotif(){
@@ -848,7 +854,8 @@ async function enableNotif(){
 async function checkReminders(){
   const {data:{session}} = await sb.auth.getSession(); if (!session) return;
   const {data} = await sb.from('tasks').select('id,title,status,scheduled_time').eq('task_date', today()); const t = data || []; const now = mins(nowHM());
-  if (now >= 960 && !fired('batch_1600')) { notify('Content batch time', 'PAGASA has its updated weather post. Prepare tomorrow’s weather poster, trivia, and optional promotions, then schedule them together.'); markFired('batch_1600'); }
+  if (now >= 960 && !fired('batch_1600')) { notify('⚔ 4:00 PM — Batch Production', 'PAGASA weather update time. Prepare tomorrow’s weather poster and two internet trivia posts, then schedule the batch together.'); markFired('batch_1600'); }
+  if (now >= 1020 && !fired('batch_followup')) { const key='sh_batch_'+addDays(today(),1); let plan={}; try{plan=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){} const core=['weather','trivia1','trivia2']; const missing=core.filter(k=>!plan[k]?.done); if(missing.length) notify('Batch mission incomplete', missing.length+' core item(s) still need preparation for tomorrow. Open Batch Production Room to continue.'); markFired('batch_followup'); }
   t.filter(x => x.scheduled_time && ['pending','prepared','scheduled'].includes(x.status)).forEach(x => {
     const m = mins(x.scheduled_time.slice(0,5));
     if (now >= m - 30 && now < m && !fired('pre_' + x.id)) notify('Coming up', `${x.title} at ${x.scheduled_time.slice(0,5)}`);
@@ -861,7 +868,7 @@ async function checkReminders(){
 }
 setInterval(checkReminders, 60000); setTimeout(checkReminders, 4000);
 function markFired(k){ try { localStorage.setItem('cot_fired_'+today()+'_'+k,'1'); } catch(e) {} }
-function scheduleBatchReminder(){ const el=$('notifStatus'); if (!localStorage.getItem('cot_batch_reminder')) { if(el)el.textContent='4:00 PM reminder is not enabled on this device yet.'; return; } if (!('Notification' in window) || Notification.permission!=='granted') { if(el)el.textContent='Allow notifications in this browser to receive the reminder.'; return; } if(el)el.textContent='4:00 PM reminder enabled here. Keep the app open for this local reminder.'; }
+function scheduleBatchReminder(){ const el=$('notifStatus'); if (!localStorage.getItem('cot_batch_reminder')) { if(el)el.textContent='4:00 PM reminder is not enabled on this device yet.'; return; } if (!('Notification' in window) || Notification.permission!=='granted') { if(el)el.textContent='Allow notifications in this browser to receive the reminder.'; return; } if(el)el.textContent='Device notifications are allowed. 4:00 PM and follow-up alerts run while this app is open; closed-app push still needs a configured sender.'; }
 
 // One-person-team batch planner. Plans are stored locally on this device.
 const BATCH_ITEMS=['weather','trivia1','trivia2','trivia3','promo'];
