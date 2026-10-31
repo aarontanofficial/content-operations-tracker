@@ -236,7 +236,70 @@ input,select,textarea{border-color:rgba(75,185,231,.22);background:rgba(3,16,36,
 .batch-progress i{display:block;height:100%;background:linear-gradient(90deg,#26d7f2,#7163ff);box-shadow:0 0 14px #28c9ef;transition:width .25s}
 @media(max-width:600px){.batch-list{grid-template-columns:1fr}}
 
-.batch-date-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.batch-date-row input{max-width:190px}.batch-work-list{grid-template-columns:repeat(2,minmax(0,1fr))}.batch-work{display:grid;gap:8px;padding:11px;border:1px solid rgba(79,192,235,.2);border-radius:14px;background:rgba(4,17,39,.62)}.batch-work .batch-item{border:0;padding:0;background:transparent}.batch-work textarea{width:100%;resize:vertical;min-height:54px;font-size:12px}@media(max-width:700px){.batch-work-list{grid-template-columns:1fr}}</style>
+.batch-date-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.batch-date-row input{max-width:190px}.batch-work-list{grid-template-columns:repeat(2,minmax(0,1fr))}.batch-work{display:grid;gap:8px;padding:11px;border:1px solid rgba(79,192,235,.2);border-radius:14px;background:rgba(4,17,39,.62)}.batch-work .batch-item{border:0;padding:0;background:transparent}.batch-work textarea{width:100%;resize:vertical;min-height:54px;font-size:12px}@media(max-width:700px){.batch-work-list{grid-template-columns:1fr}}
+/* SHADOW HUNTER UI PASS — consistent visual system across every module */
+:root{--sh-cyan:#55eaff;--sh-blue:#557cff;--sh-violet:#9b70ff;--sh-line:rgba(91,207,255,.24);--sh-panel:linear-gradient(145deg,rgba(11,25,57,.94),rgba(12,13,39,.94))}
+body{background:radial-gradient(ellipse at 50% -15%,rgba(54,111,255,.24),transparent 48%),radial-gradient(ellipse at 100% 60%,rgba(106,54,204,.12),transparent 42%),linear-gradient(155deg,#050918,#080d22 55%,#09071b);background-attachment:fixed}
+main{max-width:1240px;padding:24px 22px 116px}
+#app{position:relative}
+#app:before{content:"SHADOW HUNTER  /  CONTENT OPERATIONS SYSTEM";display:block;margin:0 0 16px;padding:10px 14px;border:1px solid var(--sh-line);border-radius:12px;background:linear-gradient(90deg,rgba(24,67,112,.42),rgba(22,23,65,.35));color:#8beaff;font-size:10px;font-weight:900;letter-spacing:.22em}
+.tabs{position:sticky;top:10px;z-index:40;display:flex;gap:7px;padding:8px;margin:0 0 22px;border:1px solid rgba(102,194,255,.28);border-radius:18px;background:rgba(5,12,31,.88);box-shadow:0 12px 35px rgba(0,0,0,.34);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.tab{min-height:52px;border:1px solid transparent;border-radius:12px;color:#9baed5;transition:all .2s}
+.tab svg{width:21px;height:21px}
+.tab .lbl{display:inline;font-size:12px;letter-spacing:.04em;margin-left:7px}
+.tab.on{flex:1.35 1 0;background:linear-gradient(120deg,rgba(35,143,190,.3),rgba(92,78,206,.34));border-color:rgba(91,231,255,.5);color:#e9fbff;box-shadow:inset 0 0 22px rgba(48,184,255,.12),0 0 18px rgba(45,179,255,.13)}
+.view{min-height:45vh}
+.view.on{animation:viewIn .28s ease-out}
+.card,.glass,.ops-kpi{background:var(--sh-panel);border:1px solid rgba(115,157,255,.2);border-radius:18px;box-shadow:0 14px 36px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.045);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.card{padding:20px;margin-bottom:15px}
+.card h2,.view h2{color:#f0f6ff;letter-spacing:.015em}
+.card h2:before{content:"";display:inline-block;width:4px;height:17px;margin:0 9px -3px 0;border-radius:4px;background:linear-gradient(#59eaff,#7474ff);box-shadow:0 0 12px rgba(75,212,255,.65)}
+.meta{color:#9eafd1}
+input,select,textarea{border:1px solid rgba(122,167,235,.24);border-radius:12px;background:rgba(3,10,28,.7);color:#eef5ff}
+input:focus,select:focus,textarea:focus{border-color:#57dfff;box-shadow:0 0 0 3px rgba(58,192,255,.13),0 0 18px rgba(58,192,255,.1)}
+button{border-radius:12px;background:linear-gradient(115deg,#197eaa,#465bce 60%,#7853c5);box-shadow:0 7px 18px rgba(30,104,190,.22);letter-spacing:.015em}
+button.sec{background:rgba(21,37,72,.75);border:1px solid rgba(118,177,230,.26);color:#dceaff}
+button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
+.row{align-items:center}
+.ops-head{padding:20px 4px 16px}.ops-head h2{font-size:clamp(24px,3vw,34px);letter-spacing:-.025em}.ops-kpi{border-color:rgba(79,209,255,.2)}.ops-kpi b{color:#f1fbff;font-size:30px}
+.batch-planner{border:1px solid rgba(75,222,255,.42);border-radius:22px;background:radial-gradient(ellipse at 100% 0,rgba(40,161,219,.19),transparent 42%),linear-gradient(140deg,#0b1e3a,#10112f 72%,#15102e);box-shadow:0 18px 48px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.07)}
+.batch-work{padding:12px;border:1px solid rgba(92,191,255,.16);border-radius:14px;background:rgba(4,12,31,.55)}
+.batch-item{border:0;background:transparent;padding:3px 2px 8px;color:#e8f6ff}
+.batch-item b{color:#58e7ff}
+.task{padding:17px 2px;border-top:1px solid rgba(102,168,230,.18)}
+.task .t{font-size:16px;color:#f0f6ff;margin-bottom:5px}
+.task .row{flex-wrap:wrap}.task select{max-width:190px}
+.cats{gap:8px}.cat{border:1px solid rgba(105,167,232,.22);background:rgba(13,27,56,.8);color:#9fb6da;border-radius:999px;padding:8px 15px}.cat.on{background:linear-gradient(110deg,rgba(31,150,190,.4),rgba(99,79,197,.42));border-color:#59dfff;color:#fff}
+.seg{background:rgba(5,13,34,.86);border:1px solid rgba(104,177,239,.23);border-radius:15px;padding:5px;gap:5px}.seg button{border-radius:11px}.seg button.on{background:linear-gradient(110deg,#176f9e,#5452b9);box-shadow:0 0 18px rgba(67,172,255,.2)}
+.addgrid{gap:16px}.drop{border:1px dashed rgba(88,218,255,.48);border-radius:16px;background:rgba(6,25,51,.55);padding:22px;text-align:center}
+.grid{gap:12px}.grid>*{border-radius:14px;overflow:hidden;border:1px solid rgba(100,171,232,.2)}
+#rep{color:#dceaff}#rep table{width:100%;border-collapse:collapse}#rep th,#rep td{padding:10px;border-bottom:1px solid rgba(117,170,231,.18);text-align:left}
+.avprevbox,.stagewrap{border:1px solid rgba(82,207,255,.22);border-radius:20px;background:radial-gradient(ellipse at 50% 15%,rgba(43,143,214,.2),transparent 65%),rgba(4,10,28,.65);padding:14px}
+#v-hunter .card{margin-top:14px}
+#v-hunter .stage{border-color:rgba(91,222,255,.45)}
+#v-album .bar{height:12px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+#v-album .bar i{background:linear-gradient(90deg,#2cb7df,#696eff);box-shadow:0 0 14px rgba(74,205,255,.4)}
+#v-reports .card:first-child{border-top:2px solid rgba(83,221,255,.55)}
+#v-add .card:first-child{border-top:2px solid rgba(83,221,255,.55)}
+#v-quests .card:first-child{border-top:2px solid rgba(83,221,255,.55)}
+@media(max-width:760px){
+ main{padding:12px 12px 104px}
+ #app:before{font-size:9px;letter-spacing:.14em;margin-bottom:10px}
+ .tabs{top:5px;gap:3px;padding:5px;border-radius:15px;margin-bottom:15px}
+ .tab{min-height:46px;padding:0 4px;flex:1 1 0}
+ .tab .lbl{display:none}.tab.on{flex:1.25 1 0}.tab.on .lbl{display:inline;font-size:11px;margin-left:4px}
+ .tab svg{width:20px;height:20px}
+ .card{padding:15px;border-radius:16px}
+ .ops-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ops-panels{grid-template-columns:1fr}
+ .batch-list{grid-template-columns:1fr}
+ .batch-head{align-items:flex-start}
+ .task .row>*{flex:1 1 auto}
+}
+@media(min-width:761px){.tabs{justify-content:space-between}.tab{max-width:220px}}
+@media(prefers-reduced-motion:reduce){.view.on,.card,.task{animation:none!important}}
+
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
