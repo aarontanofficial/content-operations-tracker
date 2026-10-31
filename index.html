@@ -886,7 +886,7 @@ function updateBatchProgress(){const all=BATCH_ITEMS.map(k=>document.querySelect
 function resetBatchChecklist(){if(!confirm('Reset this batch plan, including times and notes?'))return;localStorage.removeItem(batchStorageKey());loadBatchPlan();}
 $('batchDate')?.addEventListener('change',loadBatchPlan);
 document.addEventListener('change',e=>{if(e.target.matches('[data-batch],[data-batch-time],[data-batch-note]')){saveBatchPlan(false);}});
-document.addEventListener('input',e=>{if(e.target.matches('[data-batch-time],[data-batch-note]')){saveBatchPlan();}});
+document.addEventListener('input',e=>{if(e.target.matches('[data-batch-time],[data-batch-note]')){clearTimeout(batchSaveTimer);batchSaveTimer=setTimeout(()=>saveBatchPlan(false),650);}});
 $('batchDate').value=batchTomorrowISO();loadBatchPlan();
 /* Live preview of the quest being drafted (screenshot thumbnail is for checking only; it is not saved). */
 function updatePreview(){
