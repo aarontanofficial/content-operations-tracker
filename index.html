@@ -697,6 +697,34 @@ async function load(){
   const {data, error} = await sb.from('tasks').select('*').eq('task_date', d).order('scheduled_time', {nullsFirst:false});
   if (error) { $('list').innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
   tasks = data; render(); loadStats();
+  syncBatchFromTasks(d, data || []);
+}
+async function syncBatchFromTasks(date, rows){
+  if(date!==batchTargetDate()) return;
+  const mapping={
+    'Prepare and publish weather update':'weather',
+    'Prepare and publish internet trivia #1':'trivia1',
+    'Prepare and publish internet trivia #2':'trivia2',
+    'Prepare and publish internet trivia #3':'trivia3',
+    'Prepare and publish subscription promotion / meme':'promo'
+  };
+  const plan=readBatchForm(); let changed=false;
+  (rows||[]).forEach(task=>{
+    const key=mapping[task.title];
+    if(!key) return;
+    const completed=['prepared','scheduled','published','completed'].includes(task.status);
+    if(!!plan[key].done!==completed){plan[key].done=completed;changed=true;}
+  });
+  if(!changed) return;
+  paintBatchPlan(plan);
+  try{localStorage.setItem('sh_batch_'+date,JSON.stringify(plan));}catch(e){}
+  const {data:auth}=await sb.auth.getUser();
+  if(auth?.user){
+    const {error}=await sb.from('batch_plans').upsert({
+      user_id:auth.user.id,plan_date:date,plan_data:plan,updated_at:new Date().toISOString()
+    },{onConflict:'user_id,plan_date'});
+    if(error) batchSyncLabel('Quest progress updated locally · cloud sync needs attention');
+  }
 }
 function render(){
   const done = tasks.filter(t => DONE.includes(t.status)).length;
