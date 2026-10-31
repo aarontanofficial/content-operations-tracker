@@ -1,11 +1,11 @@
 {
-  "name": "Content Operations Tracker",
-  "short_name": "Content Tracker",
+  "name": "Shadow Hunter · Content Operations RPG",
+  "short_name": "Shadow Hunter",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#05060f",
-  "theme_color": "#05060f",
+  "background_color": "#030612",
+  "theme_color": "#07152b",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
