@@ -1489,11 +1489,11 @@ function parseBusinessSuiteRows(words,img){
     if(!dateMatch)continue;
     const date=wdDate(dateMatch[1],+dateMatch[3])||ymd(null,MON[dateMatch[2].slice(0,3).toLowerCase()],dateMatch[3]);
     const time=timeOf(tm[0]);if(!date||!time)continue;
-    // Ignore non-post rows and controls; a scheduled Meta row has a Boost control nearby.
-    const hasBoost=ws.some(w=>/^boost$/i.test(w.text.trim()));
-    if(!hasBoost)continue;
+    // Use Boost only as an optional title boundary; OCR may miss that small button.
     const boost=ws.find(w=>/^boost$/i.test(w.text.trim()));
-    const titleWords=ws.filter(w=>w.bbox.x0>=45&&w.bbox.x1<boost.bbox.x0-4&&!/^(photo|video|reel|story|post)$/i.test(w.text.trim()));
+    const timeWord=ws.find(w=>new RegExp('^'+tm[1]+'[:.]'+tm[2],'i').test(w.text.trim()));
+    const boundary=boost?boost.bbox.x0:(timeWord?timeWord.bbox.x0:Math.max(...ws.map(w=>w.bbox.x1)));
+    const titleWords=ws.filter(w=>w.bbox.x0>=45&&w.bbox.x1<boundary-4&&!/^(photo|video|reel|story|post|boost)$/i.test(w.text.trim()));
     let title=cleanTitle(titleWords.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
     if(title.length<4)continue;
     candidates.push({cy:line.cy,date,time,title});
