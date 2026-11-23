@@ -181,7 +181,7 @@ button:focus-visible,.tab:focus-visible{outline:2px solid var(--o3);outline-offs
 @media(min-width:900px){
   #app{padding-left:258px;padding-right:24px;max-width:1600px;margin:0 auto}
   #tabs.tabs{position:fixed;left:18px;top:18px;bottom:18px;transform:none;width:220px;max-width:none;height:auto;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;padding:18px 12px;border-radius:26px;z-index:40}
-  #tabs.tabs:before{content:"SHADOW HUNTER";display:block;color:var(--txt);font-weight:900;font-size:15px;letter-spacing:.16em;padding:14px 12px 22px;border-bottom:1px solid var(--glassb);margin-bottom:8px}
+  #tabs.tabs:before{content:"AHBA CONTENT";display:block;color:var(--txt);font-weight:900;font-size:15px;letter-spacing:.16em;padding:14px 12px 22px;border-bottom:1px solid var(--glassb);margin-bottom:8px}
   #tabs .tab{flex:0 0 52px;width:100%;min-height:52px;justify-content:flex-start;gap:14px;padding:0 16px;border-radius:16px;color:var(--mut);background:transparent}
   #tabs .tab svg{width:22px;height:22px;flex:none}
   #tabs .tab .lbl{display:inline;font-size:14px;margin:0;font-weight:750}
@@ -242,7 +242,7 @@ input,select,textarea{border-color:rgba(75,185,231,.22);background:rgba(3,16,36,
 body{background:radial-gradient(ellipse at 50% -15%,rgba(54,111,255,.24),transparent 48%),radial-gradient(ellipse at 100% 60%,rgba(106,54,204,.12),transparent 42%),linear-gradient(155deg,#050918,#080d22 55%,#09071b);background-attachment:fixed}
 main{max-width:1240px;padding:24px 22px 116px}
 #app{position:relative}
-#app:before{content:"SHADOW HUNTER  /  CONTENT OPERATIONS SYSTEM";display:block;margin:0 0 16px;padding:10px 14px;border:1px solid var(--sh-line);border-radius:12px;background:linear-gradient(90deg,rgba(24,67,112,.42),rgba(22,23,65,.35));color:#8beaff;font-size:10px;font-weight:900;letter-spacing:.22em}
+#app:before{content:"AHBA  /  CONTENT OPERATIONS";display:block;margin:0 0 16px;padding:10px 14px;border:1px solid var(--sh-line);border-radius:12px;background:linear-gradient(90deg,rgba(24,67,112,.42),rgba(22,23,65,.35));color:#8beaff;font-size:10px;font-weight:900;letter-spacing:.22em}
 .tabs{position:sticky;top:10px;z-index:40;display:flex;gap:7px;padding:8px;margin:0 0 22px;border:1px solid rgba(102,194,255,.28);border-radius:18px;background:rgba(5,12,31,.88);box-shadow:0 12px 35px rgba(0,0,0,.34);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
 .tab{min-height:52px;border:1px solid transparent;border-radius:12px;color:#9baed5;transition:all .2s}
 .tab svg{width:21px;height:21px}
@@ -544,6 +544,37 @@ button.sec,.cat,.draft-preview-strip button{background:#fff!important;color:#334
 .report-table{width:100%!important;border-collapse:collapse!important}.report-table th,.report-table td{padding:11px!important;border-bottom:1px solid #e5eaf1!important;text-align:left!important;color:#334155!important}.report-table th{background:#f8fafc!important;color:#475569!important}
 @media(max-width:900px){#tabs.tabs{position:sticky!important;overflow-x:auto!important;justify-content:flex-start!important}#tabs.tabs:before{display:none!important}#tabs .tab{min-width:74px!important}main{padding:18px 14px 100px!important}.addgrid{grid-template-columns:1fr!important}.draft-preview-panel{position:relative!important;top:auto!important}}
 @media(max-width:600px){#tabs .tab{min-width:54px!important;padding:0 9px!important}#tabs .tab .lbl{font-size:11px!important}.sh-home{padding:18px!important}.sh-home-bottom{align-items:stretch!important;flex-direction:column!important}.sh-home-actions{display:grid!important;grid-template-columns:1fr 1fr!important}.sh-home-actions button{width:100%!important}.ops-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ops-panels{grid-template-columns:1fr!important}.draft{grid-template-columns:20px minmax(0,1fr)!important}.draft-image-preview{height:300px!important}}
+/* Final consistency pass */
+#app:before{content:none!important;display:none!important}
+#tabs.tabs:before{content:"AHBA  |  CONTENT OPERATIONS"!important}
+#v-quests .quest-command{background:#fff!important;color:#172033!important;border:1px solid #e2e8f0!important;box-shadow:0 3px 14px rgba(15,23,42,.045)!important}
+#v-quests .quest-command:after{display:none!important}
+#v-quests .quest-title-row h1,#v-quests .quest-title-row p{color:#172033!important}
+#v-quests .quest-eyebrow,#v-quests .quest-tools label,#v-quests .quest-tools #progress{color:#64748b!important}
+#v-quests .quest-tools{border-color:#e2e8f0!important}
+#v-quests .quest-tools input,#v-quests .quest-search input{background:#fff!important;color:#172033!important;border:1px solid #cbd5e1!important}
+#v-quests .quest-metrics>div,#v-quests .quest-metric{background:#f8fafc!important;color:#172033!important;border-color:#e2e8f0!important}
+#v-quests .quest-board-panel{background:#fff!important;border:1px solid #e2e8f0!important}
+#v-quests .task{border-color:#e8edf4!important;color:#172033!important}
+#v-quests .task .t{color:#172033!important}
+#v-quests .task .meta{color:#64748b!important}
+#v-reports .report-head h1,#v-reports .report-head h2{color:#172033!important}
+#v-reports .report-note{color:#64748b!important}
+#v-album .card,#v-album .card h2{color:#172033!important;background:#fff!important}
+#v-album input,#v-album select{background:#fff!important;color:#172033!important}
+#v-add .add-entry-card{background:#fff!important}
+#v-add .add-step{border-color:#e2e8f0!important}
+#v-add .add-step b,#v-add .add-step small{color:#334155!important}
+#v-add .form-heading h2{color:#172033!important}
+#v-add .drop p{color:#64748b!important}
+#v-add .draft-preview-panel h2{color:#172033!important}
+#v-overview .ops-alert,#v-overview .ops-alert span,#v-overview .ops-alert small{color:#334155!important;background:#f8fafc!important;border-color:#e2e8f0!important}
+#v-overview .ops-alert b{color:#475569!important}
+#v-overview .batch-planner{background:#fff!important;color:#172033!important}
+#v-overview .batch-planner h2,#v-overview .batch-planner .batch-kicker{color:#172033!important}
+#v-overview .batch-work{background:#f8fafc!important;border:1px solid #e2e8f0!important;color:#334155!important}
+#v-overview .batch-work label,#v-overview .batch-work span{color:#334155!important}
+#v-overview .batch-work input,#v-overview .batch-work textarea{background:#fff!important;color:#172033!important}
 </style>
 </head>
 <body>
@@ -641,7 +672,7 @@ button.sec,.cat,.draft-preview-strip button{background:#fff!important;color:#334
     </div>
     <div class="two">
       <div class="card sysw"><h2>Status</h2><div id="stats"></div></div>
-      <div class="card sysw"><h2>Skills</h2><div id="badges"></div><p class="meta">XP: Prepared 5, Scheduled 10, Completed 20, Published (confirmed) 30, +25 for a day with 3 or more quests all cleared. Gold equals XP earned.</p></div>
+      <div class="card sysw"><h2>Skills</h2><div id="badges"></div><p class="meta">XP: Prepared 5, Scheduled 10, Completed 20, Published (confirmed) 30, +25 for a day with 3 or more quests all cleared. </p></div>
     </div>
   </section>
 
@@ -651,7 +682,7 @@ button.sec,.cat,.draft-preview-strip button{background:#fff!important;color:#334
       <div class="quest-title-row"><div><h1>Activity register</h1><p>Track content from preparation through confirmed publication.</p></div><button onclick="showView('add')">＋ New task</button></div>
       <div class="quest-tools"><label>TASK DATE<input id="day" type="date" onchange="load()"></label><div id="progress">Loading mission data…</div></div>
       <div class="quest-metrics" id="questCommandStats"></div>
-      <div class="quest-search"><span>⌕</span><input id="qSearch" type="search" placeholder="Search tasks, notes or Facebook links…" autocomplete="off"></div>
+      <div class="quest-search"><span>⌕</span><input id="qSearch" type="search" placeholder="Search titles, notes or social post links…" autocomplete="off"></div>
     </div>
     <div class="quest-board-panel">
       <div class="quest-board-head"><div><div class="quest-eyebrow">TRACKED ACTIVITIES</div><h2>Task List</h2></div><div class="quest-board-note">Select a status to update progress</div></div>
@@ -666,7 +697,7 @@ button.sec,.cat,.draft-preview-strip button{background:#fff!important;color:#334
         <div class="card">
           <h2>Quick add from screenshots</h2>
           <div class="drop" id="drop">
-            <div>Upload a Meta Business Suite content-list or calendar screenshot. The reader will try to capture each visible post title, scheduled date and time. Review every title before saving.</div>
+            <div>Upload a Meta Business Suite content-list or calendar screenshot. The reader extracts visible post titles and scheduled dates. Review each detected record before saving.</div>
             <div class="row" style="margin-top:8px;justify-content:center"><button class="sec" onclick="document.getElementById('shotFile').click()">Attach images</button></div>
             <input id="shotFile" type="file" accept="image/*" multiple class="hide" onchange="readShots(this.files); this.value=''">
             <img id="shotImg" class="hide" alt="">
@@ -681,7 +712,7 @@ button.sec,.cat,.draft-preview-strip button{background:#fff!important;color:#334
           <input type="hidden" id="tid">
           <label for="title">Actual content title / activity name <em>*</em></label>
           <input id="title" placeholder="Example: 5 Tips to Improve Your SKY TruFiber Wi-Fi" maxlength="180" autocomplete="off" required>
-          <div class="row"><div><label for="cat">Category <em>*</em></label><select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div><div><label for="status">Current status <em>*</em></label><select id="status"></select><small class="field-hint" id="statusHint">Pending — work has not started yet.</small></div></div>
+          <div class="row"><div><label for="cat">Category <em>*</em></label><select id="cat"><option value="posting">Social Media Content</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div><div><label for="status">Current status <em>*</em></label><select id="status"></select><small class="field-hint" id="statusHint">Pending — work has not started yet.</small></div></div>
           <div class="add-step"><span>02</span><div><b>When did it happen?</b><small>For published content, enter the actual publication date—not the date you planned it.</small></div></div>
           <div class="row"><div><label for="tdate">Activity / publication date <em>*</em></label><input id="tdate" type="date" required></div><div><label for="ttime">Scheduled / publication time</label><input id="ttime" type="time"><small class="field-hint">Optional. Use the actual time if known.</small></div></div>
           <div class="date-shortcuts" aria-label="Date shortcuts"><button type="button" class="sec" onclick="setEntryDate(0)">Today</button><button type="button" class="sec" onclick="setEntryDate(-1)">Yesterday</button><button type="button" class="sec" onclick="setEntryDate(1)">Tomorrow</button></div>
@@ -1466,7 +1497,7 @@ function parseBusinessSuiteRows(words,img){
     if(!date||!time)return;
     const key=(title+'|'+date+'|'+time).toLowerCase();
     if(found.some(x=>x.key===key))return; // merge the same creative listed once for Facebook and once for Instagram
-    const rowCenters=bands.map(x=>x.cy).filter(y=>Math.abs(y-b.cy)>H*.025).sort((x,y)=>x-y);
+    const rowCenters=bands.filter(x=>{const tx=x.words.map(w=>w.text).join(' ');return /\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+[A-Z][a-z]{2,8}\s+\d{1,2}\b/i.test(tx)&&/\b\d{1,2}[:.]\d{2}\s*[AaPp]/i.test(tx);}).map(x=>x.cy).filter(y=>Math.abs(y-b.cy)>H*.025).sort((x,y)=>x-y);
     const above=rowCenters.filter(y=>y<b.cy).pop(),below=rowCenters.find(y=>y>b.cy);
     const rowTop=Math.max(0,above===undefined?b.cy-H*.075:(above+b.cy)/2);
     const rowBottom=Math.min(H,below===undefined?b.cy+H*.075:(below+b.cy)/2);
