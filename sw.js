@@ -1,4 +1,4 @@
-const CACHE = 'shadow-hunter-v4';
+const CACHE = 'ahba-content-ops-v5';
 const SHELL = ['./', './index.html', './manifest.json', './icon.svg'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
