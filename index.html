@@ -1472,46 +1472,46 @@ function parseBusinessSuiteRows(words,img){
   if(!words?.length)return [];
   const W=img.naturalWidth,H=img.naturalHeight;
   const tokens=words.filter(w=>w.bbox&&(w.text||'').trim()).map(w=>({...w,cy:(w.bbox.y0+w.bbox.y1)/2,cx:(w.bbox.x0+w.bbox.x1)/2}));
-  // Meta Business Suite uses one Boost control per scheduled post row.
-  const anchors=tokens.filter(w=>/^boost$/i.test(w.text.trim())).sort((a,b)=>a.cy-b.cy);
-  if(anchors.length<2)return [];
-  const unique=anchors.filter((a,i)=>!anchors.slice(0,i).some(b=>Math.abs(a.cy-b.cy)<Math.max(12,H*.012)));
-  if(unique.length<2)return [];
-  const gaps=unique.slice(1).map((a,i)=>a.cy-unique[i].cy).filter(x=>x>18).sort((a,b)=>a-b);
-  const typical=gaps.length?gaps[Math.floor(gaps.length/2)]:H/Math.max(2,unique.length);
-  const out=[];
-  unique.forEach((anchor,i)=>{
-    const prev=unique[i-1]?.cy,next=unique[i+1]?.cy;
-    const top=Math.max(0,prev===undefined?anchor.cy-typical*.53:(prev+anchor.cy)/2);
-    const bottom=Math.min(H,next===undefined?anchor.cy+typical*.53:(anchor.cy+next)/2);
-    const row=tokens.filter(w=>w.cy>=top&&w.cy<=bottom);
-    const line=row.slice().sort((a,b)=>a.cy-b.cy||a.bbox.x0-b.bbox.x0);
-    const rowText=line.map(w=>w.text).join(' ').replace(/\s+/g,' ').trim();
-    const tm=rowText.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\s*\.?\s*[Mm]?\b/i);
-    if(!tm)return;
-    const time=timeOf(tm[0]);if(!time)return;
-    const dm=rowText.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i);
-    let date=dm?(wdDate(dm[1],+dm[3])||ymd(null,MON[dm[2].slice(0,3).toLowerCase()],dm[3])):null;
-    if(!date){const parsed=parseText(rowText);date=parsed.date;}
-    if(!date)date=$('day')?.value||today();
-    // The title is the text immediately to the left of the row's Boost control.
-    const left=row.filter(w=>w.cx>=70&&w.bbox.x0<anchor.bbox.x0-8)
-      .sort((a,b)=>a.cy-b.cy||a.bbox.x0-b.bbox.x0);
-    const titleBand=left.filter(w=>Math.abs(w.cy-anchor.cy)<Math.max(18,typical*.20));
-    let title=cleanTitle((titleBand.length?titleBand:left).map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
-    title=title.replace(/\s*(\.\.\.|…)+\s*$/,'…');
-    if(title.length<4){
-      const nearby=left.filter(w=>w.cy<=anchor.cy+typical*.15);
-      title=cleanTitle(nearby.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
-    }
-    if(title.length<4)title='Review post title';
-    const key='row-'+i+'-'+date+'-'+time;
-    const rowTop=Math.max(0,top),rowHeight=Math.max(1,bottom-top);
-    out.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',platforms:[],
-      notes:'Imported as a separate scheduled row from Meta Business Suite. Select the correct platform(s) by checking the logo in the screenshot.',
-      thumb:crop(img,0,rowTop,W,rowHeight,1800),sourceThumb:crop(img,0,0,W,H,1800)});
+  // Group OCR words by visual text line, then detect the scheduled date/time on each row.
+  const lines=[];
+  tokens.slice().sort((a,b)=>a.cy-b.cy||a.bbox.x0-b.bbox.x0).forEach(w=>{
+    let line=lines.find(x=>Math.abs(x.cy-w.cy)<=Math.max(9,H*.009));
+    if(!line){line={cy:w.cy,words:[]};lines.push(line);}
+    line.words.push(w);line.cy=line.words.reduce((n,x)=>n+x.cy,0)/line.words.length;
   });
-  return out;
+  const candidates=[];
+  for(const line of lines){
+    const ws=line.words.sort((a,b)=>a.bbox.x0-b.bbox.x0);
+    const text=ws.map(w=>w.text).join(' ').replace(/\s+/g,' ').trim();
+    const tm=text.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\s*\.?\s*[Mm]?\b/i);
+    if(!tm)continue;
+    const dateMatch=text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i);
+    if(!dateMatch)continue;
+    const date=wdDate(dateMatch[1],+dateMatch[3])||ymd(null,MON[dateMatch[2].slice(0,3).toLowerCase()],dateMatch[3]);
+    const time=timeOf(tm[0]);if(!date||!time)continue;
+    // Ignore non-post rows and controls; a scheduled Meta row has a Boost control nearby.
+    const hasBoost=ws.some(w=>/^boost$/i.test(w.text.trim()));
+    if(!hasBoost)continue;
+    const boost=ws.find(w=>/^boost$/i.test(w.text.trim()));
+    const titleWords=ws.filter(w=>w.bbox.x0>=45&&w.bbox.x1<boost.bbox.x0-4&&!/^(photo|video|reel|story|post)$/i.test(w.text.trim()));
+    let title=cleanTitle(titleWords.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
+    if(title.length<4)continue;
+    candidates.push({cy:line.cy,date,time,title});
+  }
+  // Preserve each visible row, even when title/date/time match another platform row.
+  const rows=[];
+  candidates.sort((a,b)=>a.cy-b.cy).forEach(c=>{
+    if(rows.some(x=>Math.abs(x.cy-c.cy)<Math.max(18,H*.018)))return;
+    rows.push(c);
+  });
+  return rows.map((r,i)=>{
+    const prev=rows[i-1]?.cy,next=rows[i+1]?.cy;
+    const gap=rows.length>1?Math.max(38,Math.min(160,(next!==undefined?next-r.cy:prev!==undefined?r.cy-prev:H*.14))):H*.14;
+    const top=Math.max(0,r.cy-gap*.48),bottom=Math.min(H,r.cy+gap*.48);
+    return {key:'meta-row-'+i+'-'+r.cy,on:true,title:r.title,date:r.date,time:r.time,cat:'posting',status:'scheduled',url:'',postId:'',platforms:[],
+      notes:'Detected from one scheduled row in the Meta Business Suite screenshot. Confirm title and platform before saving.',
+      thumb:crop(img,0,top,W,Math.max(1,bottom-top),1800),sourceThumb:crop(img,0,0,W,H,1800)};
+  });
 }
 function parseBusinessSuiteMarkerRows(words,img,allText){
   const markers=findMarkers(words);
@@ -1630,8 +1630,8 @@ async function markDuplicateDrafts(){
     let hash='';
     if(d.thumb) try { hash=await imageDHash(d.thumb); } catch(e){}
     if(!hash) { seen.push({d,hash}); continue; }
-    const sameSaved=saved.find(x=>x.task_date===d.date && (x.scheduled_time||'')===(d.time||'') && importedTitleOverlap(x.title,d.title));
-    const sameDraft=seen.find(x=>x.d.date===d.date && (x.d.time||'')===(d.time||'') && importedTitleOverlap(x.d.title,d.title));
+    const sameSaved=null; // Same title and schedule can be a valid cross-post on another platform.
+    const sameDraft=null; // Never discard a separate visible screenshot row by title/time alone.
     if(sameSaved || sameDraft){
       d.duplicate=true;
       d.duplicateReason=sameSaved?'Same title and schedule already saved':'Same title and schedule detected in another screenshot';
