@@ -410,6 +410,20 @@ input,select,textarea{background:#0b121b!important;border:1px solid #29394c!impo
  .sh-home h1{font-size:24px!important}
 }
 
+/* Reporting and entry form improvements */
+.form-heading,.report-head,.report-export{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+label{display:block;font-size:12px;font-weight:700;color:#9aabba;margin:8px 0 3px}
+.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.report-actions{margin-top:14px;align-items:center}.report-export{align-items:center}.report-export>div:last-child{display:flex;gap:8px;flex-wrap:wrap}
+.report-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.report-metric{background:#151f2c;border:1px solid #29394c;border-radius:11px;padding:14px}.report-metric b{display:block;font-size:25px;color:#f3f7fc}.report-metric span{font-size:12px;color:#91a2b7}
+.report-table-wrap{overflow:auto;border:1px solid #29394c;border-radius:10px}.report-table{width:100%;border-collapse:collapse;min-width:760px;font-size:13px}
+.report-table th,.report-table td{text-align:left;padding:11px 12px;border-bottom:1px solid #263445;vertical-align:top}.report-table th{background:#172231;color:#9eb1c7;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.report-table td small{display:block;color:#91a2b7;margin-top:5px;max-width:360px;white-space:normal}
+.report-empty{padding:28px;text-align:center;color:#91a2b7;background:#0d1520;border:1px dashed #34465b;border-radius:12px}.report-note{margin-top:16px}
+@media(max-width:760px){.report-grid{grid-template-columns:1fr 1fr}.report-export{display:block}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.form-heading{display:block}}
+@media(max-width:440px){.report-grid{grid-template-columns:1fr}}
+@media print{body{background:#fff!important;color:#111!important}body *{visibility:hidden!important}#v-reports,#v-reports *{visibility:visible!important}#v-reports{display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;padding:0!important}#v-reports .report-controls,#v-reports .report-export button,.report-note{display:none!important}#v-reports .card{background:#fff!important;color:#111!important;border:0!important;box-shadow:none!important}#repHeading,#repMeta{color:#111!important}.report-metric{background:#f4f6f8!important;border:1px solid #ddd!important}.report-metric b,.report-metric span,.report-table td,.report-table th{color:#111!important}.report-table th{background:#eee!important}.report-table-wrap{overflow:visible!important}.report-table{min-width:0!important;font-size:9pt!important}.report-table th,.report-table td{padding:6px!important}a{color:#111!important;text-decoration:none!important}}
 </style>
 </head>
 <body>
@@ -542,15 +556,14 @@ input,select,textarea{background:#0b121b!important;border:1px solid #29394c!impo
         <div class="card hide" id="draftCard"><h2>Detected tasks</h2><div id="drafts"></div>
           <div class="row" style="margin-top:10px"><button onclick="saveDrafts()">Save selected</button><button class="sec" onclick="clearDrafts()">Discard all</button></div><p id="dmsg" class="err"></p></div>
         <div class="card">
-          <h2 id="formTitle">New quest</h2>
+          <div class="form-heading"><div><h2 id="formTitle">Add content activity</h2><p class="meta">Record a planned task or completed publication.</p></div><span class="badge">CONTENT RECORD</span></div>
           <input type="hidden" id="tid">
-          <input id="title" placeholder="Task title">
-          <div class="row"><select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option></select><select id="status"></select></div>
-          <div class="row"><input id="tdate" type="date"><input id="ttime" type="time"></div>
-          <input id="url" type="url" placeholder="Facebook post URL (optional)">
-          <textarea id="notes" rows="2" placeholder="Notes"></textarea>
-          <div class="row"><button onclick="saveTask()">Save task</button><button class="sec" onclick="resetForm()">Clear</button></div>
-          <p id="formMsg" class="err"></p>
+          <label for="title">Content title / task name *</label><input id="title" placeholder="e.g. SKY TruFiber – Internet Safety Tips" maxlength="180" required>
+          <div class="row"><div><label for="cat">Content category *</label><select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div><div><label for="status">Work status *</label><select id="status"></select></div></div>
+          <div class="row"><div><label for="tdate">Activity / publication date *</label><input id="tdate" type="date" required></div><div><label for="ttime">Scheduled / publication time</label><input id="ttime" type="time"></div></div>
+          <label for="url">Facebook post link</label><input id="url" type="url" placeholder="Paste the actual Facebook post URL (optional)">
+          <label for="notes">Description / accomplishment notes</label><textarea id="notes" rows="4" maxlength="2000" placeholder="Describe what was created, published, handled, or accomplished."></textarea>
+          <div class="row"><button onclick="saveTask()">Save record</button><button class="sec" onclick="resetForm()">Clear form</button></div><p id="formMsg" class="err" role="status"></p>
         </div>
       </div>
       <div class="card draft-preview-panel" style="align-self:start;position:sticky;top:16px"><h2 id="pvTitle">Content preview</h2><div id="pv"><div class="draft-preview-empty">Attach a screenshot to view it here in a larger preview.</div></div></div>
@@ -558,11 +571,19 @@ input,select,textarea{background:#0b121b!important;border:1px solid #29394c!impo
   </section>
 
   <section class="view" id="v-reports">
-    <div class="card">
-      <h2>Reports</h2>
-      <div class="row"><button class="sec" onclick="report('day')">Daily</button><button class="sec" onclick="report('week')">Weekly (Mon–Sun)</button><button onclick="exportCsv()">Export CSV</button></div>
-      <div id="rep" style="margin-top:10px"></div>
-      <p class="meta">Reports use the date chosen in the Quests tab. They summarize what you recorded here and are not verified against Facebook.</p>
+    <div class="report-head"><div><div class="sh-eyebrow">CONTENT OPERATIONS / REPORT CENTER</div><h1>Reports & Exports</h1><p class="meta">Choose what to review and export. Only saved tracker records are included.</p></div></div>
+    <div class="card report-controls"><h2>Build a report</h2>
+      <div class="report-grid">
+        <div><label for="repType">Report type</label><select id="repType"><option value="summary">Period accomplishment summary</option><option value="published">Published content only</option><option value="tasks">Task & activity register</option></select></div>
+        <div><label for="repCategory">Content category</label><select id="repCategory"><option value="all">All categories</option><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div>
+        <div><label for="repStatus">Status</label><select id="repStatus"><option value="all">All statuses</option><option value="pending">Pending</option><option value="prepared">Prepared</option><option value="scheduled">Scheduled</option><option value="published">Published — confirmed</option><option value="completed">Completed</option></select></div>
+        <div><label for="repStart">From date</label><input id="repStart" type="date"></div><div><label for="repEnd">To date</label><input id="repEnd" type="date"></div>
+      </div>
+      <div class="row report-actions"><button onclick="report()">Generate report</button><button class="sec" onclick="setReportPeriod('month')">This month</button><button class="sec" onclick="setReportPeriod('week')">This week</button><button class="sec" onclick="setReportPeriod('day')">Today</button><button class="sec" onclick="resetReportFilters()">Reset</button></div>
+    </div>
+    <div class="card report-output"><div class="row report-export"><div><h2 id="repHeading">Report preview</h2><p class="meta" id="repMeta">Select filters and generate a report.</p></div><div><button class="sec" onclick="exportCsv()">Export CSV</button><button onclick="exportPdf()">Print / Save PDF</button></div></div>
+      <div id="rep" style="margin-top:16px"><div class="report-empty">Your report preview will appear here.</div></div>
+      <p class="meta report-note">Only records marked Published — confirmed count as published. Facebook reach and engagement are not fetched automatically.</p>
     </div>
   </section>
     <section class="view" id="v-album">
@@ -859,6 +880,7 @@ async function signOut(){ await sb.auth.signOut(); }
 sb.auth.onAuthStateChange((_e, session) => {
   $('auth').classList.toggle('hide', !!session); $('lobby').classList.toggle('hide', !!session); $('app').classList.toggle('hide', !session);
   if (session) {
+    if (!$('repStart').value) setReportPeriod('month');
     $('who').textContent = session.user.email || '';
     if (!$('day').value) { $('day').value = today(); $('tdate').value = today(); }
     load(); updatePreview();
@@ -938,14 +960,14 @@ function render(){
     </div>`).join(''):'<div class="quest-empty"><b>No matching tasks</b><span>Try another filter or create a new quest.</span><button class="sec" onclick="showView(\'add\')">Create task</button></div>';
 }
 async function saveTask(){
-  const row = {title:$('title').value.trim(), category:$('cat').value, status:$('status').value, task_date:$('tdate').value,
-    scheduled_time:$('ttime').value || null, fb_url:$('url').value.trim() || null, notes:$('notes').value.trim() || null, updated_at:new Date().toISOString()};
-  if (shotThumb) row.image_thumb = shotThumb;
-  if (!row.title || !row.task_date) { $('formMsg').textContent = 'Title and date are required.'; return; }
-  const id = $('tid').value;
-  const {error} = id ? await sb.from('tasks').update(row).eq('id', id) : await sb.from('tasks').insert(row);
-  $('formMsg').textContent = error ? error.message : ''; if (error) return;
-  resetForm(); $('day').value = row.task_date; load(); showView('quests'); toast('Quest saved');
+  const row={title:$('title').value.trim(),category:$('cat').value,status:$('status').value,task_date:$('tdate').value,scheduled_time:$('ttime').value||null,fb_url:$('url').value.trim()||null,notes:$('notes').value.trim()||null,updated_at:new Date().toISOString()};
+  if(shotThumb)row.image_thumb=shotThumb;
+  if(!row.title||!row.task_date){$('formMsg').textContent='Please enter a title and activity date.';return;}
+  if(row.fb_url&&!/^https?:\\/\\//i.test(row.fb_url)){$('formMsg').textContent='Enter a valid URL beginning with http:// or https://.';return;}
+  const id=$('tid').value;$('formMsg').textContent='Saving…';
+  const {error}=id?await sb.from('tasks').update(row).eq('id',id):await sb.from('tasks').insert(row);
+  if(error){$('formMsg').textContent='Could not save: '+error.message;return;}
+  const date=row.task_date;resetForm();$('day').value=date;await load();showView('quests');toast('Record saved');
 }
 function editTask(id){
   const t = tasks.find(x => x.id === id); if (!t) return;
@@ -955,7 +977,7 @@ function editTask(id){
   showView('add'); updatePreview();
 }
 function zoomImg(src){ const o = document.createElement('div'); o.style.cssText = 'position:fixed;inset:0;z-index:40;background:#000d;display:grid;place-items:center;cursor:zoom-out;padding:12px'; o.innerHTML = `<img src="${esc(src)}" style="max-width:100%;max-height:100%;border-radius:8px" alt="Screenshot">`; o.onclick = () => o.remove(); document.body.appendChild(o); }
-function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value = $('day').value || today(); $('status').value='pending'; $('formTitle').textContent='New quest'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; shotThumb = null; updatePreview(); }
+function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value=$('day').value||today(); $('status').value='pending'; $('formTitle').textContent='Add content activity'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; $('formMsg').textContent=''; shotThumb=null; updatePreview(); }
 async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
 async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
 
@@ -1030,20 +1052,34 @@ async function fetchRange(kind){
   const {data, error} = await sb.from('tasks').select('id,title,category,task_date,scheduled_time,status,fb_url,notes').gte('task_date', a).lte('task_date', b).order('task_date').order('scheduled_time', {nullsFirst:false});
   return {a, b, data: data || [], error};
 }
-async function report(kind){
-  const {a, b, data, error} = await fetchRange(kind);
-  if (error) { $('rep').innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
-  const c = s => data.filter(t => t.status === s).length;
-  const box = (n, l) => `<div><b>${n}</b>${l}</div>`;
-  $('rep').innerHTML = `<div class="meta">${a === b ? a : a + ' to ' + b}</div><div class="stats">${box(data.length,'Total')}${box(c('prepared'),'Prepared')}${box(c('scheduled'),'Scheduled (not yet confirmed)')}${box(c('published'),'Published — confirmed')}${box(c('completed'),'Completed')}${box(c('pending'),'Pending')}</div>`;
+let reportData=[],reportBounds={a:'',b:''};
+function setReportPeriod(kind){
+ const now=new Date(),fmt=d=>{const x=new Date(d);return new Date(x.getTime()-x.getTimezoneOffset()*60000).toISOString().slice(0,10);};
+ let a=new Date(now),b=new Date(now);if(kind==='month')a.setDate(1);if(kind==='week')a.setDate(now.getDate()-(now.getDay()+6)%7);
+ $('repStart').value=fmt(a);$('repEnd').value=fmt(b);
 }
-async function exportCsv(){
-  const kind = confirm('OK = weekly (Mon–Sun), Cancel = daily') ? 'week' : 'day';
-  const {a, b, data} = await fetchRange(kind);
-  const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-  const csv = ['Date,Time,Category,Title,Status,Facebook URL,Notes', ...data.map(t => [t.task_date, t.scheduled_time?.slice(0,5), CAT[t.category], t.title, STATUS[t.status], t.fb_url, t.notes].map(q).join(','))].join('\n');
-  const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'})); l.download = `tasks_${a}_${b}.csv`; l.click();
+function resetReportFilters(){ $('repType').value='summary';$('repCategory').value='all';$('repStatus').value='all';setReportPeriod('month');reportData=[];$('rep').innerHTML='<div class="report-empty">Filters reset. Generate a report to preview records.</div>';$('repHeading').textContent='Report preview';$('repMeta').textContent='Select filters and generate a report.'; }
+async function report(){
+ const a=$('repStart').value,b=$('repEnd').value;if(!a||!b){$('rep').innerHTML='<p class="err">Choose both dates.</p>';return;}if(a>b){$('rep').innerHTML='<p class="err">Start date must be on or before end date.</p>';return;}
+ $('rep').innerHTML='<p class="meta">Generating…</p>';
+ const {data,error}=await sb.from('tasks').select('id,title,category,task_date,scheduled_time,status,fb_url,notes').gte('task_date',a).lte('task_date',b).order('task_date').order('scheduled_time',{nullsFirst:false});
+ if(error){$('rep').innerHTML='<p class="err">'+esc(error.message)+'</p>';return;}
+ const type=$('repType').value,cat=$('repCategory').value,st=$('repStatus').value;
+ reportData=(data||[]).filter(t=>(cat==='all'||t.category===cat)&&(st==='all'||t.status===st)&&(type!=='published'||t.status==='published'));reportBounds={a,b};
+ const rows=reportData,c=k=>rows.filter(t=>t.status===k).length,m=(n,l)=>'<div class="report-metric"><b>'+n+'</b><span>'+l+'</span></div>';
+ $('repHeading').textContent=({summary:'Period accomplishment summary',published:'Published content report',tasks:'Task & activity register'})[type];
+ $('repMeta').textContent=a+' to '+b+' · '+rows.length+' record(s) · '+(cat==='all'?'All categories':CAT[cat])+' · '+(st==='all'?'All statuses':STATUS[st]);
+ const summary=type==='summary'?'<div class="report-metrics">'+m(rows.length,'Total records')+m(c('published'),'Published — confirmed')+m(c('prepared'),'Prepared')+m(c('scheduled'),'Scheduled')+m(c('pending'),'Pending')+m(c('completed'),'Completed')+'</div>':'';
+ const body=rows.map(t=>'<tr><td>'+esc(t.task_date)+'</td><td>'+esc(t.scheduled_time?t.scheduled_time.slice(0,5):'—')+'</td><td>'+esc(CAT[t.category]||t.category||'—')+'</td><td><b>'+esc(t.title)+'</b>'+(t.notes?'<small>'+esc(t.notes)+'</small>':'')+'</td><td>'+esc(STATUS[t.status]||t.status)+'</td><td>'+(t.fb_url?'<a href="'+esc(t.fb_url)+'" target="_blank" rel="noopener">Open post</a>':'—')+'</td></tr>').join('');
+ $('rep').innerHTML=summary+(rows.length?'<div class="report-table-wrap"><table class="report-table"><thead><tr><th>Date</th><th>Time</th><th>Category</th><th>Title / accomplishment</th><th>Status</th><th>Evidence</th></tr></thead><tbody>'+body+'</tbody></table></div>':'<div class="report-empty">No records match these filters. Try a wider date range.</div>');
 }
+function exportCsv(){
+ if(!reportData.length){toast('Generate a report with matching records first.');return;}
+ const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const csv=['Date,Time,Category,Title,Status,Facebook URL,Notes',...reportData.map(t=>[t.task_date,t.scheduled_time?.slice(0,5),CAT[t.category]||t.category,t.title,STATUS[t.status]||t.status,t.fb_url,t.notes].map(q).join(','))].join('\\r\\n');
+ const blob=new Blob(['\\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='AHBA_'+$('repType').value+'_report_'+reportBounds.a+'_to_'+reportBounds.b+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function exportPdf(){if(!reportData.length){toast('Generate a report with matching records first.');return;}window.print();}
 
 /* Reminders: in-app banners while open; system notifications come from Web Push. */
 function fired(k){ const key = 'fired_' + today(); const s = JSON.parse(localStorage.getItem(key) || '[]'); if (s.includes(k)) return true; s.push(k); localStorage.setItem(key, JSON.stringify(s)); return false; }
