@@ -438,6 +438,16 @@ label{display:block;font-size:12px;font-weight:700;color:#9aabba;margin:8px 0 3p
 .add-savebar button:disabled{opacity:.55;cursor:wait}
 #formMsg{min-height:18px;margin-top:10px}
 @media(max-width:600px){.add-entry-card{padding:16px!important}.add-savebar{display:grid;grid-template-columns:1fr 1fr}.add-savebar button:first-child{grid-column:1/-1}}
+/* Cross-platform publishing support */
+.platform-picker{display:flex;flex-wrap:wrap;gap:9px;margin:8px 0 12px}
+.platform-choice{display:flex!important;align-items:center;gap:8px;padding:10px 13px;border:1px solid var(--glassb);border-radius:11px;background:var(--glass);cursor:pointer}
+.platform-choice input,.draft-platforms input{width:auto!important;margin:0}
+.platform-dot{display:grid;place-items:center;width:23px;height:23px;border-radius:7px;color:white;font-weight:800;font-size:14px}
+.platform-dot.fb{background:#1877f2}.platform-dot.ig{background:linear-gradient(35deg,#feda75,#d62976,#4f5bd5)}.platform-dot.tt{background:#111;border:1px solid #566}
+.platform-links{display:grid;grid-template-columns:1fr;gap:6px}.platform-links label{margin-top:5px}
+.draft-platforms{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:8px 10px;margin:7px 0;border:1px solid var(--glassb);border-radius:9px}
+.draft-platforms small{width:100%;color:var(--mut)}.draft-platforms label{display:flex;align-items:center;gap:5px;font-size:12px;margin:0}
+@media(min-width:700px){.platform-links{grid-template-columns:1fr 1fr}.platform-links>div:first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -580,8 +590,18 @@ label{display:block;font-size:12px;font-weight:700;color:#9aabba;margin:8px 0 3p
           <div class="row"><div><label for="tdate">Activity / publication date <em>*</em></label><input id="tdate" type="date" required></div><div><label for="ttime">Scheduled / publication time</label><input id="ttime" type="time"><small class="field-hint">Optional. Use the actual time if known.</small></div></div>
           <div class="date-shortcuts" aria-label="Date shortcuts"><button type="button" class="sec" onclick="setEntryDate(0)">Today</button><button type="button" class="sec" onclick="setEntryDate(-1)">Yesterday</button><button type="button" class="sec" onclick="setEntryDate(1)">Tomorrow</button></div>
           <div class="add-step"><span>03</span><div><b>Attach proof and details</b><small>Link the live post when available. Add notes that help explain the accomplishment.</small></div></div>
-          <label for="url">Facebook post URL <span class="optional-tag">Optional</span></label><input id="url" type="url" placeholder="https://www.facebook.com/...">
-          <label for="notes">Description / accomplishment notes <span class="optional-tag">Optional</span></label><textarea id="notes" rows="4" maxlength="2000" placeholder="What was created or published? Include campaign details, location, audience, or work completed."></textarea>
+          <div class="add-step"><span>04</span><div><b>Publishing platforms</b><small>Select every platform used for this same content. It remains one accomplishment record.</small></div></div>
+<div class="platform-picker">
+<label class="platform-choice"><input type="checkbox" id="plat-facebook" checked><span class="platform-dot fb">f</span>Facebook</label>
+<label class="platform-choice"><input type="checkbox" id="plat-instagram"><span class="platform-dot ig">◎</span>Instagram</label>
+<label class="platform-choice"><input type="checkbox" id="plat-tiktok"><span class="platform-dot tt">♪</span>TikTok</label>
+</div>
+<div class="platform-links">
+<div><label for="url">Facebook post URL</label><input id="url" type="url" placeholder="https://facebook.com/..."></div>
+<div><label for="igUrl">Instagram post URL</label><input id="igUrl" type="url" placeholder="https://instagram.com/..."></div>
+<div><label for="ttUrl">TikTok post URL</label><input id="ttUrl" type="url" placeholder="https://tiktok.com/..."></div>
+</div>
+<label for="notes">Description / accomplishment notes <span class="optional-tag">Optional</span></label><textarea id="notes" rows="4" maxlength="2000" placeholder="What was created or published? Include campaign details, location, audience, or work completed."></textarea>
           <div class="add-savebar"><button type="button" id="saveRecordBtn" onclick="saveTask('done')">Save record</button><button type="button" class="sec" onclick="saveTask('another')">Save & add another</button><button type="button" class="sec" onclick="resetForm()">Clear form</button></div>
           <p id="formMsg" class="err" role="status" aria-live="polite"></p>
           <p class="field-hint">Tip: scheduled posts are not counted as published until you change the status to “Published — confirmed”.</p>
@@ -699,8 +719,16 @@ const VAPID_PUBLIC = 'BF1HlPNY5qRJ_69fOsUztAPr6yMPLwGyLEHwGc-PC2RuaEOq9ceVc4-DE6
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const TZ = 'Asia/Manila';
 const STATUS = {pending:'Pending',prepared:'Prepared',scheduled:'Scheduled',published:'Published — confirmed',completed:'Completed'};
-const CAT = {posting:'Facebook Content Posting',trivia:'SKY Internet Trivia',barangay:'Barangay Saturation Event'};
+const CAT = {posting:'Social Media Content',trivia:'SKY Internet Trivia',barangay:'Barangay Saturation Event'};
 const XP = {prepared:5, scheduled:10, completed:20, published:30}, DONE = ['published','completed'];
+const PLATFORM_NAMES={facebook:'Facebook',instagram:'Instagram',tiktok:'TikTok'};
+const SOCIAL_META_PREFIX='[[COT_SOCIAL_V1]]';
+function socialMetaFromNotes(notes,legacyUrl){const raw=String(notes||'');if(raw.startsWith(SOCIAL_META_PREFIX)){const cut=raw.indexOf('\\n'),json=cut>=0?raw.slice(SOCIAL_META_PREFIX.length,cut):raw.slice(SOCIAL_META_PREFIX.length);try{const m=JSON.parse(json);return {platforms:Array.isArray(m.platforms)?m.platforms.filter(x=>PLATFORM_NAMES[x]):[],links:{...(m.links||{})},notes:cut>=0?raw.slice(cut+1):''};}catch(e){}}return {platforms:legacyUrl?['facebook']:[],links:legacyUrl?{facebook:legacyUrl}:{},notes:raw};}
+function socialNotes(human,platforms,links){const meta={platforms:[...new Set((platforms||[]).filter(x=>PLATFORM_NAMES[x]))],links:Object.fromEntries(Object.entries(links||{}).filter(([k,v])=>PLATFORM_NAMES[k]&&String(v||'').trim()))};return SOCIAL_META_PREFIX+JSON.stringify(meta)+'\\n'+String(human||'');}
+function selectedPlatforms(){return ['facebook','instagram','tiktok'].filter(p=>$('plat-'+p)?.checked);}
+function setPlatformFields(platforms,links={}){['facebook','instagram','tiktok'].forEach(p=>{const el=$('plat-'+p);if(el)el.checked=(platforms||[]).includes(p);});$('url').value=links.facebook||'';$('igUrl').value=links.instagram||'';$('ttUrl').value=links.tiktok||'';}
+function platformLinksFromForm(){return {facebook:$('url').value.trim(),instagram:$('igUrl').value.trim(),tiktok:$('ttUrl').value.trim()};}
+function platformSummary(platforms){return (platforms||[]).map(p=>PLATFORM_NAMES[p]||p).join(' + ')||'No platform selected';}
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today = () => new Date().toLocaleDateString('en-CA', {timeZone: TZ});
@@ -995,13 +1023,17 @@ function updateStatusHint(){
 }
 async function saveTask(mode='done'){
  if(savingTask)return;
- const row={title:$('title').value.trim(),category:$('cat').value,status:$('status').value,task_date:$('tdate').value,scheduled_time:$('ttime').value||null,fb_url:$('url').value.trim()||null,notes:$('notes').value.trim()||null,updated_at:new Date().toISOString()};
+ const platforms=selectedPlatforms(),links=platformLinksFromForm();
+ const invalid=Object.entries(links).find(([p,u])=>u&&!(u.startsWith('http://')||u.startsWith('https://')));
+ const row={title:$('title').value.trim(),category:$('cat').value,status:$('status').value,task_date:$('tdate').value,scheduled_time:$('ttime').value||null,fb_url:links.facebook||null,notes:socialNotes($('notes').value.trim(),platforms,links),updated_at:new Date().toISOString()};
  if(shotThumb)row.image_thumb=shotThumb;
  if(!row.title){$('formMsg').textContent='Please enter the actual content title or activity name.';$('title').focus();return;}
+ if(!platforms.length){$('formMsg').textContent='Select at least one publishing platform.';return;}
+ if(invalid){$('formMsg').textContent='Enter a valid '+PLATFORM_NAMES[invalid[0]]+' URL beginning with http:// or https://.';return;}
  if(!row.task_date){$('formMsg').textContent='Please choose the activity or publication date.';$('tdate').focus();return;}
  if(row.fb_url&&!/^https?:\/\//i.test(row.fb_url)){$('formMsg').textContent='Enter a complete URL beginning with http:// or https://.';$('url').focus();return;}
  const id=$('tid').value;
- if(row.status==='published'&&!row.fb_url&&!confirm('This record is marked Published — confirmed, but no Facebook post link is attached. Save it anyway?'))return;
+ if(row.status==='published'&&!Object.values(links).some(Boolean)&&!confirm('This record is marked Published — confirmed, but no platform post link is attached. Save it anyway?'))return;
  if(!id){
    const {data:matches,error:checkError}=await sb.from('tasks').select('id,title,task_date').eq('task_date',row.task_date).ilike('title',row.title).limit(5);
    if(checkError){$('formMsg').textContent='Could not check for duplicate records: '+checkError.message;return;}
@@ -1014,7 +1046,7 @@ async function saveTask(mode='done'){
    if(error){$('formMsg').textContent='Could not save: '+error.message;return;}
    const date=row.task_date;
    if(mode==='another'){
-     resetForm();$('tdate').value=date;$('cat').value=row.category;$('status').value='pending';updateStatusHint();updatePreview();
+     resetForm();$('tdate').value=date;$('cat').value=row.category;setPlatformFields(platforms,{});$('status').value='pending';updateStatusHint();updatePreview();
      $('formMsg').textContent='Saved. Ready for your next record.';$('title').focus();await load();toast('Record saved. Add the next one.');
    }else{
      resetForm();$('day').value=date;await load();showView('quests');toast(id?'Record updated':'Record saved');
@@ -1026,11 +1058,11 @@ function editTask(id){
   const t = tasks.find(x => x.id === id); if (!t) return;
   $('tid').value = t.id; $('title').value = t.title; $('cat').value = t.category; $('status').value = t.status;
   $('tdate').value = t.task_date; $('ttime').value = t.scheduled_time ? t.scheduled_time.slice(0,5) : '';
-  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit content activity'; updateStatusHint(); shotThumb = null; const im = $('shotImg'); if (t.image_thumb) { im.src = t.image_thumb; im.classList.remove('hide'); } else im.classList.add('hide');
+  const sm=socialMetaFromNotes(t.notes,t.fb_url); setPlatformFields(sm.platforms.length?sm.platforms:(t.fb_url?['facebook']:[]),sm.links); $('notes').value=sm.notes; $('formTitle').textContent = 'Edit content activity'; updateStatusHint(); shotThumb = null; const im = $('shotImg'); if (t.image_thumb) { im.src = t.image_thumb; im.classList.remove('hide'); } else im.classList.add('hide');
   showView('add'); updatePreview();
 }
 function zoomImg(src){ const o = document.createElement('div'); o.style.cssText = 'position:fixed;inset:0;z-index:40;background:#000d;display:grid;place-items:center;cursor:zoom-out;padding:12px'; o.innerHTML = `<img src="${esc(src)}" style="max-width:100%;max-height:100%;border-radius:8px" alt="Screenshot">`; o.onclick = () => o.remove(); document.body.appendChild(o); }
-function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value=$('day').value||today(); $('status').value='pending'; $('cat').value='posting'; $('formTitle').textContent='Add content activity'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; $('formMsg').textContent=''; shotThumb=null; updateStatusHint(); updatePreview(); }
+function resetForm(){ ['tid','title','ttime','url','igUrl','ttUrl','notes'].forEach(i => $(i).value=''); setPlatformFields(['facebook'],{}); $('tdate').value=$('day').value||today(); $('status').value='pending'; $('cat').value='posting'; $('formTitle').textContent='Add content activity'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; $('formMsg').textContent=''; shotThumb=null; updateStatusHint(); updatePreview(); }
 async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
 async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
 
@@ -1123,13 +1155,13 @@ async function report(){
  $('repHeading').textContent=({summary:'Period accomplishment summary',published:'Published content report',tasks:'Task & activity register'})[type];
  $('repMeta').textContent=a+' to '+b+' · '+rows.length+' record(s) · '+(cat==='all'?'All categories':CAT[cat])+' · '+(st==='all'?'All statuses':STATUS[st]);
  const summary=type==='summary'?'<div class="report-metrics">'+m(rows.length,'Total records')+m(c('published'),'Published — confirmed')+m(c('prepared'),'Prepared')+m(c('scheduled'),'Scheduled')+m(c('pending'),'Pending')+m(c('completed'),'Completed')+'</div>':'';
- const body=rows.map(t=>'<tr><td>'+esc(t.task_date)+'</td><td>'+esc(t.scheduled_time?t.scheduled_time.slice(0,5):'—')+'</td><td>'+esc(CAT[t.category]||t.category||'—')+'</td><td><b>'+esc(t.title)+'</b>'+(t.notes?'<small>'+esc(t.notes)+'</small>':'')+'</td><td>'+esc(STATUS[t.status]||t.status)+'</td><td>'+(t.fb_url?'<a href="'+esc(t.fb_url)+'" target="_blank" rel="noopener">Open post</a>':'—')+'</td></tr>').join('');
- $('rep').innerHTML=summary+(rows.length?'<div class="report-table-wrap"><table class="report-table"><thead><tr><th>Date</th><th>Time</th><th>Category</th><th>Title / accomplishment</th><th>Status</th><th>Evidence</th></tr></thead><tbody>'+body+'</tbody></table></div>':'<div class="report-empty">No records match these filters. Try a wider date range.</div>');
+ const body=rows.map(t=>{const sm=socialMetaFromNotes(t.notes,t.fb_url),links=sm.links;return '<tr><td>'+esc(t.task_date)+'</td><td>'+esc(t.scheduled_time?t.scheduled_time.slice(0,5):'—')+'</td><td>'+esc(CAT[t.category]||t.category||'—')+'</td><td><b>'+esc(t.title)+'</b>'+(sm.notes?'<small>'+esc(sm.notes)+'</small>':'')+'</td><td>'+esc(STATUS[t.status]||t.status)+'</td><td>'+esc(platformSummary(sm.platforms))+'</td><td>'+['facebook','instagram','tiktok'].map(p=>links[p]?'<a href="'+esc(links[p])+'" target="_blank" rel="noopener">'+PLATFORM_NAMES[p]+'</a>':'—').join(' · ')+'</td></tr>';}).join('');
+ $('rep').innerHTML=summary+(rows.length?'<div class="report-table-wrap"><table class="report-table"><thead><tr><th>Date</th><th>Time</th><th>Category</th><th>Title / accomplishment</th><th>Status</th><th>Platforms</th><th>Post links</th></tr></thead><tbody>'+body+'</tbody></table></div>':'<div class="report-empty">No records match these filters. Try a wider date range.</div>');
 }
 function exportCsv(){
  if(!reportData.length){toast('Generate a report with matching records first.');return;}
  const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
- const csv=['Date,Time,Category,Title,Status,Facebook URL,Notes',...reportData.map(t=>[t.task_date,t.scheduled_time?.slice(0,5),CAT[t.category]||t.category,t.title,STATUS[t.status]||t.status,t.fb_url,t.notes].map(q).join(','))].join('\\r\\n');
+ const csv=['Date,Time,Category,Title,Status,Platforms,Facebook URL,Instagram URL,TikTok URL,Notes',...reportData.map(t=>{const sm=socialMetaFromNotes(t.notes,t.fb_url);return [t.task_date,t.scheduled_time?.slice(0,5),CAT[t.category]||t.category,t.title,STATUS[t.status]||t.status,platformSummary(sm.platforms),sm.links.facebook||'',sm.links.instagram||'',sm.links.tiktok||'',sm.notes].map(q).join(',');})].join('\\r\\n');
  const blob=new Blob(['\\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='AHBA_'+$('repType').value+'_report_'+reportBounds.a+'_to_'+reportBounds.b+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function exportPdf(){if(!reportData.length){toast('Generate a report with matching records first.');return;}window.print();}
@@ -1234,7 +1266,7 @@ function updatePreview(){
   const miss = [!t && 'a title', !d && 'a date'].filter(Boolean);
   $('pv').innerHTML = `<div class="pvtag">Preview. Not saved yet.</div><div class="pvq c-${c}"><div class="t">${esc(t || 'Untitled quest')}</div><div class="meta"><span class="badge s-${st}">${STATUS[st]}</span> ${esc(CAT[c])}</div><div class="meta">${esc(d || 'No date')}${tm ? ' · ' + esc(tm) : ''}</div>${u ? `<div class="meta">${esc(u)}</div>` : ''}${n ? `<div class="meta">${esc(n)}</div>` : ''}${st === 'scheduled' ? '<div class="meta">Scheduled does not count as published until you confirm it.</div>' : ''}${shot}${u ? linkRow(u) : ''}</div>${miss.length ? `<p class="err">Add ${miss.join(' and ')} before saving.</p>` : ''}`;
 }
-['title','cat','status','tdate','ttime','url','notes'].forEach(id => { $(id).addEventListener('input', updatePreview); $(id).addEventListener('change', updatePreview); }); $('status').addEventListener('change',updateStatusHint); updateStatusHint();
+['title','cat','status','tdate','ttime','url','igUrl','ttUrl','notes'].forEach(id => { $(id).addEventListener('input', updatePreview); $(id).addEventListener('change', updatePreview); }); $('status').addEventListener('change',updateStatusHint); updateStatusHint();
 
 /* ===== Screenshot reader: one or many images become draft quests (text is read in your browser) ===== */
 const MON = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
@@ -1497,11 +1529,15 @@ function renderDrafts(){
     <input data-i="${i}" data-k="title" value="${esc(d.title)}" placeholder="Quest title">
     <div class="row"><input type="date" data-i="${i}" data-k="date" value="${esc(d.date)}"><input type="time" data-i="${i}" data-k="time" value="${esc(d.time || '')}"></div>
     <div class="row"><select data-i="${i}" data-k="cat">${opts(CAT, d.cat)}</select><select data-i="${i}" data-k="status">${opts(STATUS, d.status)}</select></div>
-    <input data-i="${i}" data-k="postId" value="${esc(d.postId || '')}" placeholder="Post ID (optional)"><input data-i="${i}" data-k="url" value="${esc(d.url || '')}" placeholder="Facebook link (optional)">
+    <div class="draft-platforms"><small>Platforms for this content</small>${['facebook','instagram','tiktok'].map(p=>'<label><input type="checkbox" data-i="'+i+'" data-platform="'+p+'" '+((d.platforms||['facebook']).includes(p)?'checked':'')+'> '+PLATFORM_NAMES[p]+'</label>').join('')}</div>
+    <input data-i="${i}" data-k="postId" value="${esc(d.postId || '')}" placeholder="Post ID (optional)">
+    <input data-i="${i}" data-k="url" value="${esc(d.url || '')}" placeholder="Facebook link (optional)">
+    <input data-i="${i}" data-k="igUrl" value="${esc(d.igUrl || '')}" placeholder="Instagram link (optional)">
+    <input data-i="${i}" data-k="ttUrl" value="${esc(d.ttUrl || '')}" placeholder="TikTok link (optional)">
     ${d.est ? `<div class="meta">Time estimated from "in ${esc(d.est)}". Confirm it in Business Suite.</div>` : ''}${d.notes ? `<details><summary>Read extracted screenshot text</summary><div class="ocrtext">${esc(d.notes.replace(/^From screenshot:\\s*/,''))}</div></details>` : ''}</div></div>`).join('');
   showDraftPreview(activeDraftPreview);
 }
-['input', 'change'].forEach(ev => $('drafts').addEventListener(ev, e => { const i = e.target.dataset.i, k = e.target.dataset.k; if (i === undefined || !k) return; drafts[+i][k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }));
+['input', 'change'].forEach(ev => $('drafts').addEventListener(ev, e => { const i=e.target.dataset.i,k=e.target.dataset.k,p=e.target.dataset.platform;if(i===undefined)return;if(p){const d=drafts[+i];d.platforms=d.platforms||['facebook'];d.platforms=e.target.checked?[...new Set([...d.platforms,p])]:d.platforms.filter(x=>x!==p);return;}if(!k)return;drafts[+i][k]=e.target.type==='checkbox'?e.target.checked:e.target.value;}));
 $('drafts').addEventListener('click', e => { const b=e.target.closest('[data-preview]'); if(!b)return; showDraftPreview(+b.dataset.preview); renderDrafts(); });
 function clearDrafts(){ drafts = []; renderDrafts(); $('shotMsg').textContent = ''; $('dmsg').textContent = ''; }
 async function saveDrafts(){
@@ -1511,7 +1547,7 @@ async function saveDrafts(){
   const ids = sel.map(d => (d.postId || '').trim()).filter(Boolean), dup = new Set();
   if (ids.length) { const {data} = await sb.from('tasks').select('post_id').in('post_id', ids); (data || []).forEach(x => dup.add(x.post_id)); }
   const todo = sel.filter(d => !((d.postId || '').trim() && dup.has(d.postId.trim())));
-  const rows = todo.map(d => ({title:(d.title || '').trim() || ('Post' + (d.time ? ' at ' + d.time : '')), category:d.cat, status:d.status, task_date:d.date, scheduled_time:d.time || null, fb_url:(d.url || '').trim() || null, notes:d.notes || null, post_id:(d.postId || '').trim() || null, image_thumb:d.thumb || null}));
+  const rows = todo.map(d => {const platforms=d.platforms||['facebook'],links={facebook:(d.url||'').trim(),instagram:(d.igUrl||'').trim(),tiktok:(d.ttUrl||'').trim()};return {title:(d.title||'').trim()||('Post'+(d.time?' at '+d.time:'')),category:d.cat,status:d.status,task_date:d.date,scheduled_time:d.time||null,fb_url:links.facebook||null,notes:socialNotes(d.notes||'',platforms,links),post_id:(d.postId||'').trim()||null,image_thumb:d.thumb||null};});
   if (!rows.length) { msg.textContent = 'Those posts are already saved (same Post ID).'; return; }
   const {error} = await sb.from('tasks').insert(rows); if (error) { msg.textContent = error.message; return; }
   const skipped = sel.length - rows.length; drafts = drafts.filter(d => !d.on); renderDrafts(); $('shotMsg').textContent = '';
