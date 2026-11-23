@@ -1,11 +1,11 @@
 {
-  "name": "Shadow Hunter · Content Operations RPG",
-  "short_name": "Shadow Hunter",
+  "name": "AHBA Content Operations Dashboard",
+  "short_name": "Content Ops",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#030612",
-  "theme_color": "#07152b",
+  "background_color": "#f4f6fa",
+  "theme_color": "#f4f6fa",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
