@@ -1515,11 +1515,43 @@ function parseBusinessSuiteRows(words,img){
   });
   return found;
 }
+function parseBusinessSuiteMarkerRows(words,img,allText){
+  const markers=findMarkers(words);
+  if(markers.length<2)return [];
+  const W=img.naturalWidth,H=img.naturalHeight;
+  const centers=markers.map(m=>m.y0).sort((a,b)=>a-b);
+  const gaps=centers.slice(1).map((v,i)=>v-centers[i]).filter(v=>v>22).sort((a,b)=>a-b);
+  const step=gaps.length?gaps[Math.floor(gaps.length/2)]:H*.13;
+  const global=parseText(allText||'');
+  const out=[];
+  markers.forEach((m,i)=>{
+    const prev=centers.filter(y=>y<m.y0).pop(),next=centers.find(y=>y>m.y0);
+    const top=Math.max(0,prev===undefined?m.y0-step*.55:(prev+m.y0)/2);
+    const bottom=Math.min(H,next===undefined?m.y0+step*.55:(m.y0+next)/2);
+    const row=words.filter(w=>w.bbox&&(w.text||'').trim()&&(w.bbox.y0+w.bbox.y1)/2>=top&&(w.bbox.y0+w.bbox.y1)/2<=bottom)
+      .sort((a,b)=>a.bbox.y0-b.bbox.y0||a.bbox.x0-b.bbox.x0);
+    const line=row.map(w=>w.text).join(' ').replace(/\s+/g,' ').trim();
+    const dm=line.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i)
+      ||line.match(/\b([A-Z][a-z]{2,8})\s+(\d{1,2})\b/);
+    let date=global.date||$('day').value||today();
+    if(dm){if(dm.length===4)date=wdDate(dm[1],+dm[3])||ymd(null,MON[dm[2].slice(0,3).toLowerCase()],dm[3]);else date=ymd(null,MON[dm[1].slice(0,3).toLowerCase()],dm[2])||date;}
+    const titleWords=row.filter(w=>w.bbox.x0>=70&&w.bbox.x0<m.x0-22&&!/^(Boost|Photo|Video|Reel|Story|Post|Facebook|Instagram|TikTok)$/i.test((w.text||'').trim()));
+    const title=cleanTitle(titleWords.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
+    if(title.length<4)return;
+    const time=m.hm,key=(title+'|'+date+'|'+time).toLowerCase();
+    if(out.some(x=>x.key===key))return;
+    out.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',platforms:[],
+      notes:'Imported from the screenshot. Confirm the platform icon(s) and verify the extracted title and schedule before saving.',
+      thumb:crop(img,0,top,Math.min(W,Math.max(680,Math.round(W*.58))),Math.max(1,bottom-top),1800),
+      sourceThumb:crop(img,0,0,W,H,1800)});
+  });
+  return out;
+}
 async function readOne(file, prog){
   const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight, sc = W < 700 ? 3 : 1;
   const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
   const r = await Tesseract.recognize(c, 'eng', {logger: m => { if (m.status === 'recognizing text') prog(Math.round(m.progress * 100)); }});
-  const text = r.data.text || '', words = r.data.words || [], listRows = parseBusinessSuiteRows(words,img); if(listRows.length>=2) return listRows; const mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting', platforms:[]};
+  const text = r.data.text || '', words = r.data.words || [], listRows = parseBusinessSuiteRows(words,img); if(listRows.length>=2) return listRows; const markerRows=parseBusinessSuiteMarkerRows(words,img,text); if(markerRows.length>=2) return markerRows; if(listRows.length) return listRows; const mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting', platforms:[]};
   const headers = findDayHeaders(words, sc);
   const dm = text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s*(\d{1,2})\b/i), day = (dm && wdDate(dm[1], +dm[2])) || $('day').value || today();
   if (mk.length >= 2) { // one image crop per detected calendar post
