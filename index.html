@@ -560,7 +560,7 @@ label{display:block;font-size:12px;font-weight:700;color:#9aabba;margin:8px 0 3p
         <div class="card">
           <h2>Quick add from screenshots</h2>
           <div class="drop" id="drop">
-            <div>Paste, drop or attach one or more screenshots. A Business Suite calendar column with several times becomes several quests.</div>
+            <div>Upload a Meta Business Suite content-list or calendar screenshot. The reader will try to capture each visible post title, scheduled date and time. Review every title before saving.</div>
             <div class="row" style="margin-top:8px;justify-content:center"><button class="sec" onclick="document.getElementById('shotFile').click()">Attach images</button></div>
             <input id="shotFile" type="file" accept="image/*" multiple class="hide" onchange="readShots(this.files); this.value=''">
             <img id="shotImg" class="hide" alt="">
@@ -1309,11 +1309,45 @@ function findDayHeaders(words, sc){
 }
 function loadImg(file){ return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('Could not open the image')); im.src = URL.createObjectURL(file); }); }
 function crop(img, sx, sy, sw, sh, maxW=2400){ sx=Math.max(0,Math.min(img.naturalWidth-1,sx)); sy=Math.max(0,Math.min(img.naturalHeight-1,sy)); sw=Math.max(1,Math.min(img.naturalWidth-sx,sw)); sh=Math.max(1,Math.min(img.naturalHeight-sy,sh)); const k=Math.min(1,maxW/sw); const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(sw*k)); c.height=Math.max(1,Math.round(sh*k)); const g=c.getContext('2d'); g.imageSmoothingEnabled=true; g.imageSmoothingQuality='high'; g.drawImage(img,sx,sy,sw,sh,0,0,c.width,c.height); return c.toDataURL('image/jpeg',.98); }
+function parseBusinessSuiteRows(words,img){
+  if(!words?.length)return [];
+  const hasBoost=words.some(w=>/^boost$/i.test((w.text||'').trim()));
+  const hasSchedule=words.some(w=>/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*$/i.test((w.text||'').trim()));
+  if(!hasBoost||!hasSchedule)return [];
+  const W=img.naturalWidth,H=img.naturalHeight;
+  const tokens=words.filter(w=>w.bbox&&(w.text||'').trim()).map(w=>({...w,cy:(w.bbox.y0+w.bbox.y1)/2}));
+  const bands=[];
+  tokens.sort((a,b)=>a.cy-b.cy).forEach(w=>{
+    let band=bands.find(b=>Math.abs(b.cy-w.cy)<Math.max(13,H*.018));
+    if(!band){band={cy:w.cy,words:[]};bands.push(band);}
+    band.words.push(w);band.cy=band.words.reduce((n,x)=>n+x.cy,0)/band.words.length;
+  });
+  const found=[];
+  bands.forEach(b=>{
+    const line=b.words.sort((a,c)=>a.bbox.x0-c.bbox.x0);
+    const rowText=line.map(w=>w.text).join(' ');
+    const dateMatch=rowText.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i);
+    const timeMatch=rowText.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]?\b/);
+    if(!dateMatch||!timeMatch)return;
+    const titleTokens=line.filter(w=>w.bbox.x0>=95&&w.bbox.x0<430&&!/^(Boost|Photo|Video|Reel|Story)$/i.test((w.text||'').trim()));
+    let title=cleanTitle(titleTokens.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
+    title=title.replace(/\s*(\.\.\.|…)+\s*$/,'…');
+    if(title.length<4)return;
+    const date=wdDate(dateMatch[1],+dateMatch[3])||ymd(null,MON[dateMatch[2].slice(0,3).toLowerCase()],dateMatch[3]);
+    const time=timeOf(timeMatch[0]);
+    if(!date||!time)return;
+    const key=(title+'|'+date+'|'+time).toLowerCase();
+    if(found.some(x=>x.key===key))return; // merge the same creative listed once for Facebook and once for Instagram
+    const top=Math.max(0,b.cy-H*.075),height=Math.min(H-top,H*.15);
+    found.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',notes:'Imported from a Meta Business Suite content-list screenshot. Confirm the full title and schedule in Business Suite.',thumb:crop(img,0,top,W,height,1500),sourceThumb:crop(img,0,0,W,Math.min(H,Math.max(1,H)),1800)});
+  });
+  return found;
+}
 async function readOne(file, prog){
   const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight, sc = W < 700 ? 3 : 1;
   const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
   const r = await Tesseract.recognize(c, 'eng', {logger: m => { if (m.status === 'recognizing text') prog(Math.round(m.progress * 100)); }});
-  const text = r.data.text || '', words = r.data.words || [], mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting'};
+  const text = r.data.text || '', words = r.data.words || [], listRows = parseBusinessSuiteRows(words,img); if(listRows.length>=2) return listRows; const mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting'};
   const headers = findDayHeaders(words, sc);
   const dm = text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s*(\d{1,2})\b/i), day = (dm && wdDate(dm[1], +dm[2])) || $('day').value || today();
   if (mk.length >= 2) { // one image crop per detected calendar post
