@@ -1428,11 +1428,11 @@ async function markDuplicateDrafts(){
     let hash='';
     if(d.thumb) try { hash=await imageDHash(d.thumb); } catch(e){}
     if(!hash) { seen.push({d,hash}); continue; }
-    const sameSaved=savedHashes.find(x=>x.task_date===d.date && (x.scheduled_time||'')===(d.time||'') && hashDistance(x.hash,hash)<=7);
-    const sameDraft=seen.find(x=>x.d.date===d.date && (x.d.time||'')===(d.time||'') && x.hash && hashDistance(x.hash,hash)<=7);
+    const sameSaved=saved.find(x=>x.task_date===d.date && (x.scheduled_time||'')===(d.time||'') && importedTitleOverlap(x.title,d.title));
+    const sameDraft=seen.find(x=>x.d.date===d.date && (x.d.time||'')===(d.time||'') && importedTitleOverlap(x.d.title,d.title));
     if(sameSaved || sameDraft){
       d.duplicate=true;
-      d.duplicateReason=sameSaved?'Looks like an already saved quest (matching image, date and time)':'Repeated post detected in these screenshots';
+      d.duplicateReason=sameSaved?'Same title and schedule already saved':'Same title and schedule detected in another screenshot';
       d.on=false;
     }
     seen.push({d,hash});
@@ -1440,13 +1440,40 @@ async function markDuplicateDrafts(){
   const count=drafts.filter(d=>d.duplicate).length;
   if(count) msg.textContent += (msg.textContent ? ' ' : '') + count+' likely duplicate(s) were unchecked automatically. You can review them before saving.';
 }
+function normalizeImportedTitle(value){
+ return String(value||'').toLowerCase().replace(/\[[^\]]*\]/g,' ').replace(/…|\.{2,}/g,' ').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+}
+function importedTitleOverlap(a,b){
+ const x=normalizeImportedTitle(a),y=normalizeImportedTitle(b);
+ if(!x||!y)return false;
+ if(x===y)return true;
+ const shorter=x.length<=y.length?x:y,longer=x.length>y.length?x:y;
+ // Meta truncates titles at the same point on its platform rows; tolerate minor OCR tail differences.
+ return shorter.length>=14 && longer.startsWith(shorter.slice(0,Math.min(shorter.length,Math.max(14,Math.floor(shorter.length*.78)))));
+}
+function mergeImportedDrafts(incoming){
+ const added=[];
+ for(const d of incoming){
+   const duplicate=[...drafts,...added].find(x=>x.date===d.date&&(x.time||'')===(d.time||'')&&importedTitleOverlap(x.title,d.title));
+   if(duplicate){
+     // Keep one editable record; prefer the title with more readable characters.
+     if(normalizeImportedTitle(d.title).length>normalizeImportedTitle(duplicate.title).length)duplicate.title=d.title;
+     if(!duplicate.thumb&&d.thumb)duplicate.thumb=d.thumb;
+     if(!duplicate.sourceThumb&&d.sourceThumb)duplicate.sourceThumb=d.sourceThumb;
+     duplicate.notes='Same scheduled content was detected more than once across uploaded screenshots. One record retained; verify the title in Business Suite.';
+     continue;
+   }
+   added.push(d);
+ }
+ return added;
+}
 async function readShots(list){
   const files = [...(list || [])].filter(f => f.type.startsWith('image/')), st = $('shotMsg'); if (!files.length) return;
   if (!window.Tesseract) { st.textContent = 'The text reader did not load. Check your connection and reload the page.'; return; }
   let added = 0;
   for (let i = 0; i < files.length; i++) {
     const tag = `Reading image ${i + 1} of ${files.length}`; st.textContent = tag + '… (the first one takes longer)';
-    try { const ds = await readOne(files[i], p => st.textContent = `${tag}… ${p}%`); drafts.push(...ds); added += ds.length; } catch (e) { st.textContent = 'Could not read an image: ' + e.message; }
+    try { const ds = await readOne(files[i], p => st.textContent = `${tag}… ${p}%`); const unique=mergeImportedDrafts(ds); drafts.push(...unique); added += unique.length; } catch (e) { st.textContent = 'Could not read an image: ' + e.message; }
   }
   if (added) st.textContent = `Found ${added} quest draft(s). Checking for duplicates…`;
   await markDuplicateDrafts();
