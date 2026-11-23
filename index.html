@@ -424,6 +424,20 @@ label{display:block;font-size:12px;font-weight:700;color:#9aabba;margin:8px 0 3p
 @media(max-width:760px){.report-grid{grid-template-columns:1fr 1fr}.report-export{display:block}.report-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.form-heading{display:block}}
 @media(max-width:440px){.report-grid{grid-template-columns:1fr}}
 @media print{body{background:#fff!important;color:#111!important}body *{visibility:hidden!important}#v-reports,#v-reports *{visibility:visible!important}#v-reports{display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;padding:0!important}#v-reports .report-controls,#v-reports .report-export button,.report-note{display:none!important}#v-reports .card{background:#fff!important;color:#111!important;border:0!important;box-shadow:none!important}#repHeading,#repMeta{color:#111!important}.report-metric{background:#f4f6f8!important;border:1px solid #ddd!important}.report-metric b,.report-metric span,.report-table td,.report-table th{color:#111!important}.report-table th{background:#eee!important}.report-table-wrap{overflow:visible!important}.report-table{min-width:0!important;font-size:9pt!important}.report-table th,.report-table td{padding:6px!important}a{color:#111!important;text-decoration:none!important}}
+/* Add workspace polish */
+.add-entry-card{padding:22px!important}
+.add-step{display:flex;align-items:center;gap:12px;margin:22px 0 10px;padding-top:16px;border-top:1px solid var(--glassb)}
+.add-step>span{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:9px;background:rgba(59,130,246,.16);color:#80b7ff;font-size:12px;font-weight:800}
+.add-step b{display:block;color:var(--txt);font-size:13px}.add-step small,.field-hint{display:block;color:var(--mut);font-size:11px;margin-top:4px}
+.add-entry-card label em{color:#70aaff;font-style:normal}
+.optional-tag{font-size:10px;color:var(--mut);font-weight:500;margin-left:5px}
+.date-shortcuts{display:flex;gap:7px;margin:8px 0 12px;flex-wrap:wrap}
+.date-shortcuts button{font-size:11px;padding:7px 12px}
+.add-savebar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.add-savebar button{flex:1 1 140px}
+.add-savebar button:disabled{opacity:.55;cursor:wait}
+#formMsg{min-height:18px;margin-top:10px}
+@media(max-width:600px){.add-entry-card{padding:16px!important}.add-savebar{display:grid;grid-template-columns:1fr 1fr}.add-savebar button:first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -555,15 +569,22 @@ label{display:block;font-size:12px;font-weight:700;color:#9aabba;margin:8px 0 3p
         </div>
         <div class="card hide" id="draftCard"><h2>Detected tasks</h2><div id="drafts"></div>
           <div class="row" style="margin-top:10px"><button onclick="saveDrafts()">Save selected</button><button class="sec" onclick="clearDrafts()">Discard all</button></div><p id="dmsg" class="err"></p></div>
-        <div class="card">
-          <div class="form-heading"><div><h2 id="formTitle">Add content activity</h2><p class="meta">Record a planned task or completed publication.</p></div><span class="badge">CONTENT RECORD</span></div>
+        <div class="card add-entry-card">
+          <div class="form-heading"><div><div class="sh-eyebrow">CONTENT WORKSPACE / ENTRY</div><h2 id="formTitle">Add content activity</h2><p class="meta">Create a planned task, record a published Facebook post, or log completed work.</p></div><span class="badge">NEW RECORD</span></div>
+          <div class="add-step"><span>01</span><div><b>What did you work on?</b><small>Use the actual post headline or a clear activity name.</small></div></div>
           <input type="hidden" id="tid">
-          <label for="title">Content title / task name *</label><input id="title" placeholder="e.g. SKY TruFiber – Internet Safety Tips" maxlength="180" required>
-          <div class="row"><div><label for="cat">Content category *</label><select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div><div><label for="status">Work status *</label><select id="status"></select></div></div>
-          <div class="row"><div><label for="tdate">Activity / publication date *</label><input id="tdate" type="date" required></div><div><label for="ttime">Scheduled / publication time</label><input id="ttime" type="time"></div></div>
-          <label for="url">Facebook post link</label><input id="url" type="url" placeholder="Paste the actual Facebook post URL (optional)">
-          <label for="notes">Description / accomplishment notes</label><textarea id="notes" rows="4" maxlength="2000" placeholder="Describe what was created, published, handled, or accomplished."></textarea>
-          <div class="row"><button onclick="saveTask()">Save record</button><button class="sec" onclick="resetForm()">Clear form</button></div><p id="formMsg" class="err" role="status"></p>
+          <label for="title">Actual content title / activity name <em>*</em></label>
+          <input id="title" placeholder="Example: 5 Tips to Improve Your SKY TruFiber Wi-Fi" maxlength="180" autocomplete="off" required>
+          <div class="row"><div><label for="cat">Category <em>*</em></label><select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div><div><label for="status">Current status <em>*</em></label><select id="status"></select><small class="field-hint" id="statusHint">Pending — work has not started yet.</small></div></div>
+          <div class="add-step"><span>02</span><div><b>When did it happen?</b><small>For published content, enter the actual publication date—not the date you planned it.</small></div></div>
+          <div class="row"><div><label for="tdate">Activity / publication date <em>*</em></label><input id="tdate" type="date" required></div><div><label for="ttime">Scheduled / publication time</label><input id="ttime" type="time"><small class="field-hint">Optional. Use the actual time if known.</small></div></div>
+          <div class="date-shortcuts" aria-label="Date shortcuts"><button type="button" class="sec" onclick="setEntryDate(0)">Today</button><button type="button" class="sec" onclick="setEntryDate(-1)">Yesterday</button><button type="button" class="sec" onclick="setEntryDate(1)">Tomorrow</button></div>
+          <div class="add-step"><span>03</span><div><b>Attach proof and details</b><small>Link the live post when available. Add notes that help explain the accomplishment.</small></div></div>
+          <label for="url">Facebook post URL <span class="optional-tag">Optional</span></label><input id="url" type="url" placeholder="https://www.facebook.com/...">
+          <label for="notes">Description / accomplishment notes <span class="optional-tag">Optional</span></label><textarea id="notes" rows="4" maxlength="2000" placeholder="What was created or published? Include campaign details, location, audience, or work completed."></textarea>
+          <div class="add-savebar"><button type="button" id="saveRecordBtn" onclick="saveTask('done')">Save record</button><button type="button" class="sec" onclick="saveTask('another')">Save & add another</button><button type="button" class="sec" onclick="resetForm()">Clear form</button></div>
+          <p id="formMsg" class="err" role="status" aria-live="polite"></p>
+          <p class="field-hint">Tip: scheduled posts are not counted as published until you change the status to “Published — confirmed”.</p>
         </div>
       </div>
       <div class="card draft-preview-panel" style="align-self:start;position:sticky;top:16px"><h2 id="pvTitle">Content preview</h2><div id="pv"><div class="draft-preview-empty">Attach a screenshot to view it here in a larger preview.</div></div></div>
@@ -959,25 +980,57 @@ function render(){
       </div>
     </div>`).join(''):'<div class="quest-empty"><b>No matching tasks</b><span>Try another filter or create a new quest.</span><button class="sec" onclick="showView(\'add\')">Create task</button></div>';
 }
-async function saveTask(){
-  const row={title:$('title').value.trim(),category:$('cat').value,status:$('status').value,task_date:$('tdate').value,scheduled_time:$('ttime').value||null,fb_url:$('url').value.trim()||null,notes:$('notes').value.trim()||null,updated_at:new Date().toISOString()};
-  if(shotThumb)row.image_thumb=shotThumb;
-  if(!row.title||!row.task_date){$('formMsg').textContent='Please enter a title and activity date.';return;}
-  if(row.fb_url&&!/^https?:\/\//i.test(row.fb_url)){$('formMsg').textContent='Enter a valid URL beginning with http:// or https://.';return;}
-  const id=$('tid').value;$('formMsg').textContent='Saving…';
-  const {error}=id?await sb.from('tasks').update(row).eq('id',id):await sb.from('tasks').insert(row);
-  if(error){$('formMsg').textContent='Could not save: '+error.message;return;}
-  const date=row.task_date;resetForm();$('day').value=date;await load();showView('quests');toast('Record saved');
+let savingTask=false;
+function setEntryDate(offset){$('tdate').value=addDays(today(),offset);updatePreview();}
+function applyEntryPreset(mode){
+ if(mode==='planned'){$('status').value='pending';$('tdate').value=today();$('ttime').value='';}
+ if(mode==='prepared'){$('status').value='prepared';$('tdate').value=today();}
+ if(mode==='published'){$('status').value='published';$('tdate').value=today();$('ttime').value=nowHM();}
+ if(mode==='scheduled'){$('status').value='scheduled';$('tdate').value=today();}
+ updateStatusHint();updatePreview();
+}
+function updateStatusHint(){
+ const hints={pending:'Pending — work has not started yet.',prepared:'Prepared — content is ready but not yet scheduled.',scheduled:'Scheduled — set for publication; not yet confirmed live.',published:'Published — confirmed live on Facebook or the relevant channel.',completed:'Completed — activity finished; not necessarily a Facebook publication.'};
+ const el=$('statusHint');if(el)el.textContent=hints[$('status').value]||'Select the current work status.';
+}
+async function saveTask(mode='done'){
+ if(savingTask)return;
+ const row={title:$('title').value.trim(),category:$('cat').value,status:$('status').value,task_date:$('tdate').value,scheduled_time:$('ttime').value||null,fb_url:$('url').value.trim()||null,notes:$('notes').value.trim()||null,updated_at:new Date().toISOString()};
+ if(shotThumb)row.image_thumb=shotThumb;
+ if(!row.title){$('formMsg').textContent='Please enter the actual content title or activity name.';$('title').focus();return;}
+ if(!row.task_date){$('formMsg').textContent='Please choose the activity or publication date.';$('tdate').focus();return;}
+ if(row.fb_url&&!/^https?:\/\//i.test(row.fb_url)){$('formMsg').textContent='Enter a complete URL beginning with http:// or https://.';$('url').focus();return;}
+ const id=$('tid').value;
+ if(row.status==='published'&&!row.fb_url&&!confirm('This record is marked Published — confirmed, but no Facebook post link is attached. Save it anyway?'))return;
+ if(!id){
+   const {data:matches,error:checkError}=await sb.from('tasks').select('id,title,task_date').eq('task_date',row.task_date).ilike('title',row.title).limit(5);
+   if(checkError){$('formMsg').textContent='Could not check for duplicate records: '+checkError.message;return;}
+   if(matches?.length&&!confirm('A record with this title and date may already exist. Save another copy anyway?'))return;
+ }
+ savingTask=true;const btn=$('saveRecordBtn');if(btn){btn.disabled=true;btn.textContent='Saving…';}
+ $('formMsg').textContent='Saving your record…';
+ try{
+   const {error}=id?await sb.from('tasks').update(row).eq('id',id):await sb.from('tasks').insert(row);
+   if(error){$('formMsg').textContent='Could not save: '+error.message;return;}
+   const date=row.task_date;
+   if(mode==='another'){
+     resetForm();$('tdate').value=date;$('cat').value=row.category;$('status').value='pending';updateStatusHint();updatePreview();
+     $('formMsg').textContent='Saved. Ready for your next record.';$('title').focus();await load();toast('Record saved. Add the next one.');
+   }else{
+     resetForm();$('day').value=date;await load();showView('quests');toast(id?'Record updated':'Record saved');
+   }
+ }catch(e){$('formMsg').textContent='Unexpected save error: '+e.message;}
+ finally{savingTask=false;if(btn){btn.disabled=false;btn.textContent='Save record';}}
 }
 function editTask(id){
   const t = tasks.find(x => x.id === id); if (!t) return;
   $('tid').value = t.id; $('title').value = t.title; $('cat').value = t.category; $('status').value = t.status;
   $('tdate').value = t.task_date; $('ttime').value = t.scheduled_time ? t.scheduled_time.slice(0,5) : '';
-  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit quest'; shotThumb = null; const im = $('shotImg'); if (t.image_thumb) { im.src = t.image_thumb; im.classList.remove('hide'); } else im.classList.add('hide');
+  $('url').value = t.fb_url || ''; $('notes').value = t.notes || ''; $('formTitle').textContent = 'Edit content activity'; updateStatusHint(); shotThumb = null; const im = $('shotImg'); if (t.image_thumb) { im.src = t.image_thumb; im.classList.remove('hide'); } else im.classList.add('hide');
   showView('add'); updatePreview();
 }
 function zoomImg(src){ const o = document.createElement('div'); o.style.cssText = 'position:fixed;inset:0;z-index:40;background:#000d;display:grid;place-items:center;cursor:zoom-out;padding:12px'; o.innerHTML = `<img src="${esc(src)}" style="max-width:100%;max-height:100%;border-radius:8px" alt="Screenshot">`; o.onclick = () => o.remove(); document.body.appendChild(o); }
-function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value=$('day').value||today(); $('status').value='pending'; $('formTitle').textContent='Add content activity'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; $('formMsg').textContent=''; shotThumb=null; updatePreview(); }
+function resetForm(){ ['tid','title','ttime','url','notes'].forEach(i => $(i).value=''); $('tdate').value=$('day').value||today(); $('status').value='pending'; $('cat').value='posting'; $('formTitle').textContent='Add content activity'; $('shotImg').classList.add('hide'); $('shotMsg').textContent=''; $('formMsg').textContent=''; shotThumb=null; updateStatusHint(); updatePreview(); }
 async function setStatus(id, s){ await sb.from('tasks').update({status:s, updated_at:new Date().toISOString()}).eq('id', id); load(); }
 async function delTask(id){ if (confirm('Delete this quest?')) { await sb.from('tasks').delete().eq('id', id); load(); } }
 
@@ -1181,7 +1234,7 @@ function updatePreview(){
   const miss = [!t && 'a title', !d && 'a date'].filter(Boolean);
   $('pv').innerHTML = `<div class="pvtag">Preview. Not saved yet.</div><div class="pvq c-${c}"><div class="t">${esc(t || 'Untitled quest')}</div><div class="meta"><span class="badge s-${st}">${STATUS[st]}</span> ${esc(CAT[c])}</div><div class="meta">${esc(d || 'No date')}${tm ? ' · ' + esc(tm) : ''}</div>${u ? `<div class="meta">${esc(u)}</div>` : ''}${n ? `<div class="meta">${esc(n)}</div>` : ''}${st === 'scheduled' ? '<div class="meta">Scheduled does not count as published until you confirm it.</div>' : ''}${shot}${u ? linkRow(u) : ''}</div>${miss.length ? `<p class="err">Add ${miss.join(' and ')} before saving.</p>` : ''}`;
 }
-['title','cat','status','tdate','ttime','url','notes'].forEach(id => { $(id).addEventListener('input', updatePreview); $(id).addEventListener('change', updatePreview); });
+['title','cat','status','tdate','ttime','url','notes'].forEach(id => { $(id).addEventListener('input', updatePreview); $(id).addEventListener('change', updatePreview); }); $('status').addEventListener('change',updateStatusHint); updateStatusHint();
 
 /* ===== Screenshot reader: one or many images become draft quests (text is read in your browser) ===== */
 const MON = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
