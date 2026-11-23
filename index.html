@@ -743,7 +743,7 @@ button.sec,.cat,.draft-preview-strip button{background:#fff!important;color:#334
     <div class="card report-controls"><h2>Build a report</h2>
       <div class="report-grid">
         <div><label for="repType">Report type</label><select id="repType"><option value="summary">Period accomplishment summary</option><option value="published">Published content only</option><option value="tasks">Task & activity register</option></select></div>
-        <div><label for="repCategory">Content category</label><select id="repCategory"><option value="all">All categories</option><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div>
+        <div><label for="repCategory">Content category</label><select id="repCategory"><option value="all">All categories</option><option value="posting">Social Media Content</option><option value="trivia">SKY Internet Trivia</option><option value="barangay">Barangay Saturation Event</option></select></div>
         <div><label for="repStatus">Status</label><select id="repStatus"><option value="all">All statuses</option><option value="pending">Pending</option><option value="prepared">Prepared</option><option value="scheduled">Scheduled</option><option value="published">Published — confirmed</option><option value="completed">Completed</option></select></div>
         <div><label for="repStart">From date</label><input id="repStart" type="date"></div><div><label for="repEnd">To date</label><input id="repEnd" type="date"></div>
       </div>
@@ -1476,34 +1476,42 @@ function parseBusinessSuiteRows(words,img){
   const W=img.naturalWidth,H=img.naturalHeight;
   const tokens=words.filter(w=>w.bbox&&(w.text||'').trim()).map(w=>({...w,cy:(w.bbox.y0+w.bbox.y1)/2}));
   const bands=[];
-  tokens.sort((a,b)=>a.cy-b.cy).forEach(w=>{
-    let band=bands.find(b=>Math.abs(b.cy-w.cy)<Math.max(13,H*.018));
+  tokens.slice().sort((a,b)=>a.cy-b.cy).forEach(w=>{
+    let band=bands.find(x=>Math.abs(x.cy-w.cy)<Math.max(13,H*.018));
     if(!band){band={cy:w.cy,words:[]};bands.push(band);}
     band.words.push(w);band.cy=band.words.reduce((n,x)=>n+x.cy,0)/band.words.length;
   });
+  const valid=bands.map(b=>{
+    const line=b.words.slice().sort((x,y)=>x.bbox.x0-y.bbox.x0);
+    const text=line.map(w=>w.text).join(' ');
+    const dateMatch=text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i);
+    const timeMatch=text.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]?\b/);
+    return dateMatch&&timeMatch?{band:b,dateMatch,timeMatch}:null;
+  }).filter(Boolean).sort((x,y)=>x.band.cy-y.band.cy);
+  if(!valid.length)return [];
+  const gaps=valid.slice(1).map((x,i)=>x.band.cy-valid[i].band.cy).filter(x=>x>20).sort((x,y)=>x-y);
+  const step=gaps.length?gaps[Math.floor(gaps.length/2)]:H*.15;
   const found=[];
-  bands.forEach(b=>{
-    const line=b.words.sort((a,c)=>a.bbox.x0-c.bbox.x0);
-    const rowText=line.map(w=>w.text).join(' ');
-    const dateMatch=rowText.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i);
-    const timeMatch=rowText.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]?\b/);
-    if(!dateMatch||!timeMatch)return;
-    const titleTokens=line.filter(w=>w.bbox.x0>=95&&w.bbox.x0<430&&!/^(Boost|Photo|Video|Reel|Story)$/i.test((w.text||'').trim()));
+  valid.forEach((r,i)=>{
+    const prev=valid[i-1]?.band.cy,next=valid[i+1]?.band.cy;
+    const top=Math.max(0,prev===undefined?r.band.cy-step*.52:(prev+r.band.cy)/2);
+    const bottom=Math.min(H,next===undefined?r.band.cy+step*.52:(r.band.cy+next)/2);
+    const rowTokens=tokens.filter(w=>w.cy>=top&&w.cy<=bottom&&w.bbox.x0>=85&&w.bbox.x0<455)
+      .sort((x,y)=>x.cy-y.cy||x.bbox.x0-y.bbox.x0);
+    const titleTokens=rowTokens.filter(w=>!/^(Boost|Photo|Video|Reel|Story|Post)$/i.test((w.text||'').trim()));
     let title=cleanTitle(titleTokens.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
     title=title.replace(/\s*(\.\.\.|…)+\s*$/,'…');
+    if(title.length<4)title=cleanTitle(r.band.words.filter(w=>w.bbox.x0>=85&&w.bbox.x0<455).map(w=>w.text).join(' ')).trim();
     if(title.length<4)return;
-    const date=wdDate(dateMatch[1],+dateMatch[3])||ymd(null,MON[dateMatch[2].slice(0,3).toLowerCase()],dateMatch[3]);
-    const time=timeOf(timeMatch[0]);
+    const date=wdDate(r.dateMatch[1],+r.dateMatch[3])||ymd(null,MON[r.dateMatch[2].slice(0,3).toLowerCase()],r.dateMatch[3]);
+    const time=timeOf(r.timeMatch[0]);
     if(!date||!time)return;
     const key=(title+'|'+date+'|'+time).toLowerCase();
-    if(found.some(x=>x.key===key))return; // merge the same creative listed once for Facebook and once for Instagram
-    const rowCenters=bands.filter(x=>{const tx=x.words.map(w=>w.text).join(' ');return /\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+[A-Z][a-z]{2,8}\s+\d{1,2}\b/i.test(tx)&&/\b\d{1,2}[:.]\d{2}\s*[AaPp]/i.test(tx);}).map(x=>x.cy).filter(y=>Math.abs(y-b.cy)>H*.025).sort((x,y)=>x-y);
-    const above=rowCenters.filter(y=>y<b.cy).pop(),below=rowCenters.find(y=>y>b.cy);
-    const rowTop=Math.max(0,above===undefined?b.cy-H*.075:(above+b.cy)/2);
-    const rowBottom=Math.min(H,below===undefined?b.cy+H*.075:(below+b.cy)/2);
-    const top=Math.max(0,rowTop),height=Math.max(1,rowBottom-rowTop);
-    const previewLeft=35,previewWidth=Math.min(W-previewLeft,Math.max(420,Math.min(620,W*.46)));
-    found.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',notes:'Imported from a Meta Business Suite content-list screenshot. Confirm the full title and schedule in Business Suite.',thumb:crop(img,previewLeft,top,previewWidth,height,1800),sourceThumb:crop(img,0,0,W,Math.min(H,Math.max(1,H)),1800)});
+    if(found.some(x=>x.key===key))return;
+    const left=0,width=Math.min(W,Math.max(680,Math.round(W*.55)));
+    found.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',platforms:[],
+      notes:'Imported from Meta Business Suite. Check the platform icon(s) in the screenshot and select Facebook, Instagram and/or TikTok before saving.',
+      thumb:crop(img,left,top,width,Math.max(1,bottom-top),1800),sourceThumb:crop(img,0,0,W,H,1800)});
   });
   return found;
 }
@@ -1511,7 +1519,7 @@ async function readOne(file, prog){
   const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight, sc = W < 700 ? 3 : 1;
   const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
   const r = await Tesseract.recognize(c, 'eng', {logger: m => { if (m.status === 'recognizing text') prog(Math.round(m.progress * 100)); }});
-  const text = r.data.text || '', words = r.data.words || [], listRows = parseBusinessSuiteRows(words,img); if(listRows.length>=2) return listRows; const mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting'};
+  const text = r.data.text || '', words = r.data.words || [], listRows = parseBusinessSuiteRows(words,img); if(listRows.length>=2) return listRows; const mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting', platforms:[]};
   const headers = findDayHeaders(words, sc);
   const dm = text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s*(\d{1,2})\b/i), day = (dm && wdDate(dm[1], +dm[2])) || $('day').value || today();
   if (mk.length >= 2) { // one image crop per detected calendar post
@@ -1661,7 +1669,7 @@ function renderDrafts(){
     <input data-i="${i}" data-k="title" value="${esc(d.title)}" placeholder="Quest title">
     <div class="row"><input type="date" data-i="${i}" data-k="date" value="${esc(d.date)}"><input type="time" data-i="${i}" data-k="time" value="${esc(d.time || '')}"></div>
     <div class="row"><select data-i="${i}" data-k="cat">${opts(CAT, d.cat)}</select><select data-i="${i}" data-k="status">${opts(STATUS, d.status)}</select></div>
-    <div class="draft-platforms"><small>Platforms for this content</small>${['facebook','instagram','tiktok'].map(p=>'<label><input type="checkbox" data-i="'+i+'" data-platform="'+p+'" '+((d.platforms||['facebook']).includes(p)?'checked':'')+'> '+PLATFORM_NAMES[p]+'</label>').join('')}</div>
+    <div class="draft-platforms"><small>Select platforms shown in the screenshot</small>${['facebook','instagram','tiktok'].map(p=>'<label><input type="checkbox" data-i="'+i+'" data-platform="'+p+'" '+((d.platforms||[]).includes(p)?'checked':'')+'> '+PLATFORM_NAMES[p]+'</label>').join('')}</div>
     <input data-i="${i}" data-k="postId" value="${esc(d.postId || '')}" placeholder="Post ID (optional)">
     <input data-i="${i}" data-k="url" value="${esc(d.url || '')}" placeholder="Facebook link (optional)">
     <input data-i="${i}" data-k="igUrl" value="${esc(d.igUrl || '')}" placeholder="Instagram link (optional)">
@@ -1679,7 +1687,7 @@ async function saveDrafts(){
   const ids = sel.map(d => (d.postId || '').trim()).filter(Boolean), dup = new Set();
   if (ids.length) { const {data} = await sb.from('tasks').select('post_id').in('post_id', ids); (data || []).forEach(x => dup.add(x.post_id)); }
   const todo = sel.filter(d => !((d.postId || '').trim() && dup.has(d.postId.trim())));
-  const rows = todo.map(d => {const platforms=d.platforms||['facebook'],links={facebook:(d.url||'').trim(),instagram:(d.igUrl||'').trim(),tiktok:(d.ttUrl||'').trim()};return {title:(d.title||'').trim()||('Post'+(d.time?' at '+d.time:'')),category:d.cat,status:d.status,task_date:d.date,scheduled_time:d.time||null,fb_url:links.facebook||null,notes:socialNotes(d.notes||'',platforms,links),post_id:(d.postId||'').trim()||null,image_thumb:d.thumb||null};});
+  const rows = todo.map(d => {const platforms=d.platforms||[],links={facebook:(d.url||'').trim(),instagram:(d.igUrl||'').trim(),tiktok:(d.ttUrl||'').trim()};return {title:(d.title||'').trim()||('Post'+(d.time?' at '+d.time:'')),category:d.cat,status:d.status,task_date:d.date,scheduled_time:d.time||null,fb_url:links.facebook||null,notes:socialNotes(d.notes||'',platforms,links),post_id:(d.postId||'').trim()||null,image_thumb:d.thumb||null};});
   if (!rows.length) { msg.textContent = 'Those posts are already saved (same Post ID).'; return; }
   const {error} = await sb.from('tasks').insert(rows); if (error) { msg.textContent = error.message; return; }
   const skipped = sel.length - rows.length; drafts = drafts.filter(d => !d.on); renderDrafts(); $('shotMsg').textContent = '';
