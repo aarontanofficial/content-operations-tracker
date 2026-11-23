@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Content Operations Manager · Shadow Hunter</title>
+<title>Content Operations Dashboard · AHBA</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Content Tracker">
-<meta name="theme-color" content="#05071a">
+<meta name="theme-color" content="#f4f6fa">
 <script>try{var m=localStorage.getItem('theme')||'auto',h=parseInt(new Date().toLocaleString('en-GB',{timeZone:'Asia/Manila',hour:'2-digit',hourCycle:'h23'}),10);document.documentElement.dataset.theme=(m==='day'||(m==='auto'&&h>=6&&h<18))?'day':'night'}catch(e){}</script>
 <style>
 :root{--bg1:#04061a;--bg2:#0a0f2e;--bg3:#150a33;--o1:#3b5bff;--o2:#8a4bff;--o3:#1fb6ff;--glass:rgba(16,22,58,.58);--glass2:rgba(255,255,255,.06);--glassb:rgba(140,160,255,.22);--solid:#10163a;--sh:0 10px 34px rgba(0,0,20,.45),inset 0 1px 0 rgba(255,255,255,.08);--txt:#eef1ff;--mut:#a6afd8;--aura:#6b8cff;--btn:linear-gradient(135deg,#4f74ff,#8a5bff);--gold:#ffd166;--bad:#ff6b81;--inp:rgba(255,255,255,.07);--barbg:rgba(255,255,255,.1);--link:#a9c0ff;--navbg:rgba(14,18,48,.66);--lov1:rgba(6,10,50,.68);--lov2:rgba(4,6,26,.94);--fc:#6fb7ff;--warnbg:rgba(255,170,60,.14);--warnln:rgba(255,170,60,.5);color-scheme:dark}
@@ -323,7 +323,41 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
 #opsCockpit{margin:0 0 16px;padding:20px;border-radius:24px;background:var(--glass);border:1px solid var(--glassb)}
 #opsCockpit .ops-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 #opsCockpit .ops-head h2{font-size:21px;margin:5px 0}
-@media(max-width:560px){.sh-homegrid{gap:7px}.sh-home-stat{padding:12px 10px}.sh-home-stat span,.sh-home-stat small{font-size:10px}.sh-home-actions{width:100%}.sh-home-action{flex:1;min-width:110px;font-size:11px;padding:9px 10px}.sh-home{border-radius:22px;padding:21px 17px}}</style>
+@media(max-width:560px){.sh-homegrid{gap:7px}.sh-home-stat{padding:12px 10px}.sh-home-stat span,.sh-home-stat small{font-size:10px}.sh-home-actions{width:100%}.sh-home-action{flex:1;min-width:110px;font-size:11px;padding:9px 10px}.sh-home{border-radius:22px;padding:21px 17px}}
+/* Professional AHBA dashboard */
+:root{--bg1:#f4f6fa;--bg2:#f4f6fa;--bg3:#eef2f7;--glass:#fff;--glass2:#f5f7fb;--glassb:#e2e7ef;--solid:#fff;--sh:0 2px 12px rgba(15,23,42,.055);--txt:#172033;--mut:#667085;--aura:#2458a6;--btn:#174a86;--gold:#946313;--bad:#c63e4e;--inp:#fff;--barbg:#e9edf3;--link:#174a86;--navbg:#fff;--lov1:#f4f6fa;--lov2:#eef2f7;--fc:#2458a6;--warnbg:#fff8e8;--warnln:#f1d99b;color-scheme:light}
+[data-theme=night]{--bg1:#101827;--bg2:#101827;--bg3:#172235;--glass:#182438;--glass2:#202f45;--glassb:#30425a;--solid:#182438;--sh:0 2px 14px rgba(0,0,0,.18);--txt:#edf2f8;--mut:#a4b1c2;--aura:#75a9e8;--btn:#285b96;--gold:#e7c47a;--bad:#ff8b98;--inp:#1d2b40;--barbg:#314158;--link:#9fc5f4;--navbg:#172438;--lov1:#101827;--lov2:#172235;color-scheme:dark}
+html,body{background:var(--bg1)!important}body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg1)!important;color:var(--txt)}.bgfx{display:none!important}
+main{max-width:1440px;margin:0 auto;padding:28px 28px 44px 270px}
+.card,.glass,.ops-cockpit .card,.batch-planner{background:var(--glass);border:1px solid var(--glassb);border-radius:14px;box-shadow:var(--sh);backdrop-filter:none;-webkit-backdrop-filter:none}.card{padding:20px;margin-bottom:16px}
+h1{font-size:28px;letter-spacing:-.035em;font-weight:750;color:var(--txt)}h2{font-size:17px;color:var(--txt)}h3{font-size:12px;letter-spacing:.09em;color:var(--mut)}.meta,.sh-subtitle{color:var(--mut)}
+input,select,textarea{background:var(--inp);border:1px solid var(--glassb);border-radius:9px;color:var(--txt);box-shadow:none}button{background:var(--btn);border-radius:9px;box-shadow:none;font-weight:650}button.sec,.cat,.tab{background:var(--glass2);color:var(--txt);border:1px solid var(--glassb);box-shadow:none}
+.tabs{position:fixed;left:18px;top:18px;bottom:18px;transform:none;width:224px;max-width:none;z-index:50;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:6px;padding:14px;border-radius:14px;background:var(--navbg);border:1px solid var(--glassb);box-shadow:var(--sh);backdrop-filter:none}
+.tabs:before{content:'AHBA';display:block;font-size:18px;font-weight:800;letter-spacing:.06em;color:var(--txt);padding:8px 10px 22px}
+.tab,.tab.on{flex:0 0 48px;max-width:none;width:100%;justify-content:flex-start;padding:0 14px;border-radius:9px;background:transparent;color:var(--mut);border:1px solid transparent;box-shadow:none}
+.tab svg{width:20px;height:20px}.tab .lbl{display:inline!important;font-size:14px;margin-left:10px}.tab.on{background:#eaf1f9;color:#174a86;border-color:#d7e4f3}
+[data-theme=night] .tab.on{background:#263d58;color:#c9e0ff;border-color:#365577}
+.view{max-width:1200px;margin:0 auto}.view.on{animation:none}
+.sh-home{background:var(--glass)!important;border:1px solid var(--glassb)!important;border-radius:14px!important;padding:24px!important;margin:0 0 18px!important;box-shadow:var(--sh)!important}
+.sh-eyebrow{color:var(--aura)!important;font-size:11px!important;letter-spacing:.12em!important;font-weight:750!important}.sh-live{background:#249b68!important;box-shadow:none!important}
+.sh-home h1{font-size:29px!important;margin:10px 0 4px!important;color:var(--txt)!important}
+.sh-homegrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;margin:22px 0 16px!important}
+.sh-home-stat{background:var(--glass2)!important;border:1px solid var(--glassb)!important;border-radius:10px!important;padding:14px!important}
+.sh-home-stat span,.sh-home-stat small{color:var(--mut)!important;font-size:12px!important}.sh-home-stat b{font-size:28px!important;color:var(--txt)!important}
+.sh-home-bottom{display:flex!important;align-items:center!important;gap:18px!important;flex-wrap:wrap!important}.sh-home-progress{flex:1 1 260px!important}
+.sh-home-progresshead{color:var(--mut)!important}.sh-home-track{background:var(--barbg)!important;border-radius:99px!important}.sh-home-track i{background:#2c6eac!important;box-shadow:none!important}
+.sh-home-actions{display:flex!important;gap:8px!important;flex-wrap:wrap!important}.sh-home-action{background:#174a86!important;border-radius:9px!important;box-shadow:none!important}.sh-home-action.secondary{background:var(--glass2)!important;color:var(--txt)!important;border:1px solid var(--glassb)!important}
+.pcard,#v-hunter{display:none!important}
+.ops-kpi{background:var(--glass)!important;border:1px solid var(--glassb)!important;border-radius:11px!important;box-shadow:none!important}.ops-kpi span,.ops-kpi small{color:var(--mut)!important}.ops-kpi b{color:var(--txt)!important;font-size:28px!important}
+.ops-bar-track{background:var(--barbg)!important;border-radius:99px}.ops-bar-track i{background:#2d70ad!important;box-shadow:none!important}.ops-alert{border-radius:9px!important;box-shadow:none!important}
+.batch-planner{padding:20px!important}.batch-head{border-bottom:1px solid var(--glassb)!important}.batch-kicker{color:var(--aura)!important}.batch-work{background:var(--glass2)!important;border:1px solid var(--glassb)!important;border-radius:10px!important}
+.tile{background:var(--glass)!important;border:1px solid var(--glassb)!important;border-radius:10px!important;color:var(--mut)!important}.tile b{color:var(--txt)!important}
+.week .day i{background:var(--barbg)!important;border:1px solid var(--glassb)!important}.week .day.on i{background:#2d70ad!important;border-color:#2d70ad!important;box-shadow:none!important}
+.quest-command,.quest-board-panel{background:var(--glass)!important;border:1px solid var(--glassb)!important;border-radius:14px!important;box-shadow:var(--sh)!important}.quest-eyebrow{color:var(--aura)!important}.quest-command h1{color:var(--txt)!important}.quest-command p,.quest-board-note{color:var(--mut)!important}.quest-search input{background:var(--inp)!important}.quest-metrics .qmetric{background:var(--glass2)!important;border:1px solid var(--glassb)!important}.task{border-color:var(--glassb)!important}.task .t{font-size:16px;color:var(--txt)}
+.lobby{display:grid;grid-template-columns:minmax(0,440px);justify-content:center;align-items:center;min-height:calc(100vh - 80px);padding:20px}.lobby-hero{display:none!important}.lpanel{width:100%;max-width:440px;background:var(--glass)!important;border:1px solid var(--glassb)!important;border-radius:16px!important;box-shadow:var(--sh)!important;backdrop-filter:none!important}.lpanel h1{font-size:26px!important;color:var(--txt)!important}.lsub{color:var(--mut)!important}
+@media(max-width:760px){main{padding:14px 12px 104px!important;margin:0!important}.tabs{left:10px!important;right:10px!important;top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom))!important;width:auto!important;height:66px!important;max-width:none!important;flex-direction:row!important;align-items:center!important;justify-content:space-around!important;padding:6px!important;border-radius:14px!important}.tabs:before{display:none!important}.tab,.tab.on{flex:1 1 0!important;min-width:0!important;min-height:48px!important;height:48px!important;justify-content:center!important;padding:0 4px!important}.tab .lbl{display:block!important;font-size:10px!important;margin:2px 0 0!important}.tab{flex-direction:column!important;gap:1px!important}.tab svg{width:18px!important;height:18px!important}.sh-home{padding:18px!important}.sh-home h1{font-size:24px!important}.sh-homegrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}.sh-home-stat{padding:10px 8px!important}.sh-home-stat b{font-size:22px!important}.ops-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ops-panels{grid-template-columns:1fr!important}.batch-list{grid-template-columns:1fr!important}.card{padding:15px!important}}
+
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -342,8 +376,8 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
     <div class="lplate lp-bot" aria-hidden="true"><b>CONTENT TRACKER</b><small>Plan. Schedule. Level up.</small></div>
   </div></div></div>
   <div id="auth" class="card lpanel">
-  <h1>Welcome back, Hunter</h1>
-  <p class="lsub">Sign in to continue your quests.</p>
+  <h1>Welcome back</h1>
+  <p class="lsub">Sign in to manage your content operations.</p>
   <input id="email" type="email" placeholder="Email" autocomplete="username">
   <label class="rem"><input type="checkbox" id="rem"> Remember my email</label>
   <input id="pass" type="password" placeholder="Password (min 6 chars)" autocomplete="current-password">
@@ -357,7 +391,7 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
 
   <section class="view on" id="v-overview">
     <div class="sh-home">
-      <div class="sh-eyebrow"><i class="sh-live"></i> SHADOW HUNTER · DAILY COMMAND CENTER</div>
+      <div class="sh-eyebrow"><i class="sh-live"></i> CONTENT OPERATIONS · DAILY OVERVIEW</div>
       <h1 id="shGreeting">Welcome back, Hunter.</h1>
       <div class="sh-subtitle" id="shDate">Your content workflow is your real-world dungeon. Prepare, schedule, publish, and earn your next rank.</div>
       <div class="sh-homegrid">
@@ -373,7 +407,7 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
         <div class="sh-home-actions"><button class="sh-home-action" onclick="showView('quests')">OPEN QUEST LOG →</button><button class="sh-home-action secondary" onclick="showView('add')">＋ NEW QUEST</button><button class="sh-home-action secondary" onclick="showView('hunter');setSub('model')">VIEW 3D HUNTER</button></div>
       </div>
     </div>
-    <div class="card pcard" id="pcard">
+    <div class="card pcard hide" id="pcard" aria-hidden="true">
     <div class="avframe" id="avframe"><div class="pframe hide" id="pframe"><img id="pimg" alt="Your uploaded portrait"></div><svg id="avBust" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Your hunter avatar"></svg></div>
     <div class="pinfo">
       <div class="hn" id="formNo">PHASE 1</div>
@@ -400,7 +434,7 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
       </div>
     </section>
     <section class="batch-planner" id="batchPlanner">
-      <div class="batch-head"><div><div class="batch-kicker">Daily mission · 16:00 Philippine time</div><h2 style="margin:6px 0">Batch Production Room</h2><p class="meta" style="margin:0">Prepare and schedule the next day's content in one sitting.</p></div><div><div class="hn">Batch readiness</div><strong id="batchCount" style="font-size:26px">0 / 5</strong></div></div>
+      <div class="batch-head"><div><div class="batch-kicker">Daily planning reminder · 4:00 PM Philippine time</div><h2 style="margin:6px 0">Content Planning</h2><p class="meta" style="margin:0">Prepare and schedule the next day's content in one sitting.</p></div><div><div class="hn">Batch readiness</div><strong id="batchCount" style="font-size:26px">0 / 5</strong></div></div>
       <div class="batch-date-row"><label class="meta" for="batchDate">Target posting date</label><input id="batchDate" type="date" aria-label="Target posting date"><button class="sec" type="button" onclick="setBatchTomorrow()">Tomorrow</button></div>
       <div class="batch-progress"><i id="batchProgress" style="width:0%"></i></div>
       <div class="batch-list batch-work-list" id="batchChecklist">
@@ -427,13 +461,13 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
   <section class="view" id="v-quests">
     <div class="quest-command">
       <div class="quest-eyebrow">HUNTER SYSTEM / MISSION CONTROL</div>
-      <div class="quest-title-row"><div><h1>Quest Board</h1><p>Track every content mission from preparation to confirmed publishing.</p></div><button onclick="showView('add')">＋ New quest</button></div>
-      <div class="quest-tools"><label>MISSION DATE<input id="day" type="date" onchange="load()"></label><div id="progress">Loading mission data…</div></div>
+      <div class="quest-title-row"><div><h1>Task Board</h1><p>Track content from preparation through confirmed publication.</p></div><button onclick="showView('add')">＋ New task</button></div>
+      <div class="quest-tools"><label>TASK DATE<input id="day" type="date" onchange="load()"></label><div id="progress">Loading mission data…</div></div>
       <div class="quest-metrics" id="questCommandStats"></div>
-      <div class="quest-search"><span>⌕</span><input id="qSearch" type="search" placeholder="Search quests, notes or post links…" autocomplete="off"></div>
+      <div class="quest-search"><span>⌕</span><input id="qSearch" type="search" placeholder="Search tasks, notes or Facebook links…" autocomplete="off"></div>
     </div>
     <div class="quest-board-panel">
-      <div class="quest-board-head"><div><div class="quest-eyebrow">ACTIVE OPERATIONS</div><h2>Mission Log</h2></div><div class="quest-board-note">Select a status to update progress</div></div>
+      <div class="quest-board-head"><div><div class="quest-eyebrow">CONTENT TASKS</div><h2>Task List</h2></div><div class="quest-board-note">Select a status to update progress</div></div>
       <div class="cats" id="qf" role="group" aria-label="Filter quests"><button class="cat on" data-f="all" aria-pressed="true">All</button><button class="cat" data-f="open" aria-pressed="false">Open</button><button class="cat" data-f="scheduled" aria-pressed="false">Scheduled</button><button class="cat" data-f="done" aria-pressed="false">Cleared</button></div>
       <div id="list"></div>
     </div>
@@ -452,17 +486,17 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
             <p id="shotMsg" class="meta"></p>
           </div>
         </div>
-        <div class="card hide" id="draftCard"><h2>Detected quests</h2><div id="drafts"></div>
+        <div class="card hide" id="draftCard"><h2>Detected tasks</h2><div id="drafts"></div>
           <div class="row" style="margin-top:10px"><button onclick="saveDrafts()">Save selected</button><button class="sec" onclick="clearDrafts()">Discard all</button></div><p id="dmsg" class="err"></p></div>
         <div class="card">
           <h2 id="formTitle">New quest</h2>
           <input type="hidden" id="tid">
-          <input id="title" placeholder="Quest title">
+          <input id="title" placeholder="Task title">
           <div class="row"><select id="cat"><option value="posting">Facebook Content Posting</option><option value="trivia">SKY Internet Trivia</option></select><select id="status"></select></div>
           <div class="row"><input id="tdate" type="date"><input id="ttime" type="time"></div>
           <input id="url" type="url" placeholder="Facebook post URL (optional)">
           <textarea id="notes" rows="2" placeholder="Notes"></textarea>
-          <div class="row"><button onclick="saveTask()">Save quest</button><button class="sec" onclick="resetForm()">Clear</button></div>
+          <div class="row"><button onclick="saveTask()">Save task</button><button class="sec" onclick="resetForm()">Clear</button></div>
           <p id="formMsg" class="err"></p>
         </div>
       </div>
@@ -490,7 +524,7 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
     <div class="card"><h2>Albums</h2><select id="albView" onchange="showAlbum()"></select><p class="meta" id="albCount"></p><div class="grid" id="albGrid"></div></div>
   </section>
 
-  <section class="view" id="v-hunter">
+  <section class="view hide" id="v-hunter" aria-hidden="true">
     <div class="seg" id="hseg" role="tablist" aria-label="Hunter sections"><button class="on" data-s="profile" role="tab" aria-selected="true">Profile</button><button data-s="forms" role="tab" aria-selected="false">Forms</button><button data-s="custom" role="tab" aria-selected="false">Customize</button><button data-s="armory" role="tab" aria-selected="false">Armory</button><button data-s="model" role="tab" aria-selected="false">3D Model</button></div>
 
     <div class="sub on" id="s-profile">
@@ -531,7 +565,7 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
 
     <div class="sub" id="s-model">
       <div class="card"><div class="hn">3D hunter viewer</div><h2>Your character, in three dimensions</h2><p class="meta">Rotate, zoom and inspect your uploaded GLB model. This viewer runs separately from the task manager so the operations dashboard stays fast.</p>
-        <div class="model-frame-wrap"><iframe id="hunter3dFrame" src="shadow-hunter.html" title="Interactive 3D Shadow Hunter character" loading="lazy" allow="fullscreen" referrerpolicy="no-referrer"></iframe></div>
+        <div class="model-frame-wrap"><iframe id="hunter3dFrame" data-src="shadow-hunter.html" title="Interactive 3D Shadow Hunter character" loading="lazy" allow="fullscreen" referrerpolicy="no-referrer"></iframe></div>
         <div class="row"><button class="sec" onclick="window.open('shadow-hunter.html','_blank','noopener')">Open full 3D viewer ↗</button><button class="sec" onclick="document.getElementById('hunter3dFrame').src='shadow-hunter.html'">Reload model</button></div>
       </div>
       <div class="card"><h3>Equipment sync status</h3><p class="meta">Your Armory loadout and 3D model are currently separate systems. This update improves the 3D viewer and manager workflow without pretending to attach gear to model bones that have not been verified. A later model-specific pass can connect armor and weapons once the GLB mesh and rig names are inspected.</p><button class="sec" onclick="setSub('armory')">Manage equipment →</button></div>
@@ -552,7 +586,7 @@ button.ok{background:linear-gradient(115deg,#087f72,#19a77a)}
     </div>
   </section>
 </div>
-<p class="meta" style="text-align:center;margin-top:16px">Content Tracker v9</p>
+<p class="meta" style="text-align:center;margin-top:16px">AHBA Content Operations Dashboard</p>
 </main>
 
 <div id="pcrop" class="modal hide" role="dialog" aria-label="Fit your portrait"><div class="mbox" style="max-width:360px"><h2>Fit your portrait</h2>
@@ -780,11 +814,13 @@ sb.auth.onAuthStateChange((_e, session) => {
 });
 function showView(v){ if (v === 'album') loadAlbum(); if (v === 'hunter') { document.getElementById('v-hunter').classList.add('on'); renderHunter(); } document.querySelectorAll('.view').forEach(e => e.classList.toggle('on', e.id === 'v-' + v)); document.querySelectorAll('.tab').forEach(b => { const on = b.dataset.v === v; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); }); scrollTo({top:0, behavior:'smooth'}); }
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.v)));
-function welcome(){
+function welcome(){ return; /* legacy game welcome disabled */
+/*
   const el = document.createElement('div'); el.className = 'welcome';
   el.innerHTML = '<div><div class="slits"><i></i><i></i></div><b>Welcome back, ' + esc(profile.name || 'Hunter') + '</b><span>Quest log opened</span></div>'; document.body.appendChild(el);
   fxBoost = 1;
   setTimeout(() => el.remove(), 2200);
+*/
 }
 function countUp(el, to){ const from = parseInt(el.textContent) || 0; if (from === to) { el.textContent = to; return; } const t0 = performance.now(); (function step(t){ const k = Math.min((t - t0) / 700, 1); el.textContent = Math.round(from + (to - from) * k); if (k < 1) requestAnimationFrame(step); })(t0); }
 
@@ -846,7 +882,7 @@ function render(){
         ${DONE.includes(t.status)?'<button class="sec" onclick="setStatus(\''+t.id+'\',\'pending\')">Reopen</button>':''}
         <button class="del" onclick="delTask('${t.id}')">Delete</button>
       </div>
-    </div>`).join(''):'<div class="quest-empty"><b>No matching missions</b><span>Try another filter or create a new quest.</span><button class="sec" onclick="showView(\'add\')">Create quest</button></div>';
+    </div>`).join(''):'<div class="quest-empty"><b>No matching tasks</b><span>Try another filter or create a new quest.</span><button class="sec" onclick="showView(\'add\')">Create task</button></div>';
 }
 async function saveTask(){
   const row = {title:$('title').value.trim(), category:$('cat').value, status:$('status').value, task_date:$('tdate').value,
@@ -925,8 +961,8 @@ async function loadStats(){
   const nq = openQ.find(t => t.scheduled_time && mins(t.scheduled_time.slice(0, 5)) >= nowM) || openQ[0];
   $('next').innerHTML = nq ? `<div class="t">${esc(nq.title)}</div><div class="meta"><span class="badge s-${nq.status}">${STATUS[nq.status]}</span> ${esc(CAT[nq.category])}${nq.scheduled_time ? ' · ' + nq.scheduled_time.slice(0, 5) : ''}</div>` : '<p class="meta">Nothing open. Add a quest to keep your streak going.</p>';
   $('week').innerHTML = [6,5,4,3,2,1,0].map(i => { const dd = addDays(today(), -i); return `<div class="day ${done[dd] ? 'on' : ''}"><i></i>${new Date(dd + 'T00:00:00Z').toLocaleDateString('en-US', {weekday:'short', timeZone:'UTC'})}</div>`; }).join('');
-  if (lastXp !== null && lv > lastLv) levelFx();
-  if (lastXp !== null && xp > lastXp) toast(lv > lastLv ? `Level up! You are now level ${lv}` : `+${xp - lastXp} XP · +${xp - lastXp} gold`);
+  /* Level-up effects disabled in professional dashboard. */
+  /* XP notifications removed from the work dashboard. */
   lastXp = xp; lastLv = lv;
 }
 
@@ -1351,8 +1387,8 @@ function drawAvatar(force){ setTimeout(() => { if (typeof showPortrait === 'func
   document.documentElement.style.setProperty('--fc', FORMS[f - 1].col);
 }
 function setPhase(p){ curPhase = p; document.documentElement.dataset.phase = p; drawAvatar(); if ($('v-hunter').classList.contains('on')) renderHunter(); }
-function applyProfile(){ $('hname').textContent = profile.name || 'Hunter'; drawAvatar(); }
-function updateGold(){ document.querySelectorAll('.goldv').forEach(e => e.textContent = gold().toLocaleString()); if ($('v-hunter').classList.contains('on')) renderHunter(); }
+function applyProfile(){ const n=$('hname'); if(n) n.textContent=profile.name || 'Team member'; }
+function updateGold(){ /* Legacy progression is no longer displayed. */ }
 function levelFx(){ const c = $('pcard'); c.classList.remove('levelup'); void c.offsetWidth; c.classList.add('levelup'); setTimeout(() => c.classList.remove('levelup'), 1700); }
 function phaseUp(p){
   const F = FORMS[p - 1], el = document.createElement('div'); el.className = 'unlock'; el.setAttribute('role', 'status'); el.style.setProperty('--fc', F.col);
