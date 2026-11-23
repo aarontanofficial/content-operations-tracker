@@ -1470,50 +1470,48 @@ function loadImg(file){ return new Promise((res, rej) => { const im = new Image(
 function crop(img, sx, sy, sw, sh, maxW=2400){ sx=Math.max(0,Math.min(img.naturalWidth-1,sx)); sy=Math.max(0,Math.min(img.naturalHeight-1,sy)); sw=Math.max(1,Math.min(img.naturalWidth-sx,sw)); sh=Math.max(1,Math.min(img.naturalHeight-sy,sh)); const k=Math.min(1,maxW/sw); const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(sw*k)); c.height=Math.max(1,Math.round(sh*k)); const g=c.getContext('2d'); g.imageSmoothingEnabled=true; g.imageSmoothingQuality='high'; g.drawImage(img,sx,sy,sw,sh,0,0,c.width,c.height); return c.toDataURL('image/jpeg',.98); }
 function parseBusinessSuiteRows(words,img){
   if(!words?.length)return [];
-  const hasBoost=words.some(w=>/^boost$/i.test((w.text||'').trim()));
-  const hasSchedule=words.some(w=>/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*$/i.test((w.text||'').trim()));
-  if(!hasBoost||!hasSchedule)return [];
   const W=img.naturalWidth,H=img.naturalHeight;
-  const tokens=words.filter(w=>w.bbox&&(w.text||'').trim()).map(w=>({...w,cy:(w.bbox.y0+w.bbox.y1)/2}));
-  const bands=[];
-  tokens.slice().sort((a,b)=>a.cy-b.cy).forEach(w=>{
-    let band=bands.find(x=>Math.abs(x.cy-w.cy)<Math.max(13,H*.018));
-    if(!band){band={cy:w.cy,words:[]};bands.push(band);}
-    band.words.push(w);band.cy=band.words.reduce((n,x)=>n+x.cy,0)/band.words.length;
-  });
-  const valid=bands.map(b=>{
-    const line=b.words.slice().sort((x,y)=>x.bbox.x0-y.bbox.x0);
-    const text=line.map(w=>w.text).join(' ');
-    const dateMatch=text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i);
-    const timeMatch=text.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\.?[Mm]?\b/);
-    return dateMatch&&timeMatch?{band:b,dateMatch,timeMatch}:null;
-  }).filter(Boolean).sort((x,y)=>x.band.cy-y.band.cy);
-  if(!valid.length)return [];
-  const gaps=valid.slice(1).map((x,i)=>x.band.cy-valid[i].band.cy).filter(x=>x>20).sort((x,y)=>x-y);
-  const step=gaps.length?gaps[Math.floor(gaps.length/2)]:H*.15;
-  const found=[];
-  valid.forEach((r,i)=>{
-    const prev=valid[i-1]?.band.cy,next=valid[i+1]?.band.cy;
-    const top=Math.max(0,prev===undefined?r.band.cy-step*.52:(prev+r.band.cy)/2);
-    const bottom=Math.min(H,next===undefined?r.band.cy+step*.52:(r.band.cy+next)/2);
-    const rowTokens=tokens.filter(w=>w.cy>=top&&w.cy<=bottom&&w.bbox.x0>=85&&w.bbox.x0<455)
-      .sort((x,y)=>x.cy-y.cy||x.bbox.x0-y.bbox.x0);
-    const titleTokens=rowTokens.filter(w=>!/^(Boost|Photo|Video|Reel|Story|Post)$/i.test((w.text||'').trim()));
-    let title=cleanTitle(titleTokens.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
+  const tokens=words.filter(w=>w.bbox&&(w.text||'').trim()).map(w=>({...w,cy:(w.bbox.y0+w.bbox.y1)/2,cx:(w.bbox.x0+w.bbox.x1)/2}));
+  // Meta Business Suite uses one Boost control per scheduled post row.
+  const anchors=tokens.filter(w=>/^boost$/i.test(w.text.trim())).sort((a,b)=>a.cy-b.cy);
+  if(anchors.length<2)return [];
+  const unique=anchors.filter((a,i)=>!anchors.slice(0,i).some(b=>Math.abs(a.cy-b.cy)<Math.max(12,H*.012)));
+  if(unique.length<2)return [];
+  const gaps=unique.slice(1).map((a,i)=>a.cy-unique[i].cy).filter(x=>x>18).sort((a,b)=>a-b);
+  const typical=gaps.length?gaps[Math.floor(gaps.length/2)]:H/Math.max(2,unique.length);
+  const out=[];
+  unique.forEach((anchor,i)=>{
+    const prev=unique[i-1]?.cy,next=unique[i+1]?.cy;
+    const top=Math.max(0,prev===undefined?anchor.cy-typical*.53:(prev+anchor.cy)/2);
+    const bottom=Math.min(H,next===undefined?anchor.cy+typical*.53:(anchor.cy+next)/2);
+    const row=tokens.filter(w=>w.cy>=top&&w.cy<=bottom);
+    const line=row.slice().sort((a,b)=>a.cy-b.cy||a.bbox.x0-b.bbox.x0);
+    const rowText=line.map(w=>w.text).join(' ').replace(/\s+/g,' ').trim();
+    const tm=rowText.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\s*\.?\s*[Mm]?\b/i);
+    if(!tm)return;
+    const time=timeOf(tm[0]);if(!time)return;
+    const dm=rowText.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s+([A-Z][a-z]{2,8})\s+(\d{1,2})\b/i);
+    let date=dm?(wdDate(dm[1],+dm[3])||ymd(null,MON[dm[2].slice(0,3).toLowerCase()],dm[3])):null;
+    if(!date){const parsed=parseText(rowText);date=parsed.date;}
+    if(!date)date=$('day')?.value||today();
+    // The title is the text immediately to the left of the row's Boost control.
+    const left=row.filter(w=>w.cx>=70&&w.bbox.x0<anchor.bbox.x0-8)
+      .sort((a,b)=>a.cy-b.cy||a.bbox.x0-b.bbox.x0);
+    const titleBand=left.filter(w=>Math.abs(w.cy-anchor.cy)<Math.max(18,typical*.20));
+    let title=cleanTitle((titleBand.length?titleBand:left).map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
     title=title.replace(/\s*(\.\.\.|…)+\s*$/,'…');
-    if(title.length<4)title=cleanTitle(r.band.words.filter(w=>w.bbox.x0>=85&&w.bbox.x0<455).map(w=>w.text).join(' ')).trim();
-    if(title.length<4)return;
-    const date=wdDate(r.dateMatch[1],+r.dateMatch[3])||ymd(null,MON[r.dateMatch[2].slice(0,3).toLowerCase()],r.dateMatch[3]);
-    const time=timeOf(r.timeMatch[0]);
-    if(!date||!time)return;
-    const key=(title+'|'+date+'|'+time).toLowerCase();
-    if(found.some(x=>x.key===key))return;
-    const left=0,width=Math.min(W,Math.max(680,Math.round(W*.55)));
-    found.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',platforms:[],
-      notes:'Imported from Meta Business Suite. Check the platform icon(s) in the screenshot and select Facebook, Instagram and/or TikTok before saving.',
-      thumb:crop(img,left,top,width,Math.max(1,bottom-top),1800),sourceThumb:crop(img,0,0,W,H,1800)});
+    if(title.length<4){
+      const nearby=left.filter(w=>w.cy<=anchor.cy+typical*.15);
+      title=cleanTitle(nearby.map(w=>w.text).join(' ')).replace(/\s+/g,' ').trim();
+    }
+    if(title.length<4)title='Review post title';
+    const key='row-'+i+'-'+date+'-'+time;
+    const rowTop=Math.max(0,top),rowHeight=Math.max(1,bottom-top);
+    out.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',platforms:[],
+      notes:'Imported as a separate scheduled row from Meta Business Suite. Select the correct platform(s) by checking the logo in the screenshot.',
+      thumb:crop(img,0,rowTop,W,rowHeight,1800),sourceThumb:crop(img,0,0,W,H,1800)});
   });
-  return found;
+  return out;
 }
 function parseBusinessSuiteMarkerRows(words,img,allText){
   const markers=findMarkers(words);
@@ -1656,20 +1654,9 @@ function importedTitleOverlap(a,b){
  return shorter.length>=14 && longer.startsWith(shorter.slice(0,Math.min(shorter.length,Math.max(14,Math.floor(shorter.length*.78)))));
 }
 function mergeImportedDrafts(incoming){
- const added=[];
- for(const d of incoming){
-   const duplicate=[...drafts,...added].find(x=>x.date===d.date&&(x.time||'')===(d.time||'')&&importedTitleOverlap(x.title,d.title));
-   if(duplicate){
-     // Keep one editable record; prefer the title with more readable characters.
-     if(normalizeImportedTitle(d.title).length>normalizeImportedTitle(duplicate.title).length)duplicate.title=d.title;
-     if(!duplicate.thumb&&d.thumb)duplicate.thumb=d.thumb;
-     if(!duplicate.sourceThumb&&d.sourceThumb)duplicate.sourceThumb=d.sourceThumb;
-     duplicate.notes='Same scheduled content was detected more than once across uploaded screenshots. One record retained; verify the title in Business Suite.';
-     continue;
-   }
-   added.push(d);
- }
- return added;
+ // Do not silently collapse same-title/same-time rows: Meta lists Facebook and Instagram
+ // cross-posts separately. The review UI can flag possible duplicates without deleting them.
+ return (incoming||[]).map((d,i)=>({...d,key:d.key||('import-'+Date.now()+'-'+i)}));
 }
 async function readShots(list){
   const files = [...(list || [])].filter(f => f.type.startsWith('image/')), st = $('shotMsg'); if (!files.length) return;
