@@ -963,7 +963,7 @@ async function saveTask(){
   const row={title:$('title').value.trim(),category:$('cat').value,status:$('status').value,task_date:$('tdate').value,scheduled_time:$('ttime').value||null,fb_url:$('url').value.trim()||null,notes:$('notes').value.trim()||null,updated_at:new Date().toISOString()};
   if(shotThumb)row.image_thumb=shotThumb;
   if(!row.title||!row.task_date){$('formMsg').textContent='Please enter a title and activity date.';return;}
-  if(row.fb_url&&!/^https?:\\/\\//i.test(row.fb_url)){$('formMsg').textContent='Enter a valid URL beginning with http:// or https://.';return;}
+  if(row.fb_url&&!/^https?:\/\//i.test(row.fb_url)){$('formMsg').textContent='Enter a valid URL beginning with http:// or https://.';return;}
   const id=$('tid').value;$('formMsg').textContent='Saving…';
   const {error}=id?await sb.from('tasks').update(row).eq('id',id):await sb.from('tasks').insert(row);
   if(error){$('formMsg').textContent='Could not save: '+error.message;return;}
