@@ -448,6 +448,17 @@ label{display:block;font-size:12px;font-weight:700;color:#9aabba;margin:8px 0 3p
 .draft-platforms{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:8px 10px;margin:7px 0;border:1px solid var(--glassb);border-radius:9px}
 .draft-platforms small{width:100%;color:var(--mut)}.draft-platforms label{display:flex;align-items:center;gap:5px;font-size:12px;margin:0}
 @media(min-width:700px){.platform-links{grid-template-columns:1fr 1fr}.platform-links>div:first-child{grid-column:1/-1}}
+/* Professional light workspace + readable attachment previews */
+:root{--bg1:#f4f6fa;--bg2:#eef2f7;--bg3:#f8fafc;--o1:#dbeafe;--o2:#ede9fe;--o3:#e0f2fe;--glass:rgba(255,255,255,.96);--glass2:#f8fafc;--glassb:#dce3ed;--solid:#fff;--sh:0 8px 24px rgba(15,23,42,.07);--txt:#172033;--mut:#64748b;--aura:#3867d6;--btn:linear-gradient(135deg,#315fc5,#557bd7);--gold:#946313;--bad:#c24152;--inp:#fff;--barbg:#e5eaf1;--link:#2856b8;--navbg:rgba(255,255,255,.96);--lov1:#f8fafc;--lov2:#eef2f7;--fc:#3867d6;--warnbg:#fff7e8;--warnln:#f0d39a;color-scheme:light}
+[data-theme=night]{--bg1:#f4f6fa;--bg2:#eef2f7;--bg3:#f8fafc;--glass:rgba(255,255,255,.96);--glass2:#f8fafc;--glassb:#dce3ed;--solid:#fff;--sh:0 8px 24px rgba(15,23,42,.07);--txt:#172033;--mut:#64748b;--aura:#3867d6;--btn:linear-gradient(135deg,#315fc5,#557bd7);--inp:#fff;--barbg:#e5eaf1;--link:#2856b8;--navbg:rgba(255,255,255,.96);color-scheme:light}
+body{background:#f3f5f9!important;color:#172033!important;background-attachment:scroll!important}
+.bgfx{display:none!important}
+.draft-preview-panel{position:relative!important;top:auto!important;align-self:start;min-width:0}
+.draft-image-preview{width:100%;height:clamp(220px,42vh,440px);max-height:none;object-fit:contain;background:#e9edf3;border:1px solid #d7dee8;border-radius:12px;cursor:zoom-in}
+.draft-preview-strip{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:9px}
+.draft-preview-strip img{height:94px;background:#eef2f7}
+.draft{background:#fff;border-color:#dce3ed;box-shadow:0 3px 12px rgba(15,23,42,.04)}
+.draft-preview-meta{align-items:center}
 </style>
 </head>
 <body>
@@ -1370,8 +1381,13 @@ function parseBusinessSuiteRows(words,img){
     if(!date||!time)return;
     const key=(title+'|'+date+'|'+time).toLowerCase();
     if(found.some(x=>x.key===key))return; // merge the same creative listed once for Facebook and once for Instagram
-    const top=Math.max(0,b.cy-H*.075),height=Math.min(H-top,H*.15);
-    found.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',notes:'Imported from a Meta Business Suite content-list screenshot. Confirm the full title and schedule in Business Suite.',thumb:crop(img,0,top,W,height,1500),sourceThumb:crop(img,0,0,W,Math.min(H,Math.max(1,H)),1800)});
+    const rowCenters=bands.map(x=>x.cy).filter(y=>Math.abs(y-b.cy)>H*.025).sort((x,y)=>x-y);
+    const above=rowCenters.filter(y=>y<b.cy).pop(),below=rowCenters.find(y=>y>b.cy);
+    const rowTop=Math.max(0,above===undefined?b.cy-H*.075:(above+b.cy)/2);
+    const rowBottom=Math.min(H,below===undefined?b.cy+H*.075:(below+b.cy)/2);
+    const top=Math.max(0,rowTop),height=Math.max(1,rowBottom-rowTop);
+    const previewLeft=35,previewWidth=Math.min(W-previewLeft,Math.max(420,Math.min(620,W*.46)));
+    found.push({key,on:true,title,date,time,cat:'posting',status:'scheduled',url:'',postId:'',notes:'Imported from a Meta Business Suite content-list screenshot. Confirm the full title and schedule in Business Suite.',thumb:crop(img,previewLeft,top,previewWidth,height,1800),sourceThumb:crop(img,0,0,W,Math.min(H,Math.max(1,H)),1800)});
   });
   return found;
 }
@@ -1613,7 +1629,7 @@ create policy "own profile delete" on public.profiles for delete using (auth.uid
 alter table public.tasks add column if not exists image_thumb text;
 alter table public.tasks add column if not exists post_id text;
 notify pgrst, 'reload schema';`;
-let curPhase = 1, userLv = 1, viewForm = 1, prevForm = 0, custGroup = 'Body', saveT, themeMode = localStorage.getItem('theme') || 'auto', isDay = false, dbMode = 'cloud', lastPhase = null, avKey = '';
+let curPhase = 1, userLv = 1, viewForm = 1, prevForm = 0, custGroup = 'Body', saveT, themeMode = 'day', isDay = false, dbMode = 'cloud', lastPhase = null, avKey = '';
 const lookOf = () => ({...DEFAULT_LOOK, ...profile.look});
 const gold = () => Math.max(0, totalXp - profile.spent);
 const phaseOf = lv => FORMS.filter(f => lv >= f.from).pop().n;
