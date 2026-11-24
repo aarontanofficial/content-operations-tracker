@@ -1648,7 +1648,6 @@ function parseBusinessSuiteRows(words,img){
       !/^(Boost|Photo|Video|Reel|Story|Post)$/i.test(w.txt));
     let title=cleanTitle(titleTokens.map(w=>w.txt).join(' ')).replace(/\s+/g,' ').trim();
     title=title.replace(/\s*(\.\.\.|…)+\s*$/,'…');
-    if(title.length<4)return;
     const month=MON[(dateMatch[2]||'').slice(0,3).toLowerCase()];
     const date=wdDate(dateMatch[1],+dateMatch[3])|| (month?ymd(null,month,dateMatch[3]):null);
     const time=timeOf(timeMatch[0]);
@@ -1657,6 +1656,10 @@ function parseBusinessSuiteRows(words,img){
   });
   rows.sort((x,y)=>x.cy-y.cy);
   if(!rows.length)return [];
+  // Meta's compact list can make OCR miss the title on alternating cross-post rows.
+  // Borrow the title only from a sibling with the exact same date and scheduled time;
+  // never discard that separate Facebook/Instagram row.
+  rows.forEach(r=>{if(r.title.length<4){const sibling=rows.find(x=>x!==r&&x.date===r.date&&x.time===r.time&&x.title.length>=4);r.title=sibling?sibling.title:'Scheduled social media post';}});
   return rows.map((r,i)=>{
     const prev=rows[i-1]?.cy,next=rows[i+1]?.cy;
     const fallbackStep=rows.length>1?(rows[1].cy-rows[0].cy):H*.16;
