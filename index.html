@@ -1630,46 +1630,42 @@ function parseBusinessSuiteRows(words,img){
   if(!words?.length)return [];
   const W=img.naturalWidth,H=img.naturalHeight;
   const tokens=words.filter(w=>w.bbox&&(w.text||'').trim()).map(w=>({...w,cy:(w.bbox.y0+w.bbox.y1)/2,txt:(w.text||'').trim()}));
-  // Use the weekday token as a stable anchor for each Meta Business Suite list row.
-  // The title, date and time live in separate horizontal columns, so grouping by
-  // OCR text line alone can miss rows or merge repeated cross-posts.
-  const anchors=tokens.filter(w=>/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(day)?\.?$/i.test(w.txt))
-    .sort((x,y)=>x.cy-y.cy);
+  // OCR boxes on Meta's list are often vertically misaligned: title, date and
+  // scheduled-time columns do not share an exact baseline. Use a wider row band.
+  const weekday=/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?[.,]?$/i;
+  const anchors=tokens.filter(w=>weekday.test(w.txt)).sort((x,y)=>x.cy-y.cy);
+  const unique=[];
+  anchors.forEach(a=>{if(!unique.some(p=>Math.abs(p.cy-a.cy)<Math.max(24,H*.045)))unique.push(a);});
   const rows=[];
-  anchors.forEach(anchor=>{
-    if(rows.some(r=>Math.abs(r.anchor.cy-anchor.cy)<Math.max(22,H*.035)))return;
-    const rowTokens=tokens.filter(w=>Math.abs(w.cy-anchor.cy)<Math.max(19,H*.032))
-      .sort((x,y)=>x.bbox.x0-y.bbox.x0);
-    const line=rowTokens.map(w=>w.txt).join(' ');
-    const dateMatch=line.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?\.?\s+([A-Za-z]{3,9})\s+(\d{1,2})\b/i);
-    const timeMatch=line.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\s*\.?\s*[Mm]?\b/i);
+  unique.forEach(anchor=>{
+    const band=Math.max(34,H*.075);
+    const rowTokens=tokens.filter(w=>Math.abs(w.cy-anchor.cy)<band).sort((x,y)=>x.bbox.x0-y.bbox.x0);
+    const line=rowTokens.map(w=>w.txt.replace(/[|]/g,'')).join(' ').replace(/\s+/g,' ');
+    // Accept OCR punctuation/spacing variations around Meta's date column.
+    const dateMatch=line.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?[.,]?\s+([A-Za-z]{3,9})[.,]?\s+(\d{1,2})\b/i);
+    const timeMatch=line.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\s*\.?\s*[Mm]?\b/i)
+      || line.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp][Mm])\b/i);
     if(!dateMatch||!timeMatch)return;
-    const titleTokens=rowTokens.filter(w=>w.bbox.x0>=80&&w.bbox.x0<460&&
-      !/^(Boost|Photo|Video|Reel|Story|Post)$/i.test(w.txt));
+    const titleTokens=rowTokens.filter(w=>w.bbox.x0>=70&&w.bbox.x0<Math.min(500,W*.38)&&
+      !/^(Boost|Photo|Video|Reel|Story|Post|Mon|Tue|Wed|Thu|Fri|Sat|Sun)$/i.test(w.txt));
     let title=cleanTitle(titleTokens.map(w=>w.txt).join(' ')).replace(/\s+/g,' ').trim();
     title=title.replace(/\s*(\.\.\.|…)+\s*$/,'…');
     const month=MON[(dateMatch[2]||'').slice(0,3).toLowerCase()];
-    const date=wdDate(dateMatch[1],+dateMatch[3])|| (month?ymd(null,month,dateMatch[3]):null);
+    const date=wdDate(dateMatch[1],+dateMatch[3])||(month?ymd(null,month,dateMatch[3]):null);
     const time=timeOf(timeMatch[0]);
-    if(!date||!time)return;
-    rows.push({anchor,title,date,time,cy:anchor.cy});
+    if(date&&time)rows.push({title,date,time,cy:anchor.cy});
   });
-  rows.sort((x,y)=>x.cy-y.cy);
+  rows.sort((a,b)=>a.cy-b.cy);
   if(!rows.length)return [];
-  // Meta's compact list can make OCR miss the title on alternating cross-post rows.
-  // Borrow the title only from a sibling with the exact same date and scheduled time;
-  // never discard that separate Facebook/Instagram row.
   rows.forEach(r=>{if(r.title.length<4){const sibling=rows.find(x=>x!==r&&x.date===r.date&&x.time===r.time&&x.title.length>=4);r.title=sibling?sibling.title:'Scheduled social media post';}});
   return rows.map((r,i)=>{
     const prev=rows[i-1]?.cy,next=rows[i+1]?.cy;
-    const fallbackStep=rows.length>1?(rows[1].cy-rows[0].cy):H*.16;
-    const top=Math.max(0,prev===undefined?r.cy-fallbackStep*.52:(prev+r.cy)/2);
-    const bottom=Math.min(H,next===undefined?r.cy+fallbackStep*.52:(r.cy+next)/2);
-    return {on:true,title:r.title,date:r.date,time:r.time,cat:'posting',status:'scheduled',
-      url:'',postId:'',platforms:[],
-      notes:'Imported as a separate scheduled row from Meta Business Suite. Choose the platform shown by its logo before saving. Repeated titles and times are kept as separate rows because Facebook and Instagram cross-posts appear separately.',
-      thumb:crop(img,0,top,W,Math.max(1,bottom-top),1800),
-      sourceThumb:crop(img,0,0,W,H,1800)};
+    const step=rows.length>1?(rows[1].cy-rows[0].cy):H*.16;
+    const top=Math.max(0,prev===undefined?r.cy-step*.55:(prev+r.cy)/2);
+    const bottom=Math.min(H,next===undefined?r.cy+step*.55:(r.cy+next)/2);
+    return {on:true,title:r.title,date:r.date,time:r.time,cat:'posting',status:'scheduled',url:'',postId:'',platforms:[],
+      notes:'Imported as a separate scheduled row from Meta Business Suite. Confirm the platform shown by its logo before saving. Cross-post rows are preserved separately.',
+      thumb:crop(img,0,top,W,Math.max(1,bottom-top),1800),sourceThumb:crop(img,0,0,W,H,1800)};
   });
 }
 async function readOne(file, prog){
