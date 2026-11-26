@@ -5,8 +5,9 @@
  const done=s=>s==='published'||s==='completed', label=s=>({'pending':'Pending','prepared':'Prepared','scheduled':'Scheduled','published':'Published','completed':'Completed'}[s]||s);
  let lastRows=[],mounted=false,loadToken=0;
  function mount(){
-  const view=$('#v-overview');if(!view||$('#opsExecutive'))return;
-  const shell=document.createElement('div');shell.id='opsExecutive';
+  const view=$('#v-overview');if(!view)return;
+  let shell=$('#opsExecutive');
+  if(!shell){shell=document.createElement('div');shell.id='opsExecutive';
   shell.innerHTML=`
    <div class="cc-topline"><div class="cc-breadcrumb">WORKSPACE <span style="opacity:.4">/</span> OVERVIEW</div><div class="cc-topright"><span id="ccDate"></span><span class="cc-live">LIVE WORKSPACE</span></div></div>
    <section class="cc-hero">
@@ -33,7 +34,8 @@
    <section class="cc-planning-wrap"><div id="ccPlanMount"></div></section>
    <div id="ccLoadError" class="cc-empty" hidden></div>`;
   view.insertBefore(shell,view.firstChild);
-  const planner=$('#batchPlanner'),mountPoint=$('#ccPlanMount');if(planner&&mountPoint)mountPoint.appendChild(planner);
+  }
+  const planner=$('#batchPlanner'),mountPoint=$('#ccPlanMount');if(planner&&mountPoint&&planner.parentElement!==mountPoint)mountPoint.appendChild(planner);
   document.querySelectorAll('#tabs .tab').forEach(b=>{const k=b.dataset.v;const names={overview:'Overview',quests:'Tasks',add:'Content',album:'Media',reports:'Reports',hunter:'Settings'};const l=b.querySelector('.lbl');if(l)l.textContent=names[k]||l.textContent;b.setAttribute('aria-label',names[k]||k)});
   $('#ccDate').textContent=new Date().toLocaleDateString('en-PH',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:tz});
   $('#ccGreeting').textContent='Your content command center.';
