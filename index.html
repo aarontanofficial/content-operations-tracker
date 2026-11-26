@@ -1653,7 +1653,7 @@ function parseBusinessSuiteRows(words,img){
     const date=wdDate(dateMatch[1],+dateMatch[3])|| (month?ymd(null,month,dateMatch[3]):null);
     const time=timeOf(timeMatch[0]);
     if(!date||!time)return;
-    rows.push({anchor,title,date,time,cy:anchor.cy});
+    rows.push({anchor,title,date,time,cy:anchor.cy,titleRight:titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460});
   });
   rows.sort((x,y)=>x.cy-y.cy);
   if(!rows.length)return [];
@@ -1669,7 +1669,7 @@ function parseBusinessSuiteRows(words,img){
     // Keep the useful post thumbnail + title column. The date/time are already
     // extracted into the draft metadata, so including the entire wide row only
     // creates a tiny strip surrounded by blank space in the preview.
-    const titleRight=titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460;
+    const titleRight=r.titleRight||460;
     const cropRight=Math.min(W,Math.max(Math.min(W,520),Math.min(760,titleRight+72)));
     const padY=Math.max(12,Math.round((bottom-top)*.12));
     const cropTop=Math.max(0,top-padY),cropBottom=Math.min(H,bottom+padY);
