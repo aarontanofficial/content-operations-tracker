@@ -1009,8 +1009,8 @@ const CAT = {posting:'Social Media Content',trivia:'SKY Internet Trivia',baranga
 const XP = {prepared:5, scheduled:10, completed:20, published:30}, DONE = ['published','completed'];
 const PLATFORM_NAMES={facebook:'Facebook',instagram:'Instagram',tiktok:'TikTok'};
 const SOCIAL_META_PREFIX='[[COT_SOCIAL_V1]]';
-function socialMetaFromNotes(notes,legacyUrl){const raw=String(notes||'');if(raw.startsWith(SOCIAL_META_PREFIX)){const cut=raw.indexOf('\\n'),json=cut>=0?raw.slice(SOCIAL_META_PREFIX.length,cut):raw.slice(SOCIAL_META_PREFIX.length);try{const m=JSON.parse(json);return {platforms:Array.isArray(m.platforms)?m.platforms.filter(x=>PLATFORM_NAMES[x]):[],links:{...(m.links||{})},notes:cut>=0?raw.slice(cut+1):''};}catch(e){}}return {platforms:legacyUrl?['facebook']:[],links:legacyUrl?{facebook:legacyUrl}:{},notes:raw};}
-function socialNotes(human,platforms,links){const meta={platforms:[...new Set((platforms||[]).filter(x=>PLATFORM_NAMES[x]))],links:Object.fromEntries(Object.entries(links||{}).filter(([k,v])=>PLATFORM_NAMES[k]&&String(v||'').trim()))};return SOCIAL_META_PREFIX+JSON.stringify(meta)+'\\n'+String(human||'');}
+function socialMetaFromNotes(notes,legacyUrl){const raw=String(notes||'');if(raw.startsWith(SOCIAL_META_PREFIX)){const start=SOCIAL_META_PREFIX.length;const actual=raw.indexOf('\n',start),escaped=raw.indexOf('\\n',start);const cut=actual>=0?actual:escaped;const sep=actual>=0?1:2;const json=cut>=0?raw.slice(start,cut):raw.slice(start);try{const m=JSON.parse(json);return {platforms:Array.isArray(m.platforms)?m.platforms.filter(x=>PLATFORM_NAMES[x]):[],links:{...(m.links||{})},notes:cut>=0?raw.slice(cut+sep):''};}catch(e){}}return {platforms:legacyUrl?['facebook']:[],links:legacyUrl?{facebook:legacyUrl}:{},notes:raw};}
+function socialNotes(human,platforms,links){const meta={platforms:[...new Set((platforms||[]).filter(x=>PLATFORM_NAMES[x]))],links:Object.fromEntries(Object.entries(links||{}).filter(([k,v])=>PLATFORM_NAMES[k]&&String(v||'').trim()))};return SOCIAL_META_PREFIX+JSON.stringify(meta)+'\n'+String(human||'');}
 function selectedPlatforms(){return ['facebook','instagram','tiktok'].filter(p=>$('plat-'+p)?.checked);}
 function setPlatformFields(platforms,links={}){['facebook','instagram','tiktok'].forEach(p=>{const el=$('plat-'+p);if(el)el.checked=(platforms||[]).includes(p);});$('url').value=links.facebook||'';$('igUrl').value=links.instagram||'';$('ttUrl').value=links.tiktok||'';}
 function platformLinksFromForm(){return {facebook:$('url').value.trim(),instagram:$('igUrl').value.trim(),tiktok:$('ttUrl').value.trim()};}
@@ -1760,7 +1760,7 @@ async function markDuplicateDrafts(){
     const pid=(d.postId||'').trim();
     if(pid && saved.some(x=>(x.post_id||'').trim()===pid)){
       d.duplicate=true; d.duplicateReason='Same Facebook Post ID already saved';
-      d.on=false; continue;
+      continue;
     }
     let hash='';
     if(d.thumb) try { hash=await imageDHash(d.thumb); } catch(e){}
@@ -1770,12 +1770,11 @@ async function markDuplicateDrafts(){
     if(sameSaved || sameDraft){
       d.duplicate=true;
       d.duplicateReason=sameSaved?'Same title and schedule already saved':'Same title and schedule detected in another screenshot';
-      d.on=false;
     }
     seen.push({d,hash});
   }
   const count=drafts.filter(d=>d.duplicate).length;
-  if(count) msg.textContent += (msg.textContent ? ' ' : '') + count+' likely duplicate(s) were unchecked automatically. You can review them before saving.';
+  if(count) msg.textContent += (msg.textContent ? ' ' : '') + count+' possible duplicate(s) were flagged for review. All drafts remain selected unless you uncheck them.';
 }
 function normalizeImportedTitle(value){
  return String(value||'').toLowerCase().replace(/\[[^\]]*\]/g,' ').replace(/…|\.{2,}/g,' ').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
@@ -1801,10 +1800,10 @@ async function readShots(list){
     const tag = `Reading image ${i + 1} of ${files.length}`; st.textContent = tag + '… (the first one takes longer)';
     try { const ds = await readOne(files[i], p => st.textContent = `${tag}… ${p}%`); const unique=mergeImportedDrafts(ds); drafts.push(...unique); added += unique.length; } catch (e) { st.textContent = 'Could not read an image: ' + e.message; }
   }
-  if (added) st.textContent = `Found ${added} quest draft(s). Checking for duplicates…`;
+  if (added) st.textContent = `Found ${added} content draft(s). Checking for duplicates…`;
   await markDuplicateDrafts();
   drafts.sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || ''))); renderDrafts();
-  if (added && !drafts.some(d=>d.duplicate)) st.textContent = `Found ${added} quest draft(s). No likely duplicates found. Review and save selected.`;
+  if (added && !drafts.some(d=>d.duplicate)) st.textContent = `Found ${added} content draft(s). No likely duplicates found. Review and save selected.`;
 }
 const opts = (o, sel) => Object.entries(o).map(([k, v]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${v}</option>`).join('');
 function showDraftPreview(index){
