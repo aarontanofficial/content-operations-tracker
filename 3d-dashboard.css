@@ -42,3 +42,10 @@ button{border-radius:11px!important}input,select,textarea{border-radius:10px!imp
 #v-overview>#opsExecutive{display:block!important;visibility:visible!important;position:relative!important;z-index:1!important;min-height:1px}
 #v-overview>#opsExecutive .cc-hero,#v-overview>#opsExecutive .cc-kpis,#v-overview>#opsExecutive .cc-grid-main,#v-overview>#opsExecutive .cc-lower{visibility:visible!important}
 #v-overview>#opsExecutive+.batch-planner{display:none!important}
+
+/* Content import: make detected post crops readable instead of panoramic slivers */
+.draft-image-preview{width:100%;height:auto;max-height:420px;object-fit:contain;background:rgba(18,30,58,.08);border-radius:16px}
+.draft-thumb{width:100%;height:150px;object-fit:contain;background:rgba(18,30,58,.08);border-radius:12px}
+.draft-thumbbox{align-self:start}
+.draft{align-items:start}
+#pv .draft-preview-strip img{object-fit:contain;background:rgba(18,30,58,.08)}
