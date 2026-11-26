@@ -37,3 +37,8 @@ button{border-radius:11px!important}input,select,textarea{border-radius:10px!imp
 [data-theme=day] .cc-kpi,[data-theme=day] .cc-panel{background:linear-gradient(145deg,rgba(255,255,255,.95),rgba(241,246,255,.93))!important;border-color:rgba(86,119,177,.18)!important;box-shadow:0 14px 38px rgba(61,91,145,.10)!important}
 [data-theme=day] .cc-kpi strong,[data-theme=day] .cc-panel-head h2,[data-theme=day] .cc-agenda-title,[data-theme=day] .cc-priority-title,[data-theme=day] .cc-mini b{color:#182840!important}[data-theme=day] .cc-kpi-top,[data-theme=day] .cc-kpi small,[data-theme=day] .cc-panel-head p,[data-theme=day] .cc-chart-day,[data-theme=day] .cc-chart-footer,[data-theme=day] .cc-time,[data-theme=day] .cc-agenda-meta,[data-theme=day] .cc-priority-meta,[data-theme=day] .cc-mini span{color:#667996!important}
 [data-theme=day] .cc-chart-track,[data-theme=day] .cc-track{background:rgba(63,94,145,.1)!important}[data-theme=day] .cc-planning-wrap .batch-planner{background:linear-gradient(140deg,#fff,#edf4ff)!important}[data-theme=day] .cc-planning-wrap .batch-item{color:#233a5e!important}[data-theme=day] .cc-planning-wrap input,[data-theme=day] .cc-planning-wrap textarea{color:#233a5e!important;background:#fff!important}
+
+/* v3 mount hardening: keep the command center as the first, visible Home section */
+#v-overview>#opsExecutive{display:block!important;visibility:visible!important;position:relative!important;z-index:1!important;min-height:1px}
+#v-overview>#opsExecutive .cc-hero,#v-overview>#opsExecutive .cc-kpis,#v-overview>#opsExecutive .cc-grid-main,#v-overview>#opsExecutive .cc-lower{visibility:visible!important}
+#v-overview>#opsExecutive+.batch-planner{display:none!important}
