@@ -1666,11 +1666,18 @@ function parseBusinessSuiteRows(words,img){
     const fallbackStep=rows.length>1?(rows[1].cy-rows[0].cy):H*.16;
     const top=Math.max(0,prev===undefined?r.cy-fallbackStep*.52:(prev+r.cy)/2);
     const bottom=Math.min(H,next===undefined?r.cy+fallbackStep*.52:(r.cy+next)/2);
+    // Keep the useful post thumbnail + title column. The date/time are already
+    // extracted into the draft metadata, so including the entire wide row only
+    // creates a tiny strip surrounded by blank space in the preview.
+    const titleRight=titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460;
+    const cropRight=Math.min(W,Math.max(Math.min(W,520),Math.min(760,titleRight+72)));
+    const padY=Math.max(12,Math.round((bottom-top)*.12));
+    const cropTop=Math.max(0,top-padY),cropBottom=Math.min(H,bottom+padY);
     return {on:true,title:r.title,date:r.date,time:r.time,cat:'posting',status:'scheduled',
       url:'',postId:'',platforms:[],
-      notes:'Imported as a separate scheduled row from Meta Business Suite. Choose the platform shown by its logo before saving. Repeated titles and times are kept as separate rows because Facebook and Instagram cross-posts appear separately.',
-      thumb:crop(img,0,top,W,Math.max(1,bottom-top),1800),
-      sourceThumb:crop(img,0,0,W,H,1800)};
+      notes:'Imported as a separate scheduled row from Meta Business Suite. The preview is cropped to the post thumbnail and title area; the detected date and time are shown above. Choose the platform shown by its logo before saving. Repeated titles and times are kept as separate rows because Facebook and Instagram cross-posts appear separately.',
+      thumb:crop(img,0,cropTop,cropRight,Math.max(1,cropBottom-cropTop),1400),
+      sourceThumb:crop(img,0,0,W,H,2200)};
   });
 }
 async function readOne(file, prog){
