@@ -71,5 +71,9 @@
    document.addEventListener('pointerout',e=>{const el=e.target.closest('.cc-kpi');if(el&&!el.contains(e.relatedTarget))el.style.transform=''}, {passive:true});
   }
  }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+ let initAttempts=0;
+ function safeInit(){if(mounted||initAttempts>=4)return;initAttempts++;try{init();}catch(e){console.error('[AHBA Ops] Dashboard mount failed',e);const view=$('#v-overview');if(view){let msg=$('#ccMountError');if(!msg){msg=document.createElement('div');msg.id='ccMountError';msg.className='cc-empty';view.insertBefore(msg,view.firstChild);}msg.textContent='The dashboard could not initialize. Reload the page to retry.';}}}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',safeInit,{once:true});else safeInit();
+ window.addEventListener('load',safeInit,{once:true});
+ window.addEventListener('pageshow',safeInit);
 })();
