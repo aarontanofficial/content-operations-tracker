@@ -1673,6 +1673,38 @@ function findDayHeaders(words, sc){
 }
 function loadImg(file){ return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('Could not open the image')); im.src = URL.createObjectURL(file); }); }
 function crop(img, sx, sy, sw, sh, maxW=2400){ sx=Math.max(0,Math.min(img.naturalWidth-1,sx)); sy=Math.max(0,Math.min(img.naturalHeight-1,sy)); sw=Math.max(1,Math.min(img.naturalWidth-sx,sw)); sh=Math.max(1,Math.min(img.naturalHeight-sy,sh)); const k=Math.min(1,maxW/sw); const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(sw*k)); c.height=Math.max(1,Math.round(sh*k)); const g=c.getContext('2d'); g.imageSmoothingEnabled=true; g.imageSmoothingQuality='high'; g.drawImage(img,sx,sy,sw,sh,0,0,c.width,c.height); return c.toDataURL('image/jpeg',.98); }
+function detectMetaRowPlatforms(img,top,bottom){
+  // Meta Business Suite places the platform badge over the lower-left area of each post thumbnail.
+  // Read that small region directly; OCR is unreliable for the tiny Facebook/Instagram glyphs.
+  const W=img.naturalWidth,H=img.naturalHeight;
+  const left=Math.max(0,Math.round(W*.055)),right=Math.min(W,Math.round(W*.205));
+  const y0=Math.max(0,Math.round(top+(bottom-top)*.58)),y1=Math.min(H,Math.round(bottom));
+  if(right-left<12||y1-y0<10)return [];
+  const canvas=document.createElement('canvas');canvas.width=96;canvas.height=64;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  ctx.drawImage(img,left,y0,right-left,y1-y0,0,0,96,64);
+  const data=ctx.getImageData(0,0,96,64).data;
+  let fbBlue=0,igPink=0,igOrange=0,igPurple=0;
+  for(let i=0;i<data.length;i+=4){
+    const r=data[i],g=data[i+1],b=data[i+2],max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;
+    if(max<85||delta<45)continue;
+    let hue=0;
+    if(max===r)hue=60*(((g-b)/delta)%6);
+    else if(max===g)hue=60*((b-r)/delta+2);
+    else hue=60*((r-g)/delta+4);
+    if(hue<0)hue+=360;
+    const sat=delta/max;
+    if(hue>=202&&hue<=224&&sat>.48&&b>115)fbBlue++;
+    if(hue>=325&&hue<=360&&sat>.38&&r>125)igPink++;
+    if(hue>=8&&hue<=48&&sat>.48&&r>160&&g>65)igOrange++;
+    if(hue>=255&&hue<325&&sat>.38&&b>90)igPurple++;
+  }
+  const platforms=[];
+  // Require a cluster of brand-colored pixels rather than a single colorful pixel in artwork.
+  if(fbBlue>=9)platforms.push('facebook');
+  if(igPink>=5&&(igOrange>=3||igPurple>=5))platforms.push('instagram');
+  return platforms;
+}
 function parseBusinessSuiteRows(words,img){
   if(!words?.length)return [];
   const W=img.naturalWidth,H=img.naturalHeight;
@@ -1699,7 +1731,7 @@ function parseBusinessSuiteRows(words,img){
     const date=wdDate(dateMatch[1],+dateMatch[3])|| (month?ymd(null,month,dateMatch[3]):null);
     const time=timeOf(timeMatch[0]);
     if(!date||!time)return;
-    rows.push({anchor,title,date,time,cy:anchor.cy,titleRight:titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460});
+    rows.push({anchor,title,date,time,cy:anchor.cy,platforms:detectMetaRowPlatforms(img,Math.max(0,anchor.cy-H*.065),Math.min(H,anchor.cy+H*.065)),titleRight:titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460});
   });
   rows.sort((x,y)=>x.cy-y.cy);
   if(!rows.length)return [];
@@ -1720,8 +1752,8 @@ function parseBusinessSuiteRows(words,img){
     const padY=Math.max(12,Math.round((bottom-top)*.12));
     const cropTop=Math.max(0,top-padY),cropBottom=Math.min(H,bottom+padY);
     return {on:true,title:r.title,date:r.date,time:r.time,cat:'posting',status:'scheduled',
-      url:'',postId:'',platforms:[],
-      notes:'Imported as a separate scheduled row from Meta Business Suite. The preview is cropped to the post thumbnail and title area; the detected date and time are shown above. Choose the platform shown by its logo before saving. Repeated titles and times are kept as separate rows because Facebook and Instagram cross-posts appear separately.',
+      url:'',postId:'',platforms:r.platforms,
+      notes:'Imported as a separate scheduled row from Meta Business Suite. Platform was detected from the thumbnail badge when its logo was clear; verify the selected platform before saving. Repeated titles and times are kept as separate rows because Facebook and Instagram cross-posts appear separately.',
       thumb:crop(img,0,cropTop,cropRight,Math.max(1,cropBottom-cropTop),1400),
       sourceThumb:crop(img,0,0,W,H,2200)};
   });
