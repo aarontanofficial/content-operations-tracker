@@ -1712,7 +1712,7 @@ function parseBusinessSuiteRows(words,img){
   // Use the weekday token as a stable anchor for each Meta Business Suite list row.
   // The title, date and time live in separate horizontal columns, so grouping by
   // OCR text line alone can miss rows or merge repeated cross-posts.
-  const anchors=tokens.filter(w=>/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(day)?\.?$/i.test(w.txt)||/(?:\b\d{1,2}[:.]\d{2}\s*[AaPp](?:\s*[Mm])?\b)/i.test(w.txt)||/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2}\b/i.test(w.txt))
+  const anchors=tokens.filter(w=>/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(day)?\.?$/i.test(w.txt)||/(?:\b\d{1,2}[:.]\d{2}\s*[AaPp](?:\s*[Mm])?\b)/i.test(w.txt)||/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2}\b/i.test(w.txt)||/^\d{1,2}[:.]\d{2}$/i.test(w.txt))
     .sort((x,y)=>x.cy-y.cy);
   const rows=[];
   anchors.forEach(anchor=>{
@@ -1720,17 +1720,17 @@ function parseBusinessSuiteRows(words,img){
     const rowTokens=tokens.filter(w=>Math.abs(w.cy-anchor.cy)<Math.max(30,H*.085))
       .sort((x,y)=>x.bbox.x0-y.bbox.x0);
     const line=rowTokens.map(w=>w.txt).join(' ');
-    const dateMatch=line.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?\.?\s+([A-Za-z]{3,9})\s+(\d{1,2})\b/i);
+    const dateMatch=line.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?\.?[\s,.-]*([A-Za-z]{3,9})[\s,.-]*(\d{1,2})\b/i);
     const monthDayMatch=line.match(/\b([A-Za-z]{3,9})\s+(\d{1,2})\b/i);
     const timeMatch=line.match(/\b(\d{1,2})[:.](\d{2})\s*([AaPp])\s*\.?\s*[Mm]?\b/i);
-    if(!dateMatch||!timeMatch)return;
+    if(!timeMatch)return;
     const titleTokens=rowTokens.filter(w=>w.bbox.x0>=80&&w.bbox.x0<460&&
       !/^(Boost|Photo|Video|Reel|Story|Post)$/i.test(w.txt));
     let title=cleanTitle(titleTokens.map(w=>w.txt).join(' ')).replace(/\s+/g,' ').trim();
     title=title.replace(/\s*(\.\.\.|…)+\s*$/,'…');
     const month=MON[((dateMatch?dateMatch[2]:monthDayMatch?.[1])||'').slice(0,3).toLowerCase()];
     const day=+(dateMatch?dateMatch[3]:monthDayMatch?.[2]);
-    const date=(dateMatch?wdDate(dateMatch[1],day):null)||(month?ymd(null,month,day):null);
+    const date=(dateMatch?wdDate(dateMatch[1],day):null)||(month&&day?ymd(null,month,day):null)||$('day').value||today();
     const time=timeOf(timeMatch[0]);
     if(!date||!time)return;
     rows.push({anchor,title,date,time,cy:anchor.cy,status:date<today()?'published':'scheduled',platforms:detectMetaRowPlatforms(img,Math.max(0,anchor.cy-H*.065),Math.min(H,anchor.cy+H*.065)),titleRight:titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460});
