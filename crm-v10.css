@@ -110,3 +110,54 @@ button{border-radius:10px!important}
  #v-add .draft-preview-panel{position:static!important}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* V10 motion layer: dashboard choreography, chart reveals, orbit and tactile depth */
+@keyframes crmFadeUp{from{opacity:0;transform:translate3d(0,22px,0) scale(.985)}to{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes crmSoftPulse{0%,100%{box-shadow:0 0 0 0 rgba(48,151,96,.08)}50%{box-shadow:0 0 0 12px rgba(48,151,96,0)}}
+@keyframes crmOrbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes crmFloat{0%,100%{transform:translateY(0) rotateX(0deg)}50%{transform:translateY(-9px) rotateX(2deg)}}
+@keyframes crmBarRise{from{transform:scaleY(.04);opacity:.25}to{transform:scaleY(1);opacity:1}}
+@keyframes crmShimmer{0%{background-position:150% 0}100%{background-position:-150% 0}}
+#opsExecutive .cc-topline{animation:crmFadeUp .55s both}
+#opsExecutive .cc-hero{animation:crmFadeUp .7s .06s both;transform-origin:center}
+#opsExecutive .cc-hero:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.48) 48%,transparent 68%);background-size:220% 100%;animation:crmShimmer 7s ease-in-out infinite;opacity:.55}
+#opsExecutive .cc-hero{position:relative;overflow:hidden}
+#opsExecutive .cc-orbit-stage{perspective:900px;animation:crmFloat 6s ease-in-out infinite}
+#opsExecutive .cc-orbit{animation:crmOrbit 24s linear infinite}
+#opsExecutive .cc-orbit.o2{animation-direction:reverse;animation-duration:31s}
+#opsExecutive .cc-orbit.o3{animation-duration:38s}
+#opsExecutive .cc-orbit-core{animation:crmSoftPulse 4s ease-in-out infinite,crmFloat 5s ease-in-out infinite}
+#opsExecutive .cc-kpis .cc-kpi{animation:crmFadeUp .65s both;transform-style:preserve-3d}
+#opsExecutive .cc-kpis .cc-kpi:nth-child(1){animation-delay:.12s}
+#opsExecutive .cc-kpis .cc-kpi:nth-child(2){animation-delay:.2s}
+#opsExecutive .cc-kpis .cc-kpi:nth-child(3){animation-delay:.28s}
+#opsExecutive .cc-kpis .cc-kpi:nth-child(4){animation-delay:.36s}
+#opsExecutive .cc-kpi strong{display:inline-block;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+#opsExecutive .cc-kpi:hover strong{transform:translateY(-3px) scale(1.07)}
+#opsExecutive .cc-panel{animation:crmFadeUp .7s .3s both;transform-style:preserve-3d}
+#opsExecutive .cc-lower .cc-panel:first-child{animation-delay:.4s}
+#opsExecutive .cc-lower .cc-panel:last-child{animation-delay:.5s}
+#opsExecutive .cc-chart-bar{transform-origin:bottom;animation:crmBarRise .95s cubic-bezier(.16,1,.3,1) both}
+#opsExecutive .cc-chart-col:nth-child(1) .cc-chart-bar{animation-delay:.08s}
+#opsExecutive .cc-chart-col:nth-child(2) .cc-chart-bar{animation-delay:.14s}
+#opsExecutive .cc-chart-col:nth-child(3) .cc-chart-bar{animation-delay:.2s}
+#opsExecutive .cc-chart-col:nth-child(4) .cc-chart-bar{animation-delay:.26s}
+#opsExecutive .cc-chart-col:nth-child(5) .cc-chart-bar{animation-delay:.32s}
+#opsExecutive .cc-chart-col:nth-child(6) .cc-chart-bar{animation-delay:.38s}
+#opsExecutive .cc-chart-col:nth-child(7) .cc-chart-bar{animation-delay:.44s}
+#opsExecutive .cc-pipeline>*{animation:crmFadeUp .5s both}
+#opsExecutive .cc-pipeline>*:nth-child(2){animation-delay:.08s}
+#opsExecutive .cc-pipeline>*:nth-child(3){animation-delay:.16s}
+#opsExecutive .cc-pipeline>*:nth-child(4){animation-delay:.24s}
+#opsExecutive .cc-agenda-row,#opsExecutive .cc-priority>*{transition:transform .22s ease,background .22s ease,border-color .22s ease}
+#opsExecutive .cc-agenda-row:hover,#opsExecutive .cc-priority>*:hover{transform:translateX(5px);background:#f1f8f3!important}
+#v-quests .task,#v-add .draft,#v-album .media-card,#v-reports .card{animation:crmFadeUp .5s both}
+#v-quests .task:nth-child(2n),#v-add .draft:nth-child(2n){animation-delay:.08s}
+#tabs .tab{transition:background .25s ease,color .25s ease,transform .25s cubic-bezier(.2,.8,.2,1)!important}
+#tabs .tab.on{animation:crmSoftPulse 3.6s ease-in-out infinite}
+@media(hover:hover) and (pointer:fine){
+ #opsExecutive .cc-hero:hover,#opsExecutive .cc-panel:hover,#opsExecutive .cc-kpi:hover{transform:translateY(-4px) rotateX(.5deg);box-shadow:0 20px 44px rgba(20,65,43,.13)!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #opsExecutive *,#v-quests *,#v-add *,#v-album *,#v-reports *,#tabs *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
