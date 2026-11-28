@@ -1712,7 +1712,7 @@ function parseBusinessSuiteRows(words,img){
   // Use the weekday token as a stable anchor for each Meta Business Suite list row.
   // The title, date and time live in separate horizontal columns, so grouping by
   // OCR text line alone can miss rows or merge repeated cross-posts.
-  const anchors=tokens.filter(w=>/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(day)?\.?$/i.test(w.txt))
+  const anchors=tokens.filter(w=>/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(day)?\.?$/i.test(w.txt)||/(?:\b\d{1,2}[:.]\d{2}\s*[AaPp](?:\s*[Mm])?\b)/i.test(w.txt))
     .sort((x,y)=>x.cy-y.cy);
   const rows=[];
   anchors.forEach(anchor=>{
