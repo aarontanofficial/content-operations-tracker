@@ -1761,10 +1761,10 @@ function parseBusinessSuiteRows(words,img){
   });
 }
 async function readOne(file, prog){
-  const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight, sc = W < 700 ? 3 : 1;
+  const img = await loadImg(file), W = img.naturalWidth, H = img.naturalHeight, sc = W < 700 ? 3 : W < 1800 ? 2 : 1.5;
   const c = document.createElement('canvas'); c.width = W * sc; c.height = H * sc; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
   const r = await Tesseract.recognize(c, 'eng', {logger: m => { if (m.status === 'recognizing text') prog(Math.round(m.progress * 100)); }});
-  const text = r.data.text || '', words = r.data.words || [], listRows = parseBusinessSuiteRows(words,img); if(listRows.length) return listRows; const mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting', platforms:[]};
+  const text = r.data.text || '', words = (r.data.words || []).map(w=>({...w,bbox:{x0:w.bbox.x0/sc,y0:w.bbox.y0/sc,x1:w.bbox.x1/sc,y1:w.bbox.y1/sc}})), listRows = parseBusinessSuiteRows(words,img); if(listRows.length) return listRows; const mk = findMarkers(words), base = {on:true, status:'scheduled', cat:'posting', platforms:[]};
   const headers = findDayHeaders(words, sc);
   const dm = text.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*\.?\s*(\d{1,2})\b/i), day = (dm && wdDate(dm[1], +dm[2])) || $('day').value || today();
   if (mk.length >= 2) { // one image crop per detected calendar post
