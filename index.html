@@ -1908,7 +1908,7 @@ function renderDrafts(){
       <input data-i="${i}" data-k="title" value="${esc(d.title)}" placeholder="Quest title">
       <div class="row"><input type="date" data-i="${i}" data-k="date" value="${esc(d.date)}"><input type="time" data-i="${i}" data-k="time" value="${esc(d.time || '')}"></div>
       <div class="row"><select data-i="${i}" data-k="cat">${opts(CAT, d.cat)}</select><select data-i="${i}" data-k="status">${opts(STATUS, d.status)}</select></div>
-      <div class="draft-platforms"><small>Platforms for this post</small>${['facebook','instagram','tiktok'].map(p=>'<label><input type="checkbox" data-i="'+i+'" data-platform="'+p+'" '+((d.platforms||[]).includes(p)?'checked':'')+'> '+PLATFORM_NAMES[p]+'</label>').join('')}</div>
+      <div class="draft-platforms"><small>Platforms for this post</small>${['facebook','instagram','tiktok'].map(p=>'<label><input type="checkbox" data-i="'+i+'" data-platform="'+p+'" '+((d.platforms||[]).includes(p)?'checked':'')+'> <span class="platform-dot '+(p==='facebook'?'fb':p==='instagram'?'ig':'tt')+'">'+(p==='facebook'?'f':p==='instagram'?'◎':'♪')+'</span> '+PLATFORM_NAMES[p]+'</label>').join('')}</div>
       <input data-i="${i}" data-k="postId" value="${esc(d.postId || '')}" placeholder="Post ID (optional)">
       <input data-i="${i}" data-k="url" value="${esc(d.url || '')}" placeholder="Facebook link (optional)">
       <input data-i="${i}" data-k="igUrl" value="${esc(d.igUrl || '')}" placeholder="Instagram link (optional)">
