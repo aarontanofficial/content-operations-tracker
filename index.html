@@ -1717,7 +1717,7 @@ function parseBusinessSuiteRows(words,img){
   const rows=[];
   anchors.forEach(anchor=>{
     if(rows.some(r=>Math.abs(r.anchor.cy-anchor.cy)<Math.max(22,H*.035)))return;
-    const rowTokens=tokens.filter(w=>Math.abs(w.cy-anchor.cy)<Math.max(19,H*.032))
+    const rowTokens=tokens.filter(w=>Math.abs(w.cy-anchor.cy)<Math.max(30,H*.085))
       .sort((x,y)=>x.bbox.x0-y.bbox.x0);
     const line=rowTokens.map(w=>w.txt).join(' ');
     const dateMatch=line.match(/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)(?:day)?\.?\s+([A-Za-z]{3,9})\s+(\d{1,2})\b/i);
@@ -1731,7 +1731,7 @@ function parseBusinessSuiteRows(words,img){
     const date=wdDate(dateMatch[1],+dateMatch[3])|| (month?ymd(null,month,dateMatch[3]):null);
     const time=timeOf(timeMatch[0]);
     if(!date||!time)return;
-    rows.push({anchor,title,date,time,cy:anchor.cy,platforms:detectMetaRowPlatforms(img,Math.max(0,anchor.cy-H*.065),Math.min(H,anchor.cy+H*.065)),titleRight:titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460});
+    rows.push({anchor,title,date,time,cy:anchor.cy,status:date<today()?'published':'scheduled',platforms:detectMetaRowPlatforms(img,Math.max(0,anchor.cy-H*.065),Math.min(H,anchor.cy+H*.065)),titleRight:titleTokens.length?Math.max(...titleTokens.map(w=>w.bbox.x1)):460});
   });
   rows.sort((x,y)=>x.cy-y.cy);
   if(!rows.length)return [];
@@ -1751,7 +1751,7 @@ function parseBusinessSuiteRows(words,img){
     const cropRight=Math.min(W,Math.max(Math.min(W,520),Math.min(760,titleRight+72)));
     const padY=Math.max(12,Math.round((bottom-top)*.12));
     const cropTop=Math.max(0,top-padY),cropBottom=Math.min(H,bottom+padY);
-    return {on:true,title:r.title,date:r.date,time:r.time,cat:'posting',status:'scheduled',
+    return {on:true,title:r.title,date:r.date,time:r.time,cat:'posting',status:r.status||'scheduled',
       url:'',postId:'',platforms:r.platforms,
       notes:'Imported as a separate scheduled row from Meta Business Suite. Platform was detected from the thumbnail badge when its logo was clear; verify the selected platform before saving. Repeated titles and times are kept as separate rows because Facebook and Instagram cross-posts appear separately.',
       thumb:crop(img,0,cropTop,cropRight,Math.max(1,cropBottom-cropTop),1400),
@@ -1929,7 +1929,7 @@ async function saveDrafts(){
   const ids = sel.map(d => (d.postId || '').trim()).filter(Boolean), dup = new Set();
   if (ids.length) { const {data} = await sb.from('tasks').select('post_id').in('post_id', ids); (data || []).forEach(x => dup.add(x.post_id)); }
   const todo = sel.filter(d => !((d.postId || '').trim() && dup.has(d.postId.trim())));
-  const rows = todo.map(d => {const platforms=d.platforms||[],links={facebook:(d.url||'').trim(),instagram:(d.igUrl||'').trim(),tiktok:(d.ttUrl||'').trim()};return {title:(d.title||'').trim()||('Post'+(d.time?' at '+d.time:'')),category:d.cat,status:d.status,task_date:d.date,scheduled_time:d.time||null,fb_url:links.facebook||null,notes:socialNotes(d.notes||'',platforms,links),post_id:(d.postId||'').trim()||null,image_thumb:d.thumb||null};});
+  const rows = todo.map(d => {const platforms=d.platforms||[],links={facebook:(d.url||'').trim(),instagram:(d.igUrl||'').trim(),tiktok:(d.ttUrl||'').trim()},status=d.date<today()?'published':d.status;return {title:(d.title||'').trim()||('Post'+(d.time?' at '+d.time:'')),category:d.cat,status,task_date:d.date,scheduled_time:d.time||null,fb_url:links.facebook||null,notes:socialNotes(d.notes||'',platforms,links),post_id:(d.postId||'').trim()||null,image_thumb:d.thumb||null};});
   if (!rows.length) { msg.textContent = 'Those posts are already saved (same Post ID).'; return; }
   const {error} = await sb.from('tasks').insert(rows); if (error) { msg.textContent = error.message; return; }
   const skipped = sel.length - rows.length; drafts = drafts.filter(d => !d.on); renderDrafts(); $('shotMsg').textContent = '';
