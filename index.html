@@ -736,6 +736,51 @@ button.ok{background:#16865d!important}
 </style>
 <link rel="stylesheet" href="3d-dashboard.css?v=4">
 <link rel="stylesheet" href="crm-v10.css?v=2">
+
+<style id="crm-v11-inline">
+/* Inline fallback: ensures the CRM shell is styled even if Pages/CDN serves a stale external CSS asset */
+:root{--crm-green:#176b4b;--crm-ink:#172c23;--crm-canvas:#f5f8f6;--crm-line:#e5ece7}
+html,body{background:#f5f8f6!important;color:#172c23!important}
+body{font-family:Inter,"Segoe UI",system-ui,sans-serif!important;background:radial-gradient(ellipse at 88% 0%,rgba(213,237,221,.55),transparent 30%),linear-gradient(145deg,#f8faf8,#f2f7f3 70%,#f7faf8)!important;background-attachment:fixed!important}
+#main{max-width:none!important;margin:0 0 0 254px!important;padding:28px clamp(20px,3vw,48px) 72px!important}
+#tabs.tabs{position:fixed!important;inset:0 auto 0 0!important;transform:none!important;width:254px!important;height:100dvh!important;max-height:none!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:8px!important;padding:27px 16px!important;border:0!important;border-radius:0!important;background:linear-gradient(180deg,#174f3b,#103d2d 58%,#0d3326)!important;box-shadow:12px 0 34px rgba(13,55,37,.12)!important;z-index:999!important}
+#tabs.tabs:before{content:"AHBA";display:block;padding:9px 12px 3px;color:#fff;font-size:19px;font-weight:900;letter-spacing:.08em}
+#tabs.tabs:after{content:"CONTENT OPERATIONS";display:block;padding:0 12px 28px;color:#a9cbb8;font-size:9px;font-weight:850;letter-spacing:.2em;border-bottom:1px solid rgba(255,255,255,.13);margin-bottom:12px}
+#tabs .tab{flex:0 0 48px!important;width:100%!important;min-height:48px!important;justify-content:flex-start!important;gap:13px!important;padding:0 14px!important;color:#c3d9cc!important;background:transparent!important;border:1px solid transparent!important;border-radius:12px!important;box-shadow:none!important;transition:all .25s ease!important}
+#tabs .tab svg{width:19px!important;height:19px!important;stroke:currentColor!important}
+#tabs .tab .lbl{display:inline!important;margin:0!important;font-size:13px!important;font-weight:700!important}
+#tabs .tab:hover{background:rgba(255,255,255,.09)!important;color:#fff!important;transform:translateX(3px)!important}
+#tabs .tab.on{color:#fff!important;background:rgba(255,255,255,.15)!important;border-color:rgba(255,255,255,.15)!important;box-shadow:inset 3px 0 #a7e5bd!important}
+.view{max-width:1600px!important;margin:0 auto!important}
+.view.on{animation:crmV11Enter .45s cubic-bezier(.2,.7,.2,1) both!important}
+@keyframes crmV11Enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card,.glass,.tile,.task,.draft,.batch-planner,.report-card{background:#fff!important;color:#172c23!important;border:1px solid #e5ece7!important;border-radius:17px!important;box-shadow:0 8px 28px rgba(20,55,38,.065)!important}
+h1,h2,h3{color:#172c23!important}
+#opsExecutive{color:#172c23!important}
+#opsExecutive .cc-hero{background:linear-gradient(115deg,#fff,#f3faf5 58%,#e7f4eb)!important;border:1px solid #deebe2!important;border-radius:22px!important;box-shadow:0 14px 36px rgba(25,76,48,.08)!important;position:relative!important;overflow:hidden!important}
+#opsExecutive .cc-hero h1{color:#173b2b!important}
+#opsExecutive .cc-hero p{color:#687b70!important}
+#opsExecutive .cc-kpi,#opsExecutive .cc-panel{background:#fff!important;color:#172c23!important;border:1px solid #e5ece7!important;border-radius:17px!important;box-shadow:0 8px 28px rgba(20,55,38,.065)!important}
+#opsExecutive .cc-kpi strong,#opsExecutive .cc-panel h2{color:#172c23!important}
+#opsExecutive .cc-kpi small,#opsExecutive .cc-panel p{color:#718178!important}
+#opsExecutive .cc-kpi .cc-kpi-icon{background:#edf7f0!important;color:#176b4b!important}
+#opsExecutive .cc-orbit-stage{perspective:900px;animation:crmV11Float 6s ease-in-out infinite!important}
+#opsExecutive .cc-orbit{animation:crmV11Orbit 24s linear infinite!important;border-color:rgba(30,126,77,.32)!important}
+#opsExecutive .cc-orbit.o2{animation-direction:reverse!important;animation-duration:31s!important}
+#opsExecutive .cc-orbit.o3{animation-duration:38s!important}
+#opsExecutive .cc-orbit-core{background:radial-gradient(circle at 32% 25%,#fff,#cdebd8 50%,#9bcdae)!important;animation:crmV11Pulse 4s ease-in-out infinite!important}
+#opsExecutive .cc-kpi,#opsExecutive .cc-panel{animation:crmV11Enter .65s both!important}
+#opsExecutive .cc-kpi:nth-child(2){animation-delay:.08s!important}#opsExecutive .cc-kpi:nth-child(3){animation-delay:.16s!important}#opsExecutive .cc-kpi:nth-child(4){animation-delay:.24s!important}
+#opsExecutive .cc-chart-bar{transform-origin:bottom!important;animation:crmV11Rise .9s cubic-bezier(.16,1,.3,1) both!important}
+#opsExecutive .cc-panel:hover,#opsExecutive .cc-kpi:hover{transform:translateY(-4px)!important;box-shadow:0 20px 44px rgba(20,65,43,.13)!important;transition:transform .25s,box-shadow .25s!important}
+@keyframes crmV11Float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes crmV11Orbit{to{transform:rotate(360deg)}}
+@keyframes crmV11Pulse{0%,100%{box-shadow:0 0 0 0 rgba(48,151,96,.08)}50%{box-shadow:0 0 0 13px rgba(48,151,96,0)}}
+@keyframes crmV11Rise{from{transform:scaleY(.03);opacity:.2}to{transform:scaleY(1);opacity:1}}
+@media(max-width:900px){#main{margin-left:210px!important;padding:22px 16px 64px!important}#tabs.tabs{width:194px!important}}
+@media(max-width:640px){#main{margin:0!important;padding:16px 13px 100px!important}#tabs.tabs{inset:auto 10px calc(10px + env(safe-area-inset-bottom)) 10px!important;width:auto!important;height:66px!important;max-height:66px!important;flex-direction:row!important;align-items:center!important;justify-content:space-around!important;padding:6px!important;border-radius:19px!important;background:linear-gradient(135deg,#174f3b,#103d2d)!important}#tabs.tabs:before,#tabs.tabs:after{display:none!important}#tabs .tab{flex:1 1 0!important;width:auto!important;min-width:0!important;height:50px!important;min-height:50px!important;justify-content:center!important;gap:3px!important;padding:3px!important;flex-direction:column!important}#tabs .tab .lbl{font-size:9px!important}.cc-orbit-stage{display:none!important}}
+@media(prefers-reduced-motion:reduce){#opsExecutive *,#tabs *, .view.on{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -2212,6 +2257,6 @@ if (/iphone|ipad/i.test(navigator.userAgent) && !(navigator.standalone || matchM
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').then(r => reg = r).catch(() => {});
 </script>
-<script src="3d-dashboard.js?v=3" defer></script>
+<script src="3d-dashboard.js?v=4" defer></script>
 </body>
 </html>
